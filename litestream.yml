@@ -1,0 +1,12 @@
+# Continuous off-site backup of the database, used only when BUCKET_NAME is set (see scripts/start.sh).
+# `fly storage create` sets BUCKET_NAME, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.
+# For Amazon S3 instead, set BUCKET_NAME, AWS_REGION, and the two keys, and leave AWS_ENDPOINT_URL_S3 unset.
+# Photos aren't in the database: Fly's daily volume snapshots and the Export zip cover them.
+dbs:
+  - path: ${RECALL_DATA_DIR}/recall.db
+    replica:
+      type: s3
+      bucket: ${BUCKET_NAME}
+      path: recall.db
+      endpoint: ${AWS_ENDPOINT_URL_S3}
+      region: ${AWS_REGION}

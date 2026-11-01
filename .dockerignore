@@ -1,0 +1,12 @@
+node_modules
+dist
+data
+models
+coverage
+screenshots
+.git
+.env
+.env.*
+*.log
+.DS_Store
+fly.toml
