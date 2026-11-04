@@ -1,4 +1,5 @@
 import type { Category, Memory, Photo } from "../../shared/types.js";
+import { normalizeKeywords } from "../../shared/keywords.js";
 import { isCategory } from "../../shared/types.js";
 import type { DB } from "./db.js";
 import { badRequest, notFound, tooLarge } from "./errors.js";
@@ -29,6 +30,8 @@ export interface CreateMemoryInput {
 
 export interface UpdateMemoryInput {
   body?: string;
+  pinned?: boolean;
+  customKeywords?: string[];
   archived?: boolean;
   /** A category picked by hand, which auto-tagging then leaves alone. */
   category?: Category;
@@ -40,6 +43,7 @@ export interface Enrichment {
 }
 
 export interface ListOptions {
+  pinned?: boolean;
   cursor?: string | null;
   limit?: number;
   category?: Category | null;
@@ -58,6 +62,8 @@ export type MemoryChange =
 export type ChangeListener = (change: MemoryChange) => void | Promise<void>;
 
 export interface MemoryRow {
+  pinned: number;
+  custom_keywords: string;
   id: number;
   client_id: string | null;
   body: string;
@@ -212,6 +218,7 @@ export class MemoryStore {
     const where: string[] = [];
     const params: (string | number)[] = [];
     if (!options.includeArchived) where.push("archived_at IS NULL");
+    if (options.pinned) where.push("pinned = 1");
     if (options.category) {
       where.push("category = ?");
       params.push(options.category);
@@ -239,6 +246,24 @@ export class MemoryStore {
     const sets: string[] = [];
     const params: (string | number | null)[] = [];
     let bodyChanged = false;
+
+    if (input.customKeywords !== undefined) {
+      let keywords: string[];
+      try {
+        keywords = normalizeKeywords(input.customKeywords);
+      } catch (error) {
+        throw badRequest((error as Error).message);
+      }
+      const stored = keywords.join(", ");
+      if (stored !== current.custom_keywords) {
+        sets.push("custom_keywords = ?");
+        params.push(stored);
+      }
+    }
+    if (input.pinned !== undefined && Number(input.pinned) !== current.pinned) {
+      sets.push("pinned = ?");
+      params.push(Number(input.pinned));
+    }
 
     if (input.body !== undefined) {
       const body = normalizeBody(input.body);
@@ -421,6 +446,8 @@ export class MemoryStore {
     return rows.map((row) => ({
       id: row.id,
       body: row.body,
+      pinned: row.pinned === 1,
+      customKeywords: parseTags(row.custom_keywords),
       category: isCategory(row.category) ? row.category : null,
       categorySetByUser: row.category_set_by_user === 1,
       tags: parseTags(row.tags),

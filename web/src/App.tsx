@@ -134,6 +134,7 @@ export default function App() {
           memory={openMemory}
           onClose={closeMemory}
           onChanged={changed}
+          onOpen={setOpenMemory}
           onDeleted={() => {
             setOpenMemory(null);
             changed();

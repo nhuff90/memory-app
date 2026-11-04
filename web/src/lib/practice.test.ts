@@ -21,6 +21,8 @@ function person(id: number, body: string, { photos = 1, archivedAt = null }: { p
     category: "people",
     categorySetByUser: false,
     tags: [],
+    pinned: false,
+    customKeywords: [],
     createdAt: NOW,
     updatedAt: NOW,
     archivedAt,

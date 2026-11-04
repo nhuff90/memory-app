@@ -7,7 +7,7 @@ import { CloseIcon, SearchIcon, SparkIcon } from "./icons";
 import { MemoryList } from "./MemoryCard";
 import { PeopleGrid } from "./PeopleGrid";
 
-const FILTERS: (Category | null)[] = [null, "people", "things", "work", "hobbies"];
+const FILTERS: (Category | "pinned" | null)[] = [null, "pinned", "people", "things", "work", "hobbies"];
 
 function orList(items: string[]): string {
   if (items.length < 2) return items.join("");
@@ -27,12 +27,14 @@ export function RecallTab({
 }) {
   const [query, setQuery] = useState("");
   const [showOutdated, setShowOutdated] = useState(false);
-  const [category, setCategory] = useState<Category | null>(null);
+  const [selected, setSelected] = useState<Category | "pinned" | null>(null);
+  const pinned = selected === "pinned";
+  const category = pinned ? null : selected;
   // Tagged with the refresh count it was asked at: once any memory changes, the answer may be stale.
   const [asked, setAsked] = useState<{ state: AnswerState; refreshKey: number } | null>(null);
   const asking = useRef<AbortController | null>(null);
-  const search = useSearch(query, { archived: showOutdated, refreshKey, category });
-  const recent = useRecent({ archived: showOutdated, refreshKey, category });
+  const search = useSearch(query, { archived: showOutdated, refreshKey, category, pinned });
+  const recent = useRecent({ archived: showOutdated, refreshKey, category, pinned });
   const trimmed = query.trim();
   const searching = trimmed.length > 0;
   const showFaces = category === "people" && !searching;
@@ -91,7 +93,7 @@ export function RecallTab({
           autoComplete="off"
           autoCorrect="off"
           className={`w-full rounded-2xl bg-white py-3 pl-11 text-base shadow-sm ring-1 ring-stone-200 outline-none placeholder:text-stone-400 focus:ring-2 focus:ring-indigo-500 dark:bg-stone-900 dark:ring-stone-800 [&::-webkit-search-cancel-button]:hidden ${
-            aiEnabled && searching ? "pr-28" : "pr-11"
+            aiEnabled && searching ? (pinned ? "pr-48" : "pr-28") : "pr-11"
           }`}
         />
         {query && (
@@ -114,7 +116,7 @@ export function RecallTab({
                 className="flex items-center gap-1 rounded-xl bg-indigo-700 py-1.5 pr-3 pl-2.5 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
               >
                 <SparkIcon />
-                Ask
+                {pinned ? "Ask all memories" : "Ask"}
               </button>
             )}
           </div>
@@ -126,15 +128,15 @@ export function RecallTab({
           <button
             key={filter ?? "all"}
             type="button"
-            aria-pressed={category === filter}
-            onClick={() => setCategory(filter)}
+            aria-pressed={selected === filter}
+            onClick={() => { setSelected(filter); asking.current?.abort(); setAsked(null); }}
             className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ring-1 transition ${
-              category === filter
+              selected === filter
                 ? "bg-indigo-700 text-white ring-indigo-700 dark:bg-indigo-600 dark:ring-indigo-600"
                 : "bg-white text-stone-700 ring-stone-200 hover:bg-stone-50 dark:bg-stone-900 dark:text-stone-300 dark:ring-stone-800"
             }`}
           >
-            {filter ? CATEGORY_LABELS[filter] : "All"}
+            {filter === "pinned" ? "Pinned" : filter ? CATEGORY_LABELS[filter] : "All"}
           </button>
         ))}
       </div>
@@ -147,7 +149,7 @@ export function RecallTab({
             ? search.loading && search.results.length === 0
               ? "Searching…"
               : "Results"
-            : category
+            : pinned ? "Pinned" : category
               ? CATEGORY_LABELS[category]
               : "Recent"}
         </h2>
@@ -192,7 +194,7 @@ export function RecallTab({
           <MemoryList memories={recentMemories} onOpen={onOpen} />
           {!recent.loading && recent.memories.length === 0 && (
             <p className="px-1 text-sm leading-relaxed text-stone-500">
-              {category
+              {pinned ? "No pinned memories yet. Open a memory and tap Pin." : category
                 ? `Nothing in ${CATEGORY_LABELS[category]} yet. ${
                     aiEnabled ? "New memories are sorted automatically." : "Open any memory to choose its category."
                   }`

@@ -23,6 +23,8 @@ export function exportJson(memories: Memory[], now: number, timeZone: string): s
         body: memory.body,
         category: memory.category,
         tags: memory.tags,
+        pinned: memory.pinned,
+        customKeywords: memory.customKeywords,
         createdAt: iso(memory.createdAt),
         updatedAt: iso(memory.updatedAt),
         outdatedAt: iso(memory.archivedAt),
@@ -48,6 +50,8 @@ export function exportMarkdown(memories: Memory[], now: number, timeZone: string
     lines.push("---", "", `## ${format.format(memory.createdAt)}`, "");
     if (memory.body) lines.push(memory.body, "");
     for (const photo of memory.photos) lines.push(`![${photo.caption ?? "Photo"}](${photoName(memory.id, photo.id)})`, "");
+    lines.push(`Pinned: ${memory.pinned ? "yes" : "no"}`, "");
+    if (memory.customKeywords.length) lines.push(`Custom keywords: ${memory.customKeywords.join(", ")}`, "");
     const details = [
       memory.archivedAt !== null ? "Outdated" : null,
       memory.category ? CATEGORY_LABELS[memory.category] : null,

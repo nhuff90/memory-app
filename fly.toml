@@ -1,6 +1,6 @@
 # Recall on Fly.io: one small machine that sleeps when idle, with a 1 GB volume for the database and photos.
 # Change `app` to a unique name before the first deploy.
-app = "recall-change-me"
+app = "mem-recall-app"
 primary_region = "iad"
 # Time to finish uploading the last changes to the backup bucket before the machine stops.
 kill_timeout = 30

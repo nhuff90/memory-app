@@ -60,6 +60,9 @@ export function formatNotes(memories: Memory[], timeZone: string): string {
       const captions = memory.photos.flatMap((photo) => (photo.caption ? [photo.caption] : []));
       if (captions.length) lines.push(`  photo shows: ${captions.join("; ")}`);
       if (memory.tags.length) lines.push(`  tags: ${memory.tags.join(", ")}`);
+      if (memory.customKeywords.length) {
+        lines.push(`  user-provided search metadata (custom keywords): ${memory.customKeywords.join(", ")}`);
+      }
       return lines.join("\n");
     })
     .join("\n");

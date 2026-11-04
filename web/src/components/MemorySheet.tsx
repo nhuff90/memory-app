@@ -1,6 +1,7 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { normalizeKeywords } from "../../../shared/keywords";
 import { CATEGORIES, CATEGORY_LABELS, photoUrl, type Category, type Memory, type Photo } from "../../../shared/types";
-import { addPhotos, deleteMemory, deletePhoto, errorMessage, updateMemory } from "../api";
+import { addPhotos, deleteMemory, deletePhoto, errorMessage, relatedMemories, updateMemory } from "../api";
 import { formatFullDate } from "../lib/format";
 import { useAutosize } from "../lib/hooks";
 import { preparePhoto } from "../lib/images";
@@ -8,35 +9,64 @@ import { ArchiveIcon, CloseIcon, TrashIcon } from "./icons";
 import { PhotoButton } from "./PhotoButton";
 import { PhotoViewer } from "./PhotoViewer";
 import { Sheet } from "./Sheet";
+import { MemoryList } from "./MemoryCard";
 
-type Busy = null | "save" | "archive" | "delete" | "photo" | "category";
+type Busy = null | "save" | "archive" | "delete" | "photo" | "category" | "pin";
 
 export function MemorySheet({
   memory: initial,
   onClose,
   onChanged,
   onDeleted,
+  onOpen,
 }: {
   memory: Memory;
   onClose: () => void;
   onChanged: (memory: Memory) => void;
   onDeleted: (id: number) => void;
+  onOpen: (memory: Memory) => void;
 }) {
   const [memory, setMemory] = useState(initial);
   const [body, setBody] = useState(initial.body);
+  const [keywords, setKeywords] = useState(initial.customKeywords.join(", "));
   const [busy, setBusy] = useState<Busy>(null);
   const [error, setError] = useState<string | null>(null);
   const [viewing, setViewing] = useState<Photo | null>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
   useAutosize(textarea, body, 96);
 
-  const dirty = body.trim() !== memory.body;
+  const dirty = body.trim() !== memory.body || keywords !== memory.customKeywords.join(", ");
+  let keywordError: string | null = null;
+  try { normalizeKeywords([keywords]); } catch (caught) { keywordError = errorMessage(caught); }
   const archived = memory.archivedAt !== null;
 
+  const [retry, setRetry] = useState(0);
+  const relatedKey = JSON.stringify([memory.id, memory.body, memory.customKeywords, memory.photos, retry]);
+  const [related, setRelated] = useState<{ key: string; results: Memory[]; error: string | null } | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    relatedMemories(memory.id, controller.signal).then(
+      (response) => {
+        if (!controller.signal.aborted) setRelated({ key: relatedKey, results: response.results, error: null });
+      },
+      (caught: unknown) => {
+        if (!controller.signal.aborted) setRelated({ key: relatedKey, results: [], error: errorMessage(caught) });
+      },
+    );
+    return () => controller.abort();
+  }, [memory.id, relatedKey]);
+  const currentRelated = related?.key === relatedKey ? related : null;
+
+  const openRelated = (next: Memory) => {
+    if (busy || (dirty && !window.confirm("Discard your changes?"))) return;
+    onOpen(next);
+  };
+
   const close = useCallback(() => {
+    if (busy) return;
     if (dirty && !window.confirm("Discard your changes?")) return;
     onClose();
-  }, [dirty, onClose]);
+  }, [busy, dirty, onClose]);
 
   async function run(kind: Exclude<Busy, null>, action: () => Promise<void>) {
     setBusy(kind);
@@ -57,13 +87,17 @@ export function MemorySheet({
 
   const saveBody = () =>
     run("save", async () => {
-      const updated = await updateMemory(memory.id, { body });
+      const updated = await updateMemory(memory.id, { body, customKeywords: normalizeKeywords([keywords]) });
       apply(updated);
       setBody(updated.body);
+      setKeywords(updated.customKeywords.join(", "));
     });
 
   const toggleArchived = () =>
     run("archive", async () => apply(await updateMemory(memory.id, { archived: !archived })));
+
+  const togglePinned = () =>
+    run("pin", async () => apply(await updateMemory(memory.id, { pinned: !memory.pinned })));
 
   const chooseCategory = (category: Category) =>
     run("category", async () => apply(await updateMemory(memory.id, { category })));
@@ -101,6 +135,12 @@ export function MemorySheet({
         {edited && ` · edited ${formatFullDate(memory.updatedAt)}`}
       </p>
 
+      <button type="button" onClick={() => void togglePinned()} disabled={busy !== null}
+        aria-pressed={memory.pinned}
+        className="mt-3 rounded-full bg-stone-100 px-4 py-2 text-sm font-semibold disabled:opacity-50 dark:bg-stone-800">
+        {busy === "pin" ? "Saving…" : memory.pinned ? "Unpin" : "Pin"}
+      </button>
+
       {archived && (
         <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:bg-amber-900/30 dark:text-amber-100">
           Marked outdated. It’s kept, but hidden from search unless “Show outdated” is on.
@@ -114,16 +154,25 @@ export function MemorySheet({
         id="memory-body"
         ref={textarea}
         value={body}
+        disabled={busy === "save"}
         onChange={(event) => setBody(event.target.value)}
         maxLength={10_000}
         placeholder="Add a note to this photo…"
         className="mt-3 block w-full resize-none rounded-xl bg-stone-50 px-3 py-2.5 text-base leading-relaxed ring-1 ring-stone-200 outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-stone-950 dark:ring-stone-800"
       />
+      <label htmlFor="memory-keywords" className="mt-4 block text-sm font-semibold">Custom keywords</label>
+      <input id="memory-keywords" type="text" value={keywords} disabled={busy === "save"}
+        onChange={(event) => setKeywords(event.target.value)}
+        aria-describedby="keyword-help keyword-error" aria-invalid={keywordError !== null}
+        className="mt-1 w-full rounded-xl bg-stone-50 px-3 py-2.5 text-base ring-1 ring-stone-200 outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-stone-950 dark:ring-stone-800" />
+      <p id="keyword-help" className="mt-1 text-xs text-stone-500">Separate with commas. Up to 10 keywords, 40 characters each. These are separate from automatic tags.</p>
+      {keywordError && <p id="keyword-error" role="alert" className="mt-1 text-sm text-red-700 dark:text-red-400">{keywordError}</p>}
       {dirty && (
         <div className="mt-2 flex justify-end gap-2">
           <button
             type="button"
-            onClick={() => setBody(memory.body)}
+            onClick={() => { setBody(memory.body); setKeywords(memory.customKeywords.join(", ")); setError(null); }}
+            disabled={busy !== null}
             className="rounded-full px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
           >
             Cancel
@@ -131,7 +180,7 @@ export function MemorySheet({
           <button
             type="button"
             onClick={() => void saveBody()}
-            disabled={busy !== null}
+            disabled={busy !== null || keywordError !== null}
             className="rounded-full bg-indigo-700 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-50"
           >
             {busy === "save" ? "Saving…" : "Save changes"}
@@ -215,6 +264,17 @@ export function MemorySheet({
       </div>
 
       {error && <p className="mt-3 text-sm text-red-700 dark:text-red-400">{error}</p>}
+
+      <section aria-label="Related memories" className="mt-6 border-t border-stone-100 pt-4 dark:border-stone-800">
+        <h2 className="mb-2 text-sm font-semibold">Related memories</h2>
+        {!currentRelated ? <p role="status" className="text-sm text-stone-500">Finding related memories…</p>
+          : currentRelated.error ? <div>
+            <p role="alert" className="text-sm text-red-700 dark:text-red-400">{currentRelated.error}</p>
+            <button type="button" onClick={() => setRetry((value) => value + 1)} className="mt-2 rounded-full px-4 py-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300">Try again</button>
+          </div>
+          : currentRelated.results.length ? <MemoryList memories={currentRelated.results} onOpen={openRelated} />
+          : <p className="text-sm text-stone-500">No related memories found.</p>}
+      </section>
 
       <div className="mt-6 flex gap-2 border-t border-stone-100 pt-4 dark:border-stone-800">
         <button

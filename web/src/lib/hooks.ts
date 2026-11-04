@@ -9,23 +9,31 @@ export function useRecent({
   limit = 30,
   category = null,
   photos = false,
+  pinned = false,
 }: {
   archived: boolean;
   refreshKey: number;
   limit?: number;
   category?: Category | null;
   photos?: boolean;
+  pinned?: boolean;
 }) {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const scope = JSON.stringify([archived, category, photos, pinned]);
+  const [listedScope, setListedScope] = useState<string | null>(null);
   const generation = useRef(0);
 
   useEffect(() => {
     const current = ++generation.current;
+    setListedScope(scope);
     setLoading(true);
-    listMemories({ archived, limit, category, photos })
+    setMemories([]);
+    setCursor(null);
+    setError(null);
+    listMemories({ archived, limit, category, photos, pinned })
       .then((page) => {
         if (current !== generation.current) return;
         setMemories(page.memories);
@@ -38,14 +46,15 @@ export function useRecent({
       .finally(() => {
         if (current === generation.current) setLoading(false);
       });
-  }, [archived, refreshKey, limit, category, photos]);
+    return () => { generation.current++; };
+  }, [archived, refreshKey, limit, category, photos, pinned, scope]);
 
   const loadMore = useCallback(async () => {
     if (!cursor) return;
     const current = generation.current;
     setLoading(true);
     try {
-      const page = await listMemories({ cursor, archived, limit, category, photos });
+      const page = await listMemories({ cursor, archived, limit, category, photos, pinned });
       if (current !== generation.current) return;
       setMemories((previous) => {
         const seen = new Set(previous.map((memory) => memory.id));
@@ -57,9 +66,12 @@ export function useRecent({
     } finally {
       if (current === generation.current) setLoading(false);
     }
-  }, [cursor, archived, limit, category, photos]);
+  }, [cursor, archived, limit, category, photos, pinned]);
 
-  return { memories, hasMore: cursor !== null, loading, error, loadMore };
+  // A new filter renders before its effect runs. Never expose the previous filter's cards in that render.
+  return listedScope === scope
+    ? { memories, hasMore: cursor !== null, loading, error, loadMore }
+    : { memories: [], hasMore: false, loading: true, error: null, loadMore };
 }
 
 export interface SearchState {
@@ -75,28 +87,32 @@ const IDLE: SearchState = { results: [], query: "", loading: false, error: null 
 /** Searches as the user types, cancelling outdated requests so results never arrive out of order. */
 export function useSearch(
   query: string,
-  { archived = false, strict = false, refreshKey = 0, delay = 120, limit, category = null }: {
+  { archived = false, strict = false, refreshKey = 0, delay = 120, limit, category = null, pinned = false }: {
     archived?: boolean;
     strict?: boolean;
     refreshKey?: number;
     delay?: number;
     limit?: number;
     category?: Category | null;
+    pinned?: boolean;
   } = {},
 ): SearchState {
-  const [state, setState] = useState<SearchState>(IDLE);
   const trimmed = query.trim();
+  const scope = JSON.stringify([trimmed, archived, strict, refreshKey, limit, category, pinned]);
+  const [state, setState] = useState<SearchState & { scope: string }>({ ...IDLE, scope: "" });
 
   useEffect(() => {
     if (!trimmed) {
-      setState(IDLE);
+      setState({ ...IDLE, scope });
       return;
     }
     const controller = new AbortController();
-    setState((previous) => ({ ...previous, loading: true }));
+    setState({ results: [], query: trimmed, loading: true, error: null, scope });
     const timer = setTimeout(() => {
-      searchMemories(trimmed, { archived, strict, limit, category, signal: controller.signal })
-        .then((response) => setState({ results: response.results, query: trimmed, loading: false, error: null }))
+      searchMemories(trimmed, { archived, strict, limit, category, pinned, signal: controller.signal })
+        .then((response) => {
+          if (!controller.signal.aborted) setState({ results: response.results, query: trimmed, loading: false, error: null, scope });
+        })
         .catch((caught: unknown) => {
           if (!controller.signal.aborted) setState((previous) => ({ ...previous, loading: false, error: errorMessage(caught) }));
         });
@@ -105,9 +121,9 @@ export function useSearch(
       clearTimeout(timer);
       controller.abort();
     };
-  }, [trimmed, archived, strict, refreshKey, delay, limit, category]);
+  }, [trimmed, archived, strict, refreshKey, delay, limit, category, pinned, scope]);
 
-  return state;
+  return state.scope === scope ? state : trimmed ? { ...IDLE, query: trimmed, loading: true } : IDLE;
 }
 
 /** Grows a textarea to fit its text. */

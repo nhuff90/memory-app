@@ -26,6 +26,8 @@ export interface Memory {
   category: Category | null;
   categorySetByUser: boolean;
   tags: string[];
+  pinned: boolean;
+  customKeywords: string[];
   createdAt: number;
   updatedAt: number;
   /** Set when the memory is marked Outdated: kept, but hidden from search. */

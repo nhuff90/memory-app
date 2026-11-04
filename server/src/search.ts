@@ -24,6 +24,9 @@ const RECENCY_DAYS = 120;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface SearchOptions {
+  pinned?: boolean;
+  /** Related retrieval excludes its source before either search's candidate limit. */
+  excludeId?: number;
   limit?: number;
   category?: Category | null;
   includeArchived?: boolean;
@@ -99,9 +102,10 @@ export class VectorIndex {
     this.positions.delete(id);
   }
 
-  nearest(query: Float32Array, limit: number, minSimilarity: number): { id: number; similarity: number }[] {
+  nearest(query: Float32Array, limit: number, minSimilarity: number, eligible?: ReadonlySet<number>): { id: number; similarity: number }[] {
     const hits: { id: number; similarity: number }[] = [];
     for (let i = 0; i < this.ids.length; i++) {
+      if (eligible && !eligible.has(this.ids[i]!)) continue;
       const similarity = dot(query, this.vectors[i]!);
       if (similarity >= minSimilarity) hits.push({ id: this.ids[i]!, similarity });
     }
@@ -242,6 +246,16 @@ export class SearchIndex {
       .map(({ createdAt: _createdAt, ...hit }) => hit);
   }
 
+  async related(store: MemoryStore, id: number) {
+    const source = store.require(id);
+    // Bound both query size and token count. Punctuation/stopword-only text can fall back to metadata.
+    const sources = [source.body, source.photos.map((photo) => photo.caption ?? "").join(" "), source.customKeywords.join(" ")];
+    const terms = sources.map((text) => searchTerms(text.slice(0, 2000)).slice(0, 24)).find((words) => words.length);
+    if (!terms) return [];
+    const hits = await this.search(terms.join(" ").slice(0, 500), { excludeId: id, limit: 3 });
+    return store.getMany(hits.map((hit) => hit.id));
+  }
+
   private keywordMatches(terms: string[], options: SearchOptions): CandidateRow[] {
     if (terms.length === 0) return [];
     return this.db
@@ -251,10 +265,13 @@ export class SearchIndex {
          WHERE memories_fts MATCH ?
            AND (? = 1 OR m.archived_at IS NULL)
            AND (? IS NULL OR m.category = ?)
-         ORDER BY bm25(memories_fts, 1.0, 0.5, 0.5), m.created_at DESC
+           AND (? = 0 OR m.pinned = 1)
+           AND (? IS NULL OR m.id != ?)
+         ORDER BY bm25(memories_fts, 1.0, 0.5, 0.5, 0.5), m.created_at DESC
          LIMIT ?`,
       )
-      .all(matchQuery(terms), options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null, CANDIDATES) as CandidateRow[];
+      .all(matchQuery(terms), options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null,
+        options.pinned ? 1 : 0, options.excludeId ?? null, options.excludeId ?? null, CANDIDATES) as CandidateRow[];
   }
 
   private async meaningMatches(
@@ -271,7 +288,16 @@ export class SearchIndex {
       this.log("Meaning search is unavailable; using keyword search only", error);
       return none;
     }
-    const nearest = this.vectors.nearest(queryVector, CANDIDATES * 3, minSimilarity);
+    let eligible: Set<number> | undefined;
+    if (options.pinned || options.excludeId !== undefined) {
+      const rows = this.db.prepare(`SELECT id FROM memories
+        WHERE (? = 0 OR pinned = 1) AND (? IS NULL OR id != ?)
+          AND (? = 1 OR archived_at IS NULL) AND (? IS NULL OR category = ?)`)
+        .all(options.pinned ? 1 : 0, options.excludeId ?? null, options.excludeId ?? null,
+          options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null) as { id: number }[];
+      eligible = new Set(rows.map((row) => row.id));
+    }
+    const nearest = this.vectors.nearest(queryVector, CANDIDATES * 3, minSimilarity, eligible);
     if (nearest.length === 0) return none;
     const rows = this.db
       .prepare(

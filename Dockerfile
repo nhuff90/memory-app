@@ -37,5 +37,7 @@ COPY --from=build /app/models ./models
 COPY --from=litestream/litestream:0.5.17 /usr/local/bin/litestream /usr/local/bin/litestream
 COPY litestream.yml /etc/litestream.yml
 COPY scripts/start.sh ./scripts/start.sh
+# Normalize Windows line endings even when building from an existing checkout.
+RUN sed -i 's/\r$//' scripts/start.sh && sh -n scripts/start.sh
 EXPOSE 8080
 CMD ["sh", "scripts/start.sh"]

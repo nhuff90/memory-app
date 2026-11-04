@@ -93,7 +93,7 @@ export const login = (password: string) => api<{ ok: true }>("/api/login", { met
 export const logout = () => api<{ ok: true }>("/api/logout", { method: "POST" });
 
 export function listMemories(
-  options: { cursor?: string | null; limit?: number; archived?: boolean; category?: Category | null; photos?: boolean } = {},
+  options: { cursor?: string | null; limit?: number; archived?: boolean; category?: Category | null; photos?: boolean; pinned?: boolean } = {},
 ) {
   const params = new URLSearchParams();
   if (options.cursor) params.set("cursor", options.cursor);
@@ -101,17 +101,19 @@ export function listMemories(
   if (options.archived) params.set("archived", "1");
   if (options.category) params.set("category", options.category);
   if (options.photos) params.set("photos", "1");
+  if (options.pinned) params.set("pinned", "1");
   return api<MemoryList>(`/api/memories?${params}`);
 }
 
 export function searchMemories(
   query: string,
-  options: { archived?: boolean; strict?: boolean; limit?: number; category?: Category | null; signal?: AbortSignal } = {},
+  options: { archived?: boolean; strict?: boolean; limit?: number; category?: Category | null; pinned?: boolean; signal?: AbortSignal } = {},
 ) {
   const params = new URLSearchParams({ q: query });
   if (options.archived) params.set("archived", "1");
   if (options.category) params.set("category", options.category);
   if (options.strict) params.set("strict", "1");
+  if (options.pinned) params.set("pinned", "1");
   if (options.limit) params.set("limit", String(options.limit));
   return api<SearchResponse>(`/api/search?${params}`, { signal: options.signal });
 }
@@ -125,7 +127,10 @@ export function createMemory(input: { body: string; photos: PhotoBlobs[]; client
   return api<Memory>("/api/memories", { method: "POST", body: form });
 }
 
-export const updateMemory = (id: number, patch: { body?: string; archived?: boolean; category?: Category }) =>
+export const relatedMemories = (id: number, signal?: AbortSignal) =>
+  api<SearchResponse>(`/api/memories/${id}/related`, { signal });
+
+export const updateMemory = (id: number, patch: { body?: string; archived?: boolean; category?: Category; pinned?: boolean; customKeywords?: string[] }) =>
   api<Memory>(`/api/memories/${id}`, { method: "PATCH", json: patch });
 
 export const deleteMemory = (id: number) => api<void>(`/api/memories/${id}`, { method: "DELETE" });

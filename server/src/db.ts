@@ -5,12 +5,18 @@ export type DB = Database.Database;
 
 export function openDb(file: string): DB {
   const db = new Database(file);
-  db.pragma("journal_mode = WAL");
-  db.pragma("synchronous = NORMAL");
-  db.pragma("foreign_keys = ON");
-  db.pragma("busy_timeout = 5000");
-  migrate(db);
-  return db;
+  try {
+    db.pragma("journal_mode = WAL");
+    db.pragma("synchronous = NORMAL");
+    db.pragma("foreign_keys = ON");
+    db.pragma("busy_timeout = 5000");
+    migrate(db);
+    return db;
+  } catch (error) {
+    // The caller never receives this connection if initialization fails.
+    db.close();
+    throw error;
+  }
 }
 
 export function migrate(db: DB): void {

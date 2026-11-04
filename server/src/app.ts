@@ -78,11 +78,14 @@ const createBody = z.object({
 const updateBody = z
   .object({
     body: z.string().optional(),
+    pinned: z.boolean().optional(),
+    customKeywords: z.array(z.string()).optional(),
     archived: z.boolean().optional(),
     category: z.enum(CATEGORIES).optional(),
   })
   .strict();
 const searchQuery = z.object({
+  pinned: z.enum(["0", "1"]).optional(),
   q: z.string().max(500).default(""),
   limit: z.coerce.number().int().min(1).max(100).optional(),
   category: z.enum(CATEGORIES).optional(),
@@ -94,6 +97,7 @@ const askBody = z.object({
   timeZone: z.string().max(64).optional(),
 });
 const listQuery = z.object({
+  pinned: z.enum(["0", "1"]).optional(),
   cursor: z
     .string()
     .regex(/^\d+_\d+$/)
@@ -326,6 +330,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   app.get("/api/memories", (c) => {
     const query = parseWith(listQuery, c.req.query());
     const result: MemoryList = store.list({
+      pinned: query.pinned === "1",
       cursor: query.cursor ?? null,
       limit: query.limit,
       category: query.category ?? null,
@@ -356,6 +361,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   app.get("/api/search", async (c) => {
     const query = parseWith(searchQuery, c.req.query());
     const hits = await search.search(query.q, {
+      pinned: query.pinned === "1",
       limit: query.limit,
       category: query.category ?? null,
       includeArchived: query.archived === "1",
@@ -366,6 +372,11 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   });
 
   app.get("/api/memories/:id", (c) => c.json(store.require(parseId(c.req.param("id")))));
+
+  app.get("/api/memories/:id/related", async (c) => {
+    const results = await search.related(store, parseId(c.req.param("id")));
+    return c.json({ results } satisfies SearchResponse);
+  });
 
   app.patch("/api/memories/:id", async (c) => {
     const id = parseId(c.req.param("id"));
