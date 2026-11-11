@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-11T21:57:59.817Z",
+  "removed": "C:\\Users\\Nate\\AppData\\Local\\Temp\\recall-task2-20261110-6c4a91f2",
+  "entries": [
+    "browser-profile",
+    "browser-profile-replay-1",
+    "browser-profile-replay-2",
+    "browser-profile-replay-3",
+    "browser-replay-v4-1",
+    "docker-config-sol",
+    "fixture-secrets.json",
+    "migrate-timing",
+    "runtime.env"
+  ],
+  "exists": false,
+  "retainedStillPresent": true
+}

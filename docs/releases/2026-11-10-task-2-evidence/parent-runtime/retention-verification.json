@@ -1,0 +1,47 @@
+{
+  "at": "2026-11-11T20:58:23.5993809+00:00",
+  "v3_archive_sha256": "d302184711d797d27c6164099e1642c93d1738129f5d05aa26e97160907d00aa",
+  "retained_v4": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500",
+  "retained_v4_version": 4,
+  "retained_v4_integrity": "ok",
+  "v4_files": [
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\photos\\2026\\11\\09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5.jpg",
+      "sha256": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0",
+      "matches_inspection": true
+    },
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\photos\\2026\\11\\09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5_thumb.jpg",
+      "sha256": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95",
+      "matches_inspection": true
+    },
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\photos\\2026\\11\\fe84276b-f458-45bb-9e8b-698c3b345e7f.jpg",
+      "sha256": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365",
+      "matches_inspection": true
+    },
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\photos\\2026\\11\\fe84276b-f458-45bb-9e8b-698c3b345e7f_thumb.jpg",
+      "sha256": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d",
+      "matches_inspection": true
+    },
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\recall.db",
+      "sha256": "645198439566d19cd058703829b5cdb648a7268858c5ffc954129522e0c14ca9",
+      "matches_inspection": true
+    },
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\recall.db-shm",
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "matches_inspection": true
+    },
+    {
+      "path": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500\\recall.db-wal",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_inspection": true
+    }
+  ],
+  "photos_match_v3": true,
+  "embeddings_match_v3": true,
+  "ready_for_scoped_cleanup_only_after_browser_recovery": true
+}

@@ -1,0 +1,237 @@
+{
+  "at": "2026-11-10T14:04:10.546Z",
+  "origin": "http://localhost:18766",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+  "health": {
+    "firstHealthyAt": "2026-11-10T14:03:58.376Z",
+    "pollStartedAt": "2026-11-10T14:03:57.792Z",
+    "waitedMs": 585
+  },
+  "server": {
+    "indexAsset": "/assets/index-DWaWk5OZ.js",
+    "swSha256": "8291b1af5547c2504e7769cad29655ff76b60f60aa4cdba3e961216ad2e51e92"
+  },
+  "client": {
+    "documentScript": "/assets/index-DWaWk5OZ.js",
+    "controller": "http://localhost:18766/sw.js",
+    "active": "http://localhost:18766/sw.js",
+    "waiting": null,
+    "installing": null,
+    "caches": [
+      {
+        "name": "workbox-precache-v2-http://localhost:18766/",
+        "entries": 10,
+        "indexHtml": [
+          "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649"
+        ],
+        "indexScripts": [
+          "/assets/index-DWaWk5OZ.js"
+        ]
+      }
+    ]
+  },
+  "signIn": "logged in with the fixture password",
+  "created": [
+    "heartworm (photo variant 0)",
+    "shed (photo variant 1)",
+    "oat (no photo)",
+    "recital (Siri key capture)"
+  ],
+  "sirikey": {
+    "id": 1,
+    "name": "Task 2 fictional Siri key",
+    "captureStatus": 201
+  },
+  "meaningSearch": {
+    "query": "when does my dog get his medicine",
+    "results": [
+      "Biscuit the beagle takes a heartworm tablet on the first of every month."
+    ]
+  },
+  "state": {
+    "memories": [
+      {
+        "id": 1,
+        "body": "Biscuit the beagle takes a heartworm tablet on the first of every month.",
+        "tags": [],
+        "category": null,
+        "createdAt": 1794319442831,
+        "updatedAt": 1794319442887,
+        "photos": [
+          {
+            "id": 1,
+            "caption": null
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "body": "Spare key for the Larkspur Lane shed hangs behind the garden calendar.",
+        "tags": [],
+        "category": null,
+        "createdAt": 1794319449446,
+        "updatedAt": 1794319449496,
+        "photos": [
+          {
+            "id": 2,
+            "caption": null
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "body": "Marisol prefers oat milk in her afternoon cortado.",
+        "tags": [],
+        "category": null,
+        "createdAt": 1794319449625,
+        "updatedAt": 1794319449645,
+        "photos": []
+      },
+      {
+        "id": 4,
+        "body": "Tessaly's cello recital is at Orchard Hall on Thursday evening.",
+        "tags": [],
+        "category": null,
+        "createdAt": 1794319450078,
+        "updatedAt": 1794319450078,
+        "photos": []
+      }
+    ],
+    "photoHashes": {
+      "2:full": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365",
+      "2:thumb": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d",
+      "1:full": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0",
+      "1:thumb": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95"
+    },
+    "tokens": [
+      {
+        "id": 1,
+        "name": "Task 2 fictional Siri key",
+        "createdAt": 1794319450056
+      }
+    ],
+    "me": {
+      "aiEnabled": false,
+      "model": null,
+      "photoCaptions": false,
+      "counts": {
+        "memories": 4,
+        "photos": 2
+      }
+    }
+  },
+  "log": {
+    "pageErrors": [],
+    "dialogs": [],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 401,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/login",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=Biscuit+the+beagle+takes+a+heartworm+tablet+on+the+first+of+every+month.&strict=1&limit=3",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/memories",
+        "status": 201,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/memories",
+        "status": 201,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/memories",
+        "status": 201,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      }
+    ]
+  }
+}

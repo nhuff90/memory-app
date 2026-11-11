@@ -1,0 +1,104 @@
+{
+  "at": "2026-11-11T21:58:45.1516318+00:00",
+  "checkpoint": "c5747204365b48db3a5de3e71b3bfaf83caa5f0f925d179b83d6360c285cdff5",
+  "purpose": "Stage only parent-generated runtime artifacts outside Git for Sol import inside the existing loop",
+  "baseline_files_preserved": 126,
+  "files": [
+    {
+      "relative": "observations/10-browser-replay-3-ready.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\10-browser-replay-3-ready.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\10-browser-replay-3-ready.json",
+      "sha256": "8d1efe001a9afbab15d19e113bfe67afa7552203be7087ed34bcee1c6201a6df"
+    },
+    {
+      "relative": "observations/10-browser-replay-3-reuse.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\10-browser-replay-3-reuse.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\10-browser-replay-3-reuse.json",
+      "sha256": "23ba16a5cf1ea65e0c60295a06015fc72cb69aa0428111b9ee4bfd4c8d94269d"
+    },
+    {
+      "relative": "observations/10-browser-replay-3.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\10-browser-replay-3.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\10-browser-replay-3.json",
+      "sha256": "706bfc0e19dd8b1bdade51531ac342d97e06edd5b4e84c6244c98f1b529836df"
+    },
+    {
+      "relative": "observations/11-replay-retention.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\11-replay-retention.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\11-replay-retention.json",
+      "sha256": "1568abff430cdbf4bbe5e86b5b25ed57a7e2ab473b67bdea1ede861414503b66"
+    },
+    {
+      "relative": "observations/12-cleanup-temp.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\12-cleanup-temp.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\12-cleanup-temp.json",
+      "sha256": "7ed9f9a2c0cb5b04b61f98a89075389eb0c01023db7cfbd1a255b07eb2edbea2"
+    },
+    {
+      "relative": "observations/http-down-after-cleanup.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-after-cleanup.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\http-down-after-cleanup.json",
+      "sha256": "4010fa26763e7f6caab64795fa0ed1cec826dd417f2c96a3d280596a4bed20f4"
+    },
+    {
+      "relative": "observations/http-down-browser-replay-3-switch-1.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-browser-replay-3-switch-1.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\http-down-browser-replay-3-switch-1.json",
+      "sha256": "0161a0be7e9e840a4634d1e095a5e29983d3a77bca29be7a0eb91ed4b2cb5cc4"
+    },
+    {
+      "relative": "observations/http-down-browser-replay-3-switch-2.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-browser-replay-3-switch-2.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\observations\\http-down-browser-replay-3-switch-2.json",
+      "sha256": "3fb0b82cbea9c558d1d8d4814ac099dc5a559253281186c9f62da7c84cee2912"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-00-candidate-controlled.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-00-candidate-controlled.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-00-candidate-controlled.png",
+      "sha256": "dda7c8aa7d606fa1ff21ecce3f4b4559615b49107d055c33f8d3e54d3fd598dc"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-01-initial-worker-and-assets.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-01-initial-worker-and-assets.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-01-initial-worker-and-assets.png",
+      "sha256": "dda7c8aa7d606fa1ff21ecce3f4b4559615b49107d055c33f8d3e54d3fd598dc"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-02-candidate-pinned-against-old.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-02-candidate-pinned-against-old.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-02-candidate-pinned-against-old.png",
+      "sha256": "f92cb4531c38d199312da26f82c75b8b09e551e423409221e4f1b50a9f961c97"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-03-edit-outcome.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-03-edit-outcome.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-03-edit-outcome.png",
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-04-new-tab-before-reload.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-04-new-tab-before-reload.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-04-new-tab-before-reload.png",
+      "sha256": "a4de6b0d269476770d9898e752de35b62ddcfb9a57e31add4a35bc8a67e6d59b"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-05-real-update-banner.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-05-real-update-banner.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-05-real-update-banner.png",
+      "sha256": "6a13634e62042c10f34548d78d63498a4690a507ba4524cb0246265182fd830b"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-06-old-app-after-banner-reload.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-06-old-app-after-banner-reload.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-06-old-app-after-banner-reload.png",
+      "sha256": "57d43fed2a1a8aec5ad36432ca7002ca6aabd3d3358bd77a15bc02b29f326c97"
+    },
+    {
+      "relative": "screenshots/10-browser-replay-3-07-old-edit-saved.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\10-browser-replay-3-07-old-edit-saved.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay3-generated-repo-files\\screenshots\\10-browser-replay-3-07-old-edit-saved.png",
+      "sha256": "bc6036d42e22cf79426e744867cbbb1ec75952ac8a272b898877ecaf9419730a"
+    }
+  ]
+}

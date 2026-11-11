@@ -1,0 +1,46 @@
+{
+  "at": "2026-11-11T21:56:46.757Z",
+  "retained": {
+    "source": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\quarantine-v4-20261110-090500",
+    "archive": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained\\recall-v3-20261110-090000.tgz",
+    "archiveSha256": "d302184711d797d27c6164099e1642c93d1738129f5d05aa26e97160907d00aa",
+    "files": [
+      {
+        "path": "photos/2026/11/09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5.jpg",
+        "bytes": 798,
+        "sha256": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0"
+      },
+      {
+        "path": "photos/2026/11/09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5_thumb.jpg",
+        "bytes": 792,
+        "sha256": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95"
+      },
+      {
+        "path": "photos/2026/11/fe84276b-f458-45bb-9e8b-698c3b345e7f.jpg",
+        "bytes": 796,
+        "sha256": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365"
+      },
+      {
+        "path": "photos/2026/11/fe84276b-f458-45bb-9e8b-698c3b345e7f_thumb.jpg",
+        "bytes": 794,
+        "sha256": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d"
+      },
+      {
+        "path": "recall.db",
+        "bytes": 90112,
+        "sha256": "645198439566d19cd058703829b5cdb648a7268858c5ffc954129522e0c14ca9"
+      },
+      {
+        "path": "recall.db-shm",
+        "bytes": 32768,
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb"
+      },
+      {
+        "path": "recall.db-wal",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  }
+}
+

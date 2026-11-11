@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-11T08:01:00.952Z",
+  "node": "v24.14.1",
+  "scope": "migrate() alone (migration 004 SQL incl. FTS rebuild) on a scratch copy of the verified v3 database, on this Windows host; excludes process start, model load and listen",
+  "before": 3,
+  "after": 4,
+  "elapsedMs": 5.6809,
+  "integrity": "ok",
+  "memories": 4,
+  "migration004Sha256": "d4eb45adfdcc4cc3c6b3a178268130843d85996eba1dd4fd95b43d650efa777c"
+}

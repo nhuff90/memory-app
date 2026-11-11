@@ -1,0 +1,295 @@
+{
+  "checkpoint": "3acb51494d500aa560302fc1f18821ac4af05be6b80e347fa060b265babf5761",
+  "blocker": "B-24358c4aef000718",
+  "files": [
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\fixture-enrich.mjs",
+      "sha256": "620efc958112407f39fe7f75d6ce72d9241f25864c3e68509f5614b68f46cce4"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\probe.mjs",
+      "sha256": "c5b85aca7986dbc9a85c04c040950b5aa313276db7c1679afe1216f38d4dd04a"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\progress.md",
+      "sha256": "021f19a61ab227c32244000955394c0ebd64db74b9bc77769f12fcb1fefb587a"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\quarantine-install.sh",
+      "sha256": "91fc0f6d9dbd3c3465b2b3443947107fadf01a6d7c6b6066d4a037598d7e227a"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\runtime-handoff.md",
+      "sha256": "3d47250d7e997828d6daa01442c708122395cc3010a94994e985c04e38aa41e9"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\task2.mjs",
+      "sha256": "14e4c2bb57bff57cf045651402f00d4d7d13128b8602a3fb1ebcd3d8e0d1e6c9"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\extracted\\local-verify.mjs",
+      "sha256": "426d4893a207578228028d54cc11e98b37fcfb5ff7b130758e01e20a7b69012d"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\extracted\\recall-backup.mjs",
+      "sha256": "9881bfbb6a5784f926d9b406eed6157fa47d66dde3367d9c28d7f3980d0b8493"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\01-preflight.json",
+      "sha256": "4d5252860d2b2cef0f46d81977d22f360ad8261ae8a45c70ceb7c49a1e6c9db7"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\02-seed.json",
+      "sha256": "5e5f2d388a2f8ae287eaf3a0790280141442c2c084573383656d69bcc74d129b"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\03-baseline.json",
+      "sha256": "79adfcac1d11d7c12d0bbc2e5c4ac0f2c5ce8b00832205cebfa980456244b991"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\05-candidate.json",
+      "sha256": "f8084367c4105a1ba8df7909bf2524f1fd61d01bf8aa02fc275953267a0f9dac"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\08-restored.json",
+      "sha256": "21570584250cbeca790c0f8a995e990199a65ab14d7d6c6664662f0c097f3288"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\09-cached-client-resume-1.json",
+      "sha256": "4c3b64f6ee21dd4b4fcc8ea73b29bb2813fdf44fae9643f491f9cbda177c6af3"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\archive-v3.json",
+      "sha256": "6cda325d0c3efa6f4da74afcb6f5271fe49e4f21b3d5f6f1660da5d29aa660e6"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-maintenance-1.json",
+      "sha256": "9fde34b4a3319020ff8430bb0776ddda268c6152fd6bc13ca8b0c7588ec67725"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-maintenance-2-parent.json",
+      "sha256": "04fc55148630ad45fba56be1c3ced51128845093ccbd2845268b5076b5b18604"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-maintenance-2.json",
+      "sha256": "26ff356f7f744ed82ab891afb68b1254c85f4e5e483057ae3b5885a1808e1060"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\inspect-quarantine-v4.json",
+      "sha256": "aaf0ba11165789ffb0e4aa01403a3836d416dd658c989caa26a457dc80392e39"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\inspect-v3-verified.json",
+      "sha256": "55a6b840dba5f447d3f1689b36e0c193c71c91fde31a1e3ae55c0f5acac7c7d3"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\migrate-time.json",
+      "sha256": "bb7e61497207479d33c48fc4c8e5f068dacfad516489ea41a855c345eda79630"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\01-containers.json",
+      "sha256": "8f5a711e95750e85e57fa1adc172e7b637089911f97779279c17029fe4a6728e"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\01-containers.log",
+      "sha256": "9690c01ad1de673fa9ee45b02a1ac7d97ac082e3543090e17ba9a3c0c2903d84"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\02-resource-guards.json",
+      "sha256": "6bb60ec16c5d97321c493a55eda8578ec67020e402ea8d4f7b4a082cd12365a3"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\02-resource-guards.log",
+      "sha256": "cb294e9a056529e5161c5e6fabb828112f5938e5a219368ff215e295a867a6fe"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\03-maintenance-http-down.json",
+      "sha256": "22470f18f4661aa8aa0796156b93202908c66ef400b7183aab200a56248fae9a"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\03-maintenance-http-down.log",
+      "sha256": "034f10ce97a9209b7b91158e92377296133c96d8ed77fb2a2f293b00a400229b"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\04-copy-backup-verifier.json",
+      "sha256": "7760e5ebe67bf3d846a13d8beeb0fdf40f076d216c7dcf580829039c8fbeef6f"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\04-copy-backup-verifier.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\05-copy-verified-v3-archive.json",
+      "sha256": "bba575554b9be31324e3612210a8b8dabd53e91d1452bce1860cd4623ee7d8dd"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\05-copy-verified-v3-archive.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\06-staged-archive-hash.json",
+      "sha256": "e4227c526b2ffc1f9e6dff791ed0440f6bf77f04a09c89eaa3caac63b35c9e91"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\06-staged-archive-hash.log",
+      "sha256": "9ea3926a4d690143146cb122f5dd84be8e5c1be63e618d3657810a2b6d1f4440"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\07-create-restore-stage.json",
+      "sha256": "9427bc20cbadf6cd25381a0e193bc03857e2879c415dc2f13a8449466ae7c0e9"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\07-create-restore-stage.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\08-extract-restore-stage.json",
+      "sha256": "8f6d32963694de72e6ce0f84fb58dcb5151668936ef8efd08164e9e065956bc1"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\08-extract-restore-stage.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\09-verify-staged-backup.json",
+      "sha256": "0124df5d3d09649bb5e0b93b5f4ae7fdf9682a2fa744caf77fc0999c2bd8dbd6"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\09-verify-staged-backup.log",
+      "sha256": "1cc75cb427e5cf24a9f364246cea20daa1fea05deab1cb2631cf215b102a0e4b"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\10-quarantine-and-install.json",
+      "sha256": "647d4b4a8156997794a997f537924990c079cb713952f9fede67c6716e8112de"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\10-quarantine-and-install.log",
+      "sha256": "ba61a2b25bc4b5335649725121cb815884b7f0a6d0594d1e1c1582c342f3a105"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\11-retain-quarantined-v4.json",
+      "sha256": "9b8d097b8f4cc0dcb5847041a6bde93fe845c0da5e75489a10500554681487fe"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\11-retain-quarantined-v4.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\12-inspect-retained-v4.json",
+      "sha256": "759071943a6c6622956d2159fd8f10c547a37fd00b1379e212eed953006c33d8"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\12-inspect-retained-v4.log",
+      "sha256": "8bee80b14e879c808ae277aa2186dd9fa5b9b8ea16d9f0be39970da8d531341a"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\13-probe-restored-v3.json",
+      "sha256": "90aa3ecdb9b7dfd18879dc48daebdec84b3e5a01b7f68b81de3e13f19b962bad"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\13-probe-restored-v3.log",
+      "sha256": "4ca555f7a3a04f26eb62261de123a29fc943e2d572178343f18ccfc8e5e564d0"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\14-end-maintenance.json",
+      "sha256": "e87a4355de58f259bace390098bbddd3ec8f8db7a161ebab9ac58138b9f9f4ec"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\14-end-maintenance.log",
+      "sha256": "6db6c5704a07798df2fab64c0ddeec41df018349af0bd5ce81ea028389c9a383"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\15-start-restored-old.json",
+      "sha256": "3f52950cdaf999c774882839c314ed370e8aad690663df3a06cb00a4aa36ced8"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\15-start-restored-old.log",
+      "sha256": "dbc4a88478f83e35141e9c07cae4097b5c72a8a9288cdf9f06458c2d0429fcf5"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\16-verify-restored-application.json",
+      "sha256": "dfbab35fec93f5b0b19d09017fab3d8a105c5b7ceda8240bda22db67bd926ea6"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\16-verify-restored-application.log",
+      "sha256": "e318b3ca357e16250a32ab40cc3ca70b78bbae6971397199e17df9a765de7f31"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\17-cached-candidate-to-old-reload.json",
+      "sha256": "1f5af977840ff292c84f7cd4a7cc289a6d306ae40915ab6180ee6f350643dea5"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\17-cached-candidate-to-old-reload.log",
+      "sha256": "7df61c2e181dab6464e305d0d2a2d4dbc8f11cb31c382df98eaffd5ed3dfe64c"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\18-cached-client-recovery.json",
+      "sha256": "3e7d6866593e5760f3b9949c8c0123c5c75e66b5d6557dd03d7b048373fada53"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\18-cached-client-recovery.log",
+      "sha256": "abf958c96886d6812c49ff14c9839669bc10f202150d0e6de9fc38ebcf77875e"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\owner-authorization.json",
+      "sha256": "4728451e5385b566aac73b909e337b2bb4849f5e7340b6d6cc1595fbf5822587"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\recovery-generated-manifest.json",
+      "sha256": "5ce298104087c7616ed6cfe995757e93e7256ebb09b9ec0f0236c5c1c080cd01"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\repository-evidence-baseline.json",
+      "sha256": "3279d58f1881b0f7229915764483882ed67084f3841f2286bb838f2a8ec6ea14"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\retention-verification.json",
+      "sha256": "1136f4ca9cded2da83a5f2d42182c42f83d4ff21b355b45957fd95eacdc1dd08"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\parent-runtime\\runtime-generated-manifest.json",
+      "sha256": "bb88008e2b872dea4a8a0157ef946476a5c126a88f1e5af13c0dc7e870b616b4"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\09-cached-client-resume-1-01-initial-worker-and-assets.png",
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\09-cached-client-resume-1-failure.png",
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\baseline-old-app-v3.png",
+      "sha256": "fda6764455255d844747fff233ce8cd749d9ecee04f283b5cf135079144b09ed"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\cached-2-candidate-pinned-filter-against-old-server.png",
+      "sha256": "feacbfdd9d4df9a3688754c7749ed1192af140b5cb45e1ff026557dbd50b7764"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\cached-3-candidate-edit-against-old-server.png",
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\candidate-1-update-banner-on-cached-old-app.png",
+      "sha256": "216e06bcbc279fdca0aec7397150343f99a502a93db79569f2e4ed4e8db57bc9"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\candidate-2-after-reload.png",
+      "sha256": "a4de6b0d269476770d9898e752de35b62ddcfb9a57e31add4a35bc8a67e6d59b"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\candidate-3-pinned-filter.png",
+      "sha256": "e5b0d9a18696d874433140039b34ed9ee476868c1b1eca4e4aaafb4e6bf3eddc"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\restored-1-old-app-fresh-login.png",
+      "sha256": "5f771f5ebf568e44b3cf9db8a783ff13eef1df9473a2645dbb6f8dcca14395fa"
+    },
+    {
+      "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\seed-old-app.png",
+      "sha256": "9a803377ef1c0f44133fc95f991d6919af78b8fd99428f96c8cda13c3fa02523"
+    }
+  ],
+  "recorded_at": "2026-11-11T21:23:38.0244781+00:00"
+}

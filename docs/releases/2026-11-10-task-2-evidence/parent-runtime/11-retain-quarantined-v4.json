@@ -1,0 +1,16 @@
+{
+  "step": "11-retain-quarantined-v4",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T20:50:51.6109694+00:00",
+  "finished_at": "2026-11-11T20:50:51.9163396+00:00",
+  "executable": "docker",
+  "arguments": [
+    "cp",
+    "recall-task2-20261110-6c4a91f2-maint2:/data/post-v4-20261110-090500",
+    "C:/Users/Nate/.codex/visualizations/2026/11/05/01a1ac1a-f315-7de0-a1ed-cb6517f1fc06/task2-20261110-6c4a91f2-retained/quarantine-v4-20261110-090500"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\11-retain-quarantined-v4.log",
+  "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

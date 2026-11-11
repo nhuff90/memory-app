@@ -1,0 +1,3 @@
+2026-11-11T21:24:27.484609601Z Recall is listening on http://localhost:8080
+2026-11-11T21:24:27.485133357Z No ANTHROPIC_API_KEY: Ask and auto-tagging are off. Everything else works.
+2026-11-11T21:24:50.560283072Z GET /api/me 401 7ms

@@ -1,0 +1,290 @@
+{
+  "startedAt": "2026-11-11T21:52:16.068Z",
+  "phase": "hold-controlled-tab-open",
+  "status": "ready_for_parent_server_switch",
+  "profile": "C:\\Users\\Nate\\AppData\\Local\\Temp\\recall-task2-20261110-6c4a91f2\\browser-profile-replay-3",
+  "scratch": "C:\\Users\\Nate\\AppData\\Local\\Temp\\recall-task2-20261110-6c4a91f2\\browser-replay-v4-1",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "log": {
+    "pageErrors": [],
+    "dialogs": [],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 401,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/login",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      }
+    ],
+    "assetResponses": [
+      {
+        "path": "/",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "path": "/assets/index-CAEV5uK8.css",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "path": "/assets/index-BI1X1ilU.js",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "path": "/assets/workbox-window.prod.es5-Bd17z0YL.js",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "path": "/",
+        "status": 200,
+        "fromServiceWorker": true
+      },
+      {
+        "path": "/assets/index-CAEV5uK8.css",
+        "status": 200,
+        "fromServiceWorker": true
+      },
+      {
+        "path": "/assets/index-BI1X1ilU.js",
+        "status": 200,
+        "fromServiceWorker": true
+      },
+      {
+        "path": "/assets/workbox-window.prod.es5-Bd17z0YL.js",
+        "status": 200,
+        "fromServiceWorker": true
+      }
+    ]
+  },
+  "health": {
+    "firstHealthyAt": "2026-11-11T21:52:16.151Z",
+    "pollStartedAt": "2026-11-11T21:52:16.069Z",
+    "waitedMs": 82
+  },
+  "server": {
+    "indexAsset": "/assets/index-BI1X1ilU.js",
+    "swSha256": "9174a5f7a5045b44fecd8d452400955074e3833eb6a10a12a67c3afb7998c23f"
+  },
+  "signIn": "logged in with the fixture password",
+  "authenticatedAt": "2026-11-11T21:52:18.764Z",
+  "workerRegistration": {
+    "active": {
+      "scriptURL": "http://localhost:18766/sw.js",
+      "state": "activated"
+    },
+    "installing": null,
+    "waiting": null
+  },
+  "postLoginWorker": {
+    "documentScript": "/assets/index-BI1X1ilU.js",
+    "controller": null,
+    "active": "http://localhost:18766/sw.js",
+    "waiting": null,
+    "installing": null,
+    "scope": "http://localhost:18766/",
+    "workerStates": {
+      "controller": null,
+      "active": "activated",
+      "waiting": null
+    },
+    "caches": [
+      {
+        "name": "workbox-precache-v2-http://localhost:18766/",
+        "entries": 10,
+        "indexHtml": [
+          "/index.html?__WB_REVISION__=c2f842e156d81eb6ea057e7cb3035eb1"
+        ],
+        "indexScripts": [
+          "/assets/index-BI1X1ilU.js"
+        ],
+        "assetHashes": [
+          {
+            "path": "/index.html?__WB_REVISION__=c2f842e156d81eb6ea057e7cb3035eb1",
+            "sha256": "5fe4c6da59df980b23f1545df9d9f4548164621866c3e7669e3c10a4fd8813ac"
+          },
+          {
+            "path": "/assets/index-BI1X1ilU.js",
+            "sha256": "63a770ce1d6dcf3131b97175003a1c6a5708e6aea6526f867acc70f7d4c9e364"
+          }
+        ]
+      }
+    ]
+  },
+  "workerReadyAt": "2026-11-11T21:52:19.044Z",
+  "signInAfterWarming": "already signed in by the profile's session cookie",
+  "identity": {
+    "documentScript": "/assets/index-BI1X1ilU.js",
+    "controller": "http://localhost:18766/sw.js",
+    "active": "http://localhost:18766/sw.js",
+    "waiting": null,
+    "installing": null,
+    "scope": "http://localhost:18766/",
+    "workerStates": {
+      "controller": "activated",
+      "active": "activated",
+      "waiting": null
+    },
+    "caches": [
+      {
+        "name": "workbox-precache-v2-http://localhost:18766/",
+        "entries": 10,
+        "indexHtml": [
+          "/index.html?__WB_REVISION__=c2f842e156d81eb6ea057e7cb3035eb1"
+        ],
+        "indexScripts": [
+          "/assets/index-BI1X1ilU.js"
+        ],
+        "assetHashes": [
+          {
+            "path": "/index.html?__WB_REVISION__=c2f842e156d81eb6ea057e7cb3035eb1",
+            "sha256": "5fe4c6da59df980b23f1545df9d9f4548164621866c3e7669e3c10a4fd8813ac"
+          },
+          {
+            "path": "/assets/index-BI1X1ilU.js",
+            "sha256": "63a770ce1d6dcf3131b97175003a1c6a5708e6aea6526f867acc70f7d4c9e364"
+          }
+        ]
+      }
+    ]
+  },
+  "browser": "chromium 153.0.8010.12",
+  "state": {
+    "memories": [
+      {
+        "id": 1,
+        "body": "Biscuit the beagle takes a heartworm tablet on the first of every month.",
+        "tags": [
+          "veterinary",
+          "monthly"
+        ],
+        "category": "things",
+        "pinned": true,
+        "customKeywords": [],
+        "createdAt": 1794319442831,
+        "updatedAt": 1794402068719,
+        "photos": [
+          {
+            "id": 1,
+            "caption": null
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "body": "Spare key for the Larkspur Lane shed hangs behind the garden calendar.",
+        "tags": [
+          "storage"
+        ],
+        "category": "things",
+        "pinned": false,
+        "customKeywords": [
+          "Quillon"
+        ],
+        "createdAt": 1794319449446,
+        "updatedAt": 1794402069072,
+        "photos": [
+          {
+            "id": 2,
+            "caption": "A brass key hanging on a teal hook"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "body": "Marisol prefers oat milk in her afternoon cortado.",
+        "tags": [
+          "beverages"
+        ],
+        "category": "people",
+        "pinned": false,
+        "customKeywords": [],
+        "createdAt": 1794319449625,
+        "updatedAt": 1794319449645,
+        "photos": []
+      },
+      {
+        "id": 4,
+        "body": "Tessaly's cello recital is at Orchard Hall on Thursday evening.",
+        "tags": [],
+        "category": null,
+        "pinned": true,
+        "customKeywords": [],
+        "createdAt": 1794319450078,
+        "updatedAt": 1794402068898,
+        "photos": []
+      }
+    ],
+    "photoHashes": {
+      "2:full": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365",
+      "2:thumb": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d",
+      "1:full": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0",
+      "1:thumb": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95"
+    },
+    "tokens": [
+      {
+        "id": 1,
+        "name": "Task 2 fictional Siri key",
+        "createdAt": 1794319450056
+      }
+    ],
+    "me": {
+      "aiEnabled": false,
+      "model": null,
+      "photoCaptions": false,
+      "counts": {
+        "memories": 4,
+        "photos": 2
+      }
+    }
+  },
+  "screenshot": "screenshots/10-browser-replay-3-00-candidate-controlled.png",
+  "readyAt": "2026-11-11T21:52:19.700Z"
+}

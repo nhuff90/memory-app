@@ -1,0 +1,15 @@
+{
+  "step": "51-verify-replay-retention",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T21:56:46.6566030+00:00",
+  "finished_at": "2026-11-11T21:56:46.7886806+00:00",
+  "executable": "node",
+  "arguments": [
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+    "verify-replay-retention"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\51-verify-replay-retention.log",
+  "output_sha256": "df0a5513a14224c0623da7a6987fbd9475db95012846e2ba7a7521cfc0de28b0"
+}

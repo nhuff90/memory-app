@@ -1,0 +1,86 @@
+[
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\fixture-enrich.mjs",
+    "sha256": "620efc958112407f39fe7f75d6ce72d9241f25864c3e68509f5614b68f46cce4"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\probe.mjs",
+    "sha256": "c5b85aca7986dbc9a85c04c040950b5aa313276db7c1679afe1216f38d4dd04a"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\progress.md",
+    "sha256": "a1e831c6ce0b769ab02fdda159b7d8cd25c96a325ee73a1dbedde57d14d4e7d7"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\quarantine-install.sh",
+    "sha256": "91fc0f6d9dbd3c3465b2b3443947107fadf01a6d7c6b6066d4a037598d7e227a"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\task2.mjs",
+    "sha256": "d50c3d0a2f6f2c01d2748f7b2318ffab841b960dbfe87afca723589f56bc1955"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\extracted\\local-verify.mjs",
+    "sha256": "426d4893a207578228028d54cc11e98b37fcfb5ff7b130758e01e20a7b69012d"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\extracted\\recall-backup.mjs",
+    "sha256": "9881bfbb6a5784f926d9b406eed6157fa47d66dde3367d9c28d7f3980d0b8493"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\01-preflight.json",
+    "sha256": "4d5252860d2b2cef0f46d81977d22f360ad8261ae8a45c70ceb7c49a1e6c9db7"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\02-seed.json",
+    "sha256": "5e5f2d388a2f8ae287eaf3a0790280141442c2c084573383656d69bcc74d129b"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\03-baseline.json",
+    "sha256": "79adfcac1d11d7c12d0bbc2e5c4ac0f2c5ce8b00832205cebfa980456244b991"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\05-candidate.json",
+    "sha256": "f8084367c4105a1ba8df7909bf2524f1fd61d01bf8aa02fc275953267a0f9dac"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\archive-v3.json",
+    "sha256": "6cda325d0c3efa6f4da74afcb6f5271fe49e4f21b3d5f6f1660da5d29aa660e6"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-maintenance-1.json",
+    "sha256": "9fde34b4a3319020ff8430bb0776ddda268c6152fd6bc13ca8b0c7588ec67725"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-maintenance-2.json",
+    "sha256": "26ff356f7f744ed82ab891afb68b1254c85f4e5e483057ae3b5885a1808e1060"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\inspect-v3-verified.json",
+    "sha256": "55a6b840dba5f447d3f1689b36e0c193c71c91fde31a1e3ae55c0f5acac7c7d3"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\migrate-time.json",
+    "sha256": "bb7e61497207479d33c48fc4c8e5f068dacfad516489ea41a855c345eda79630"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\baseline-old-app-v3.png",
+    "sha256": "fda6764455255d844747fff233ce8cd749d9ecee04f283b5cf135079144b09ed"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\candidate-1-update-banner-on-cached-old-app.png",
+    "sha256": "216e06bcbc279fdca0aec7397150343f99a502a93db79569f2e4ed4e8db57bc9"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\candidate-2-after-reload.png",
+    "sha256": "a4de6b0d269476770d9898e752de35b62ddcfb9a57e31add4a35bc8a67e6d59b"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\candidate-3-pinned-filter.png",
+    "sha256": "e5b0d9a18696d874433140039b34ed9ee476868c1b1eca4e4aaafb4e6bf3eddc"
+  },
+  {
+    "path": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\seed-old-app.png",
+    "sha256": "9a803377ef1c0f44133fc95f991d6919af78b8fd99428f96c8cda13c3fa02523"
+  }
+]

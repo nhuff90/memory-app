@@ -1,0 +1,21 @@
+{
+  "step": "54-precleanup-resource-identities",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T21:57:54.4409901+00:00",
+  "finished_at": "2026-11-11T21:57:54.6892335+00:00",
+  "executable": "docker",
+  "arguments": [
+    "inspect",
+    "--format",
+    "{{.Name}} {{.Id}} {{.Image}} {{.State.Status}} {{json .Mounts}}",
+    "recall-task2-20261110-6c4a91f2-replay-cand-1",
+    "recall-task2-20261110-6c4a91f2-restored",
+    "recall-task2-20261110-6c4a91f2-seed",
+    "recall-task2-20261110-6c4a91f2-cand",
+    "recall-task2-20261110-6c4a91f2-refusal"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\54-precleanup-resource-identities.log",
+  "output_sha256": "ca0663a3651d95cad503eec2a7f054c56caaf7f26f3f1bd9c98e37180c5f9a5d"
+}

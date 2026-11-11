@@ -1,0 +1,43 @@
+{
+  "purpose": "Preserve parent-generated runtime evidence outside the repository so Sol can review and import it through the original source-guarded loop",
+  "files": [
+    {
+      "relative": "observations\\08-restored.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\08-restored.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\runtime-generated-repo-files\\observations\\08-restored.json",
+      "sha256": "21570584250cbeca790c0f8a995e990199a65ab14d7d6c6664662f0c097f3288"
+    },
+    {
+      "relative": "observations\\http-down-maintenance-2-parent.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-maintenance-2-parent.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\runtime-generated-repo-files\\observations\\http-down-maintenance-2-parent.json",
+      "sha256": "04fc55148630ad45fba56be1c3ced51128845093ccbd2845268b5076b5b18604"
+    },
+    {
+      "relative": "observations\\inspect-quarantine-v4.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\inspect-quarantine-v4.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\runtime-generated-repo-files\\observations\\inspect-quarantine-v4.json",
+      "sha256": "aaf0ba11165789ffb0e4aa01403a3836d416dd658c989caa26a457dc80392e39"
+    },
+    {
+      "relative": "screenshots\\cached-2-candidate-pinned-filter-against-old-server.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\cached-2-candidate-pinned-filter-against-old-server.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\runtime-generated-repo-files\\screenshots\\cached-2-candidate-pinned-filter-against-old-server.png",
+      "sha256": "feacbfdd9d4df9a3688754c7749ed1192af140b5cb45e1ff026557dbd50b7764"
+    },
+    {
+      "relative": "screenshots\\cached-3-candidate-edit-against-old-server.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\cached-3-candidate-edit-against-old-server.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\runtime-generated-repo-files\\screenshots\\cached-3-candidate-edit-against-old-server.png",
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "relative": "screenshots\\restored-1-old-app-fresh-login.png",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\screenshots\\restored-1-old-app-fresh-login.png",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\runtime-generated-repo-files\\screenshots\\restored-1-old-app-fresh-login.png",
+      "sha256": "5f771f5ebf568e44b3cf9db8a783ff13eef1df9473a2645dbb6f8dcca14395fa"
+    }
+  ],
+  "pre_existing_files_preserved": 21,
+  "recorded_at": "2026-11-11T20:54:50.5178031+00:00"
+}

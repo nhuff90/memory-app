@@ -1,0 +1,15 @@
+{
+  "step": "17-cached-candidate-to-old-reload",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T20:51:43.1733896+00:00",
+  "finished_at": "2026-11-11T20:53:59.4043798+00:00",
+  "executable": "node",
+  "arguments": [
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+    "cached-client"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 1,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\17-cached-candidate-to-old-reload.log",
+  "output_sha256": "7df61c2e181dab6464e305d0d2a2d4dbc8f11cb31c382df98eaffd5ed3dfe64c"
+}

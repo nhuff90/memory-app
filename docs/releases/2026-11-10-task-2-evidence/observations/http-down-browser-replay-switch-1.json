@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-11T21:24:20.694Z",
+  "label": "browser-replay-switch-1",
+  "attempts": [
+    {
+      "url": "http://localhost:18766/api/health",
+      "error": "ECONNREFUSED"
+    },
+    {
+      "url": "http://127.0.0.1:18766/api/health",
+      "error": "ECONNREFUSED"
+    }
+  ],
+  "unavailable": true
+}

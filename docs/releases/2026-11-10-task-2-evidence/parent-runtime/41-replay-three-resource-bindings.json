@@ -1,0 +1,18 @@
+{
+  "step": "41-replay-three-resource-bindings",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T21:51:41.2541697+00:00",
+  "finished_at": "2026-11-11T21:51:41.4938672+00:00",
+  "executable": "docker",
+  "arguments": [
+    "inspect",
+    "--format",
+    "{{.Id}} {{.Image}} {{.State.Status}} {{json .Mounts}} {{json .HostConfig.PortBindings}}",
+    "recall-task2-20261110-6c4a91f2-replay-cand-1",
+    "recall-task2-20261110-6c4a91f2-restored"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\41-replay-three-resource-bindings.log",
+  "output_sha256": "48d37987892a3ccf28ae3839abd3f5bc59a2f6c9b1c66dc7882c18a6d249279d"
+}

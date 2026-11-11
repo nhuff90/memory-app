@@ -1,0 +1,15 @@
+{
+  "step": "16-verify-restored-application",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T20:51:15.1525384+00:00",
+  "finished_at": "2026-11-11T20:51:34.3403271+00:00",
+  "executable": "node",
+  "arguments": [
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+    "restored"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\16-verify-restored-application.log",
+  "output_sha256": "e318b3ca357e16250a32ab40cc3ca70b78bbae6971397199e17df9a765de7f31"
+}

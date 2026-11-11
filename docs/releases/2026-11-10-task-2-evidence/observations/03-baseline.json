@@ -1,0 +1,203 @@
+{
+  "at": "2026-11-10T17:03:46.721Z",
+  "health": {
+    "firstHealthyAt": "2026-11-10T17:03:28.043Z",
+    "pollStartedAt": "2026-11-10T17:03:27.451Z",
+    "waitedMs": 593
+  },
+  "server": {
+    "indexAsset": "/assets/index-DWaWk5OZ.js",
+    "swSha256": "8291b1af5547c2504e7769cad29655ff76b60f60aa4cdba3e961216ad2e51e92"
+  },
+  "client": {
+    "documentScript": "/assets/index-DWaWk5OZ.js",
+    "controller": "http://localhost:18766/sw.js",
+    "active": "http://localhost:18766/sw.js",
+    "waiting": null,
+    "installing": null,
+    "caches": [
+      {
+        "name": "workbox-precache-v2-http://localhost:18766/",
+        "entries": 10,
+        "indexHtml": [
+          "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649"
+        ],
+        "indexScripts": [
+          "/assets/index-DWaWk5OZ.js"
+        ]
+      }
+    ]
+  },
+  "signIn": "already signed in by the profile's session cookie",
+  "sameServerAsSeed": true,
+  "bodiesMatchSeed": true,
+  "photoHashesMatchSeed": true,
+  "searches": [
+    {
+      "kind": "text",
+      "query": "heartworm",
+      "expected": "heartworm",
+      "uiShown": [
+        "heartworm"
+      ],
+      "apiResults": [
+        "Biscuit the beagle takes a heartworm tablet on the first of every month."
+      ]
+    },
+    {
+      "kind": "tag",
+      "query": "beverages",
+      "expected": "oat",
+      "uiShown": [
+        "oat"
+      ],
+      "apiResults": [
+        "Marisol prefers oat milk in her afternoon cortado."
+      ]
+    },
+    {
+      "kind": "caption",
+      "query": "teal",
+      "expected": "shed",
+      "uiShown": [
+        "shed"
+      ],
+      "apiResults": [
+        "Spare key for the Larkspur Lane shed hangs behind the garden calendar."
+      ]
+    }
+  ],
+  "photos": [
+    {
+      "note": "heartworm",
+      "renderedSrc": "/api/photos/1?size=thumb",
+      "rendered": true
+    },
+    {
+      "note": "shed",
+      "renderedSrc": "/api/photos/2?size=thumb",
+      "rendered": true
+    }
+  ],
+  "state": {
+    "memories": [
+      {
+        "id": 1,
+        "body": "Biscuit the beagle takes a heartworm tablet on the first of every month.",
+        "tags": [
+          "veterinary",
+          "monthly"
+        ],
+        "category": "things",
+        "createdAt": 1794319442831,
+        "updatedAt": 1794319442887,
+        "photos": [
+          {
+            "id": 1,
+            "caption": null
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "body": "Spare key for the Larkspur Lane shed hangs behind the garden calendar.",
+        "tags": [
+          "storage"
+        ],
+        "category": "things",
+        "createdAt": 1794319449446,
+        "updatedAt": 1794319449496,
+        "photos": [
+          {
+            "id": 2,
+            "caption": "A brass key hanging on a teal hook"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "body": "Marisol prefers oat milk in her afternoon cortado.",
+        "tags": [
+          "beverages"
+        ],
+        "category": "people",
+        "createdAt": 1794319449625,
+        "updatedAt": 1794319449645,
+        "photos": []
+      },
+      {
+        "id": 4,
+        "body": "Tessaly's cello recital is at Orchard Hall on Thursday evening.",
+        "tags": [],
+        "category": null,
+        "createdAt": 1794319450078,
+        "updatedAt": 1794319450078,
+        "photos": []
+      }
+    ],
+    "photoHashes": {
+      "2:full": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365",
+      "2:thumb": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d",
+      "1:full": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0",
+      "1:thumb": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95"
+    },
+    "tokens": [
+      {
+        "id": 1,
+        "name": "Task 2 fictional Siri key",
+        "createdAt": 1794319450056
+      }
+    ],
+    "me": {
+      "aiEnabled": false,
+      "model": null,
+      "photoCaptions": false,
+      "counts": {
+        "memories": 4,
+        "photos": 2
+      }
+    }
+  },
+  "log": {
+    "pageErrors": [],
+    "dialogs": [],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=heartworm",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=beverages",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=teal",
+        "status": 200,
+        "fromServiceWorker": false
+      }
+    ]
+  }
+}

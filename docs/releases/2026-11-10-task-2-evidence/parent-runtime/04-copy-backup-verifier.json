@@ -1,0 +1,16 @@
+{
+  "step": "04-copy-backup-verifier",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T20:49:38.7947909+00:00",
+  "finished_at": "2026-11-11T20:49:39.4881425+00:00",
+  "executable": "docker",
+  "arguments": [
+    "cp",
+    "docs/releases/2026-11-10-task-2-evidence/extracted/recall-backup.mjs",
+    "recall-task2-20261110-6c4a91f2-maint2:/tmp/recall-backup.mjs"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\04-copy-backup-verifier.log",
+  "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

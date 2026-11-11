@@ -1,0 +1,40 @@
+{
+  "at": "2026-11-10T13:57:35.416Z",
+  "node": "v24.14.1",
+  "checks": {
+    "planSha256": "400795a7f4865d9f6516c1a1dacaeb3eb6dd4d3f56d6527a58d5a4c31df8af88",
+    "playwrightPackage": "1.62.1",
+    "ipv6Loopback": "ECONNREFUSED",
+    "port": "18766 free on 127.0.0.1",
+    "browser": "chromium 153.0.8010.12"
+  },
+  "extracted": [
+    {
+      "file": "extracted/recall-backup.mjs",
+      "docLines": "80-144",
+      "sha256": "9881bfbb6a5784f926d9b406eed6157fa47d66dde3367d9c28d7f3980d0b8493"
+    },
+    {
+      "file": "extracted/local-verify.mjs",
+      "docLines": "164-187",
+      "sha256": "426d4893a207578228028d54cc11e98b37fcfb5ff7b130758e01e20a7b69012d"
+    }
+  ],
+  "rolloutDocSha256": "fedd1e95833b71e9d17d27ac961a39fa2b6c2f1da5c4a44dab1381fcce0803ca",
+  "helpers": {
+    "task2.mjs": "6656ff27b0e61356c733c4ea6f8b928bd1a56b5d6e80785e87e007e07235c76c",
+    "probe.mjs": "ab775aac1214d7328e2df4d5dda320f4ed157680817e83f8ff138fff4ad758c7",
+    "fixture-enrich.mjs": "620efc958112407f39fe7f75d6ce72d9241f25864c3e68509f5614b68f46cce4",
+    "quarantine-install.sh": "91fc0f6d9dbd3c3465b2b3443947107fadf01a6d7c6b6066d4a037598d7e227a"
+  },
+  "created": {
+    "temp": "C:\\Users\\Nate\\AppData\\Local\\Temp\\recall-task2-20261110-6c4a91f2",
+    "profile": "C:\\Users\\Nate\\AppData\\Local\\Temp\\recall-task2-20261110-6c4a91f2\\browser-profile",
+    "retained": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261110-6c4a91f2-retained",
+    "envFileVariableNames": [
+      "RECALL_PASSWORD_HASH",
+      "RECALL_SESSION_SECRET",
+      "HF_ENDPOINT"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "step": "02-resource-guards",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T20:49:06.6442827+00:00",
+  "finished_at": "2026-11-11T20:49:06.9262853+00:00",
+  "executable": "docker",
+  "arguments": [
+    "inspect",
+    "--format",
+    "name={{.Name}} image={{.Image}} entrypoint={{json .Config.Entrypoint}} command={{json .Config.Cmd}} running={{.State.Running}} started={{.State.StartedAt}} finished={{.State.FinishedAt}} mounts={{json .Mounts}} ports={{json .NetworkSettings.Ports}}",
+    "recall-task2-20261110-6c4a91f2-maint2",
+    "recall-task2-20261110-6c4a91f2-cand",
+    "recall-task2-20261110-6c4a91f2-seed",
+    "recall-task2-20261110-6c4a91f2-refusal"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\02-resource-guards.log",
+  "output_sha256": "cb294e9a056529e5161c5e6fabb828112f5938e5a219368ff215e295a867a6fe"
+}

@@ -1,0 +1,4 @@
+# Only sanitized Task 2 receipts and fictional-fixture screenshots belong here.
+!parent-runtime/*.log
+!screenshots/
+!screenshots/*.png

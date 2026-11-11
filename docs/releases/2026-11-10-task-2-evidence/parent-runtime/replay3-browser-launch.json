@@ -1,0 +1,10 @@
+{
+  "kind": "launch metadata, not completed command",
+  "started_at": "2026-11-11T21:52:15.9498679+00:00",
+  "executable": "node",
+  "arguments": [
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+    "replay-client"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app"
+}

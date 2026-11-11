@@ -1,0 +1,22 @@
+{
+  "recorded_at": "2026-11-11T21:27:05.7374775+00:00",
+  "actor": "parent coordinator",
+  "command": [
+    "node",
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+    "replay-client"
+  ],
+  "unified_exec_session": 47352,
+  "intervention": "Ctrl+C via write_stdin to stop a proven unbounded pre-login service-worker wait",
+  "unified_session_exit_code": 1,
+  "child_process_exit_code": null,
+  "normal_receipt_present": false,
+  "partial_observation_present": false,
+  "remaining_owned_processes": [],
+  "reason": "Replay helper awaits navigator.serviceWorker.ready before login; App.tsx returns Login while auth is out and mounts UpdateBanner/useRegisterSW only after authentication. Candidate startup log shows GET /api/me401 and no login request. No ready checkpoint and no server switch occurred.",
+  "source_paths": [
+    "web/src/App.tsx",
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs"
+  ],
+  "no_pass_claim": true
+}

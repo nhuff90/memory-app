@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-11T21:58:02.850Z",
+  "label": "after-cleanup",
+  "attempts": [
+    {
+      "url": "http://localhost:18766/api/health",
+      "error": "ECONNREFUSED"
+    },
+    {
+      "url": "http://127.0.0.1:18766/api/health",
+      "error": "ECONNREFUSED"
+    }
+  ],
+  "unavailable": true
+}
+

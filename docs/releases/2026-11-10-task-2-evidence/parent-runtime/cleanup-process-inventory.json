@@ -1,0 +1,7 @@
+{
+  "at": "2026-11-11T21:57:06.1935491+00:00",
+  "task_owned_browser_node_processes": [],
+  "parent_browser_process_exit": 0,
+  "browser_observation": "10-browser-replay-3.json",
+  "status": "safe_for_scoped_cleanup"
+}

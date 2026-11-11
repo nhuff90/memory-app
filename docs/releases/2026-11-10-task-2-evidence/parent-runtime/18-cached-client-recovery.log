@@ -1,0 +1,130 @@
+{
+  "startedAt": "2026-11-11T21:09:56.741Z",
+  "label": "09-cached-client-resume-1",
+  "status": "prerequisite_lost",
+  "phase": "inspect-preserved-profile",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "profile": "C:\\Users\\Nate\\AppData\\Local\\Temp\\recall-task2-20261110-6c4a91f2\\browser-profile",
+  "candidateAsset": "/assets/index-BI1X1ilU.js",
+  "log": {
+    "pageErrors": [],
+    "dialogs": [],
+    "api": [],
+    "assetResponses": [
+      {
+        "path": "/",
+        "status": 200,
+        "fromServiceWorker": true
+      },
+      {
+        "path": "/assets/index-BiqgoXII.css",
+        "status": 200,
+        "fromServiceWorker": true
+      },
+      {
+        "path": "/assets/index-DWaWk5OZ.js",
+        "status": 200,
+        "fromServiceWorker": true
+      }
+    ]
+  },
+  "server": {
+    "indexAsset": "/assets/index-DWaWk5OZ.js",
+    "swSha256": "8291b1af5547c2504e7769cad29655ff76b60f60aa4cdba3e961216ad2e51e92"
+  },
+  "browser": "chromium 153.0.8010.12",
+  "workersAtContextOpen": [],
+  "loaded": {
+    "documentScript": "/assets/index-DWaWk5OZ.js",
+    "controller": "http://localhost:18766/sw.js",
+    "active": "http://localhost:18766/sw.js",
+    "waiting": null,
+    "installing": null,
+    "scope": "http://localhost:18766/",
+    "workerStates": {
+      "controller": "activated",
+      "active": "activated",
+      "waiting": null
+    },
+    "caches": [
+      {
+        "name": "workbox-precache-v2-http://localhost:18766/",
+        "entries": 10,
+        "indexHtml": [
+          "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649"
+        ],
+        "indexScripts": [
+          "/assets/index-DWaWk5OZ.js"
+        ],
+        "assetHashes": [
+          {
+            "path": "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649",
+            "sha256": "5180b8d3a86324040c6cde0803119e7a314306ef149d6a20c26f25efb4df6116"
+          },
+          {
+            "path": "/assets/index-DWaWk5OZ.js",
+            "sha256": "3ea564a29f21a70b03ceecf96dc6f491571ae491bbcb04ce7bd9341be135dba8"
+          }
+        ]
+      }
+    ]
+  },
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+  "screenshots": [
+    "screenshots/09-cached-client-resume-1-01-initial-worker-and-assets.png",
+    "screenshots/09-cached-client-resume-1-failure.png"
+  ],
+  "failure": {
+    "message": "The preserved profile no longer serves the cached candidate. The waiting old worker may have activated when the prior context closed. No cache clearing, rewarming, server switch or replacement Reload proof was performed; coordinator disposition is required.",
+    "stack": "Error: The preserved profile no longer serves the cached candidate. The waiting old worker may have activated when the prior context closed. No cache clearing, rewarming, server switch or replacement Reload proof was performed; coordinator disposition is required.\n    at cachedClient (file:///C:/Users/Nate/repos/memory-app/docs/releases/2026-11-10-task-2-evidence/task2.mjs:767:13)\n    at async file:///C:/Users/Nate/repos/memory-app/docs/releases/2026-11-10-task-2-evidence/task2.mjs:918:25"
+  },
+  "failureIdentity": {
+    "documentScript": "/assets/index-DWaWk5OZ.js",
+    "controller": "http://localhost:18766/sw.js",
+    "active": "http://localhost:18766/sw.js",
+    "waiting": null,
+    "installing": null,
+    "scope": "http://localhost:18766/",
+    "workerStates": {
+      "controller": "activated",
+      "active": "activated",
+      "waiting": null
+    },
+    "caches": [
+      {
+        "name": "workbox-precache-v2-http://localhost:18766/",
+        "entries": 10,
+        "indexHtml": [
+          "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649"
+        ],
+        "indexScripts": [
+          "/assets/index-DWaWk5OZ.js"
+        ],
+        "assetHashes": [
+          {
+            "path": "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649",
+            "sha256": "5180b8d3a86324040c6cde0803119e7a314306ef149d6a20c26f25efb4df6116"
+          },
+          {
+            "path": "/assets/index-DWaWk5OZ.js",
+            "sha256": "3ea564a29f21a70b03ceecf96dc6f491571ae491bbcb04ce7bd9341be135dba8"
+          }
+        ]
+      }
+    ]
+  },
+  "finishedAt": "2026-11-11T21:10:00.977Z"
+}
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: The preserved profile no longer serves the cached candidate. The waiting old worker may have activated when the prior context closed. No cache clearing, rewarming, server switch or replacement Reload proof was performed; coordinator disposition is required.
+    at cachedClient (file:///C:/Users/Nate/repos/memory-app/docs/releases/2026-11-10-task-2-evidence/task2.mjs:767:13)
+    at async file:///C:/Users/Nate/repos/memory-app/docs/releases/2026-11-10-task-2-evidence/task2.mjs:918:25
+
+Node.js v24.14.1

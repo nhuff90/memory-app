@@ -1,0 +1,252 @@
+{
+  "at": "2026-11-11T20:50:54.143Z",
+  "root": "/data",
+  "processUid": 1000,
+  "processes": [
+    {
+      "pid": 1,
+      "command": "sleep infinity"
+    },
+    {
+      "pid": 79,
+      "command": "node /task2/probe.mjs /data heartworm beverages teal Quillon"
+    }
+  ],
+  "writers": [],
+  "listingBeforeOpen": [
+    {
+      "name": "photos",
+      "type": "dir",
+      "size": 4096,
+      "uid": 1000,
+      "gid": 1000
+    },
+    {
+      "name": "post-v4-20261110-090500",
+      "type": "dir",
+      "size": 4096,
+      "uid": 0,
+      "gid": 0
+    },
+    {
+      "name": "recall.db",
+      "type": "file",
+      "size": 77824,
+      "uid": 1000,
+      "gid": 1000
+    },
+    {
+      "name": "restore-v3-20261110-090500",
+      "type": "dir",
+      "size": 4096,
+      "uid": 0,
+      "gid": 0
+    }
+  ],
+  "version": 3,
+  "integrity": "ok",
+  "counts": {
+    "memories": 4,
+    "photos": 2,
+    "embeddings": 4,
+    "api_tokens": 1,
+    "settings": 0,
+    "ai_usage": 0
+  },
+  "schema": {
+    "memoryColumns": [
+      "id",
+      "client_id",
+      "body",
+      "category",
+      "tags",
+      "created_at",
+      "updated_at",
+      "archived_at",
+      "enriched_at",
+      "category_set_by_user",
+      "captions"
+    ],
+    "ftsColumns": [
+      "body",
+      "tags",
+      "captions"
+    ],
+    "objects": [
+      "index:ai_usage_by_time",
+      "index:memories_by_created",
+      "index:photos_by_memory",
+      "index:sqlite_autoindex_api_tokens_1",
+      "index:sqlite_autoindex_memories_1",
+      "index:sqlite_autoindex_settings_1",
+      "table:ai_usage",
+      "table:api_tokens",
+      "table:embeddings",
+      "table:memories",
+      "table:memories_fts",
+      "table:memories_fts_config",
+      "table:memories_fts_data",
+      "table:memories_fts_docsize",
+      "table:memories_fts_idx",
+      "table:photos",
+      "table:settings",
+      "trigger:memories_fts_delete",
+      "trigger:memories_fts_insert",
+      "trigger:memories_fts_update"
+    ]
+  },
+  "memories": [
+    {
+      "id": 1,
+      "hasClientId": 1,
+      "body": "Biscuit the beagle takes a heartworm tablet on the first of every month.",
+      "category": "things",
+      "tags": "veterinary, monthly",
+      "captions": null,
+      "created_at": 1794319442831,
+      "updated_at": 1794319442887,
+      "archived_at": null,
+      "enriched": 1
+    },
+    {
+      "id": 2,
+      "hasClientId": 1,
+      "body": "Spare key for the Larkspur Lane shed hangs behind the garden calendar.",
+      "category": "things",
+      "tags": "storage",
+      "captions": "A brass key hanging on a teal hook",
+      "created_at": 1794319449446,
+      "updated_at": 1794319449496,
+      "archived_at": null,
+      "enriched": 1
+    },
+    {
+      "id": 3,
+      "hasClientId": 1,
+      "body": "Marisol prefers oat milk in her afternoon cortado.",
+      "category": "people",
+      "tags": "beverages",
+      "captions": null,
+      "created_at": 1794319449625,
+      "updated_at": 1794319449645,
+      "archived_at": null,
+      "enriched": 1
+    },
+    {
+      "id": 4,
+      "hasClientId": 0,
+      "body": "Tessaly's cello recital is at Orchard Hall on Thursday evening.",
+      "category": null,
+      "tags": null,
+      "captions": null,
+      "created_at": 1794319450078,
+      "updated_at": 1794319450078,
+      "archived_at": null,
+      "enriched": 0
+    }
+  ],
+  "photos": [
+    {
+      "id": 1,
+      "memoryId": 1,
+      "caption": null,
+      "createdAt": 1794319442887,
+      "full": {
+        "file": "2026/11/09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5.jpg",
+        "bytes": 798,
+        "sha256": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0",
+        "uid": 1000
+      },
+      "thumb": {
+        "file": "2026/11/09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5_thumb.jpg",
+        "bytes": 792,
+        "sha256": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95",
+        "uid": 1000
+      }
+    },
+    {
+      "id": 2,
+      "memoryId": 2,
+      "caption": "A brass key hanging on a teal hook",
+      "createdAt": 1794319449496,
+      "full": {
+        "file": "2026/11/fe84276b-f458-45bb-9e8b-698c3b345e7f.jpg",
+        "bytes": 796,
+        "sha256": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365",
+        "uid": 1000
+      },
+      "thumb": {
+        "file": "2026/11/fe84276b-f458-45bb-9e8b-698c3b345e7f_thumb.jpg",
+        "bytes": 794,
+        "sha256": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d",
+        "uid": 1000
+      }
+    }
+  ],
+  "embeddings": [
+    {
+      "memoryId": 1,
+      "model": "Xenova/bge-small-en-v1.5@fp32",
+      "vectorBytes": 1536,
+      "vectorSha256": "2ea99e5281d3932af856a83bdbfdaafe4a83b4e8a88720315dd6a72c2aad77dc"
+    },
+    {
+      "memoryId": 2,
+      "model": "Xenova/bge-small-en-v1.5@fp32",
+      "vectorBytes": 1536,
+      "vectorSha256": "e4d19008640ba63981e88c37d488779f125184cc221f043d71d55cbc857a9235"
+    },
+    {
+      "memoryId": 3,
+      "model": "Xenova/bge-small-en-v1.5@fp32",
+      "vectorBytes": 1536,
+      "vectorSha256": "402c7e29c97266cd96c97cc4a466336feac26afadd9fa44fba656cb5496f4b06"
+    },
+    {
+      "memoryId": 4,
+      "model": "Xenova/bge-small-en-v1.5@fp32",
+      "vectorBytes": 1536,
+      "vectorSha256": "e232b76f8748d00abfa43cc03b69cf0ba23fee0c68e08cf636b4e271faa6cfb8"
+    }
+  ],
+  "apiTokens": [
+    {
+      "id": 1,
+      "name": "Task 2 fictional Siri key",
+      "time_zone": "America/New_York",
+      "created_at": 1794319450056,
+      "last_used_at": 1794319450076
+    }
+  ],
+  "settings": [],
+  "fts": {
+    "heartworm": {
+      "body": [
+        1
+      ],
+      "tags": [],
+      "captions": []
+    },
+    "beverages": {
+      "body": [],
+      "tags": [
+        3
+      ],
+      "captions": []
+    },
+    "teal": {
+      "body": [],
+      "tags": [],
+      "captions": [
+        2
+      ]
+    },
+    "Quillon": {
+      "body": [],
+      "tags": [],
+      "captions": []
+    }
+  },
+  "logicalV3Digest": "060e24fb876d0567a3426b7392ded1802e8c080e004bffa576bd90e24f7f30dd",
+  "logicalFullDigest": "6517ea099a0ccb16676e99eae63519d714a9f1bd9840ac0a5cd08109f0a59b71"
+}

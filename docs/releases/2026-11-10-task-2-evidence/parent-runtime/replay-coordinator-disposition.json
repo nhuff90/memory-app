@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-11-11T21:23:38.0695962+00:00",
+  "actor": "coordinator under existing Task 2 and parent-runtime authorization",
+  "disposition": "Proceed with the bounded browser verification replay and conditional original-task cleanup",
+  "basis": "Necessary continuation of the failed browser verification using only fictional Task 2 fixtures, the approved Task 2 resource namespace/temporary root, fixed local images and original localhost origin. No application change, new feature, production action, model or numeric-limit change, or repetition of database migration/backup/restore. Original failed evidence remains authoritative.",
+  "helper_sha256": "14e4c2bb57bff57cf045651402f00d4d7d13128b8602a3fb1ebcd3d8e0d1e6c9",
+  "work_order": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\runtime-handoff.md",
+  "work_order_sha256": "3d47250d7e997828d6daa01442c708122395cc3010a94994e985c04e38aa41e9",
+  "resources": [
+    "recall-task2-20261110-6c4a91f2-replay-cand-1",
+    "C:/Users/Nate/AppData/Local/Temp/recall-task2-20261110-6c4a91f2/browser-replay-v4-1",
+    "C:/Users/Nate/AppData/Local/Temp/recall-task2-20261110-6c4a91f2/browser-profile-replay-1"
+  ],
+  "native_permissions_changed": false,
+  "condition": "Stop on failure; cleanup only after successful real banner proof and verified retained artifact custody"
+}

@@ -1,0 +1,408 @@
+{
+  "at": "2026-11-11T13:01:09.645Z",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+  "health": {
+    "firstHealthyAt": "2026-11-11T13:00:52.444Z",
+    "pollStartedAt": "2026-11-11T13:00:52.283Z",
+    "waitedMs": 162
+  },
+  "server": {
+    "indexAsset": "/assets/index-BI1X1ilU.js",
+    "swSha256": "9174a5f7a5045b44fecd8d452400955074e3833eb6a10a12a67c3afb7998c23f"
+  },
+  "signIn": "already signed in by the profile's session cookie",
+  "upgrade": {
+    "beforeReload": {
+      "documentScript": "/assets/index-DWaWk5OZ.js",
+      "controller": "http://localhost:18766/sw.js",
+      "active": "http://localhost:18766/sw.js",
+      "waiting": null,
+      "installing": null,
+      "caches": [
+        {
+          "name": "workbox-precache-v2-http://localhost:18766/",
+          "entries": 10,
+          "indexHtml": [
+            "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649"
+          ],
+          "indexScripts": [
+            "/assets/index-DWaWk5OZ.js"
+          ]
+        }
+      ]
+    },
+    "withBanner": {
+      "documentScript": "/assets/index-DWaWk5OZ.js",
+      "controller": "http://localhost:18766/sw.js",
+      "active": "http://localhost:18766/sw.js",
+      "waiting": "http://localhost:18766/sw.js",
+      "installing": null,
+      "caches": [
+        {
+          "name": "workbox-precache-v2-http://localhost:18766/",
+          "entries": 13,
+          "indexHtml": [
+            "/index.html?__WB_REVISION__=a6335ff90c03e924e97bc51346e73649",
+            "/index.html?__WB_REVISION__=c2f842e156d81eb6ea057e7cb3035eb1"
+          ],
+          "indexScripts": [
+            "/assets/index-DWaWk5OZ.js",
+            "/assets/index-BI1X1ilU.js"
+          ]
+        }
+      ]
+    },
+    "afterReload": {
+      "documentScript": "/assets/index-BI1X1ilU.js",
+      "controller": "http://localhost:18766/sw.js",
+      "active": "http://localhost:18766/sw.js",
+      "waiting": null,
+      "installing": null,
+      "caches": [
+        {
+          "name": "workbox-precache-v2-http://localhost:18766/",
+          "entries": 10,
+          "indexHtml": [
+            "/index.html?__WB_REVISION__=c2f842e156d81eb6ea057e7cb3035eb1"
+          ],
+          "indexScripts": [
+            "/assets/index-BI1X1ilU.js"
+          ]
+        }
+      ]
+    },
+    "servedOldBeforeReload": true,
+    "candidateAfterReload": true
+  },
+  "searches": [
+    {
+      "kind": "text",
+      "query": "heartworm",
+      "expected": "heartworm",
+      "uiShown": [
+        "heartworm"
+      ],
+      "apiResults": [
+        "Biscuit the beagle takes a heartworm tablet on the first of every month."
+      ]
+    },
+    {
+      "kind": "tag",
+      "query": "beverages",
+      "expected": "oat",
+      "uiShown": [
+        "oat"
+      ],
+      "apiResults": [
+        "Marisol prefers oat milk in her afternoon cortado."
+      ]
+    },
+    {
+      "kind": "caption",
+      "query": "teal",
+      "expected": "shed",
+      "uiShown": [
+        "shed"
+      ],
+      "apiResults": [
+        "Spare key for the Larkspur Lane shed hangs behind the garden calendar."
+      ]
+    }
+  ],
+  "photos": [
+    {
+      "note": "heartworm",
+      "renderedSrc": "/api/photos/1?size=thumb",
+      "rendered": true
+    },
+    {
+      "note": "shed",
+      "renderedSrc": "/api/photos/2?size=thumb",
+      "rendered": true
+    }
+  ],
+  "pinnedShown": [
+    "heartworm",
+    "recital"
+  ],
+  "keyword": {
+    "kind": "custom keyword",
+    "query": "Quillon",
+    "expected": "shed",
+    "uiShown": [
+      "shed"
+    ],
+    "apiResults": [
+      "Spare key for the Larkspur Lane shed hangs behind the garden calendar."
+    ]
+  },
+  "sirikey": {
+    "status": 400,
+    "error": "invalid_request",
+    "meaning": "key accepted; empty capture refused, nothing saved"
+  },
+  "v4Changes": [
+    "pinned heartworm",
+    "pinned recital",
+    "custom keyword Quillon on shed"
+  ],
+  "preservedFromSeed": true,
+  "photoHashesMatchSeed": true,
+  "state": {
+    "memories": [
+      {
+        "id": 1,
+        "body": "Biscuit the beagle takes a heartworm tablet on the first of every month.",
+        "tags": [
+          "veterinary",
+          "monthly"
+        ],
+        "category": "things",
+        "pinned": true,
+        "customKeywords": [],
+        "createdAt": 1794319442831,
+        "updatedAt": 1794402068719,
+        "photos": [
+          {
+            "id": 1,
+            "caption": null
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "body": "Spare key for the Larkspur Lane shed hangs behind the garden calendar.",
+        "tags": [
+          "storage"
+        ],
+        "category": "things",
+        "pinned": false,
+        "customKeywords": [
+          "Quillon"
+        ],
+        "createdAt": 1794319449446,
+        "updatedAt": 1794402069072,
+        "photos": [
+          {
+            "id": 2,
+            "caption": "A brass key hanging on a teal hook"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "body": "Marisol prefers oat milk in her afternoon cortado.",
+        "tags": [
+          "beverages"
+        ],
+        "category": "people",
+        "pinned": false,
+        "customKeywords": [],
+        "createdAt": 1794319449625,
+        "updatedAt": 1794319449645,
+        "photos": []
+      },
+      {
+        "id": 4,
+        "body": "Tessaly's cello recital is at Orchard Hall on Thursday evening.",
+        "tags": [],
+        "category": null,
+        "pinned": true,
+        "customKeywords": [],
+        "createdAt": 1794319450078,
+        "updatedAt": 1794402068898,
+        "photos": []
+      }
+    ],
+    "photoHashes": {
+      "2:full": "ca6e4df1cab191ec246143b68835627dde9989bad11faf0a779362b5588b8365",
+      "2:thumb": "403037c53e1f7f12b1f6dfd11067b60716c8dca5a1b838d02613247a6676a25d",
+      "1:full": "c1613630ff9618f256e792a91dd1e254d2e6836155802f3b419d6282b55ea6b0",
+      "1:thumb": "0ca4a890caede59d1141bc9e707537b42ae55efb40c38357bafcd27f15804c95"
+    },
+    "tokens": [
+      {
+        "id": 1,
+        "name": "Task 2 fictional Siri key",
+        "createdAt": 1794319450056
+      }
+    ],
+    "me": {
+      "aiEnabled": false,
+      "model": null,
+      "photoCaptions": false,
+      "counts": {
+        "memories": 4,
+        "photos": 2
+      }
+    }
+  },
+  "log": {
+    "pageErrors": [],
+    "dialogs": [],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=heartworm",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=beverages",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=teal",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories/1/related",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories/2/related",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories/1/related",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/memories/1",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories/4/related",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/memories/4",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories/2/related",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/memories/2",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories/2/related",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30&pinned=1",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=Quillon",
+        "status": 200,
+        "fromServiceWorker": false
+      }
+    ]
+  }
+}

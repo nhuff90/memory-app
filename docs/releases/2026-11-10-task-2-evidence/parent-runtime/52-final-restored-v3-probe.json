@@ -1,0 +1,24 @@
+{
+  "step": "52-final-restored-v3-probe",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T21:56:47.4561212+00:00",
+  "finished_at": "2026-11-11T21:56:47.8475994+00:00",
+  "executable": "docker",
+  "arguments": [
+    "exec",
+    "-u",
+    "node",
+    "recall-task2-20261110-6c4a91f2-restored",
+    "node",
+    "/task2/probe.mjs",
+    "/data",
+    "heartworm",
+    "beverages",
+    "teal",
+    "Quillon"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\52-final-restored-v3-probe.log",
+  "output_sha256": "89f4dcec3e89e20ffb7121eac89a3ffc4a8bfd8586db380160937ff337db0126"
+}

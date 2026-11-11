@@ -1,0 +1,18 @@
+{
+  "recorded_at": "2026-11-11T21:44:47.6125704+00:00",
+  "package": "playwright-core",
+  "version": "1.62.1",
+  "source": "C:\\Users\\Nate\\AppData\\Local\\npm-cache\\_npx\\e41f203b7505f1fb\\node_modules\\playwright-core\\lib\\coreBundle.js",
+  "source_sha256": "9393fa79e1c67c74edc26b610d65a4f7ed73d345a762465cc88340a33a2454ac",
+  "function": "waitForFunctionExpression",
+  "excerpt": [
+    "const success = predicate();",
+    "if (success) {",
+    "  fulfill(success);",
+    "  return;",
+    "}"
+  ],
+  "observation": "The async predicate returns a truthy Promise immediately; fulfillment adopts its false resolution without repolling. Recorded postLoginWorker was still installing with active/controller null, despite workerReadyAt being set. Navigation then happened before activation; clientsClaim is not assumed and controller remained null.",
+  "fix_requirement": "Use a bounded host loop awaiting page.evaluate snapshots, or a bounded page.evaluate Promise loop, and explicitly assert an activated worker snapshot before navigating; do not use an async waitForFunction predicate.",
+  "runtime_receipt": "37-browser-replay-two.json"
+}

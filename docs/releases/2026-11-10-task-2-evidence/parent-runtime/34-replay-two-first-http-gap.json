@@ -1,0 +1,16 @@
+{
+  "step": "34-replay-two-first-http-gap",
+  "actor": "parent-coordinator; owner-authorized scoped runtime exception",
+  "started_at": "2026-11-11T21:40:17.6083791+00:00",
+  "finished_at": "2026-11-11T21:40:17.8260394+00:00",
+  "executable": "node",
+  "arguments": [
+    "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+    "http-down",
+    "browser-replay-2-switch-1"
+  ],
+  "cwd": "C:\\Users\\Nate\\repos\\memory-app",
+  "exit_code": 0,
+  "output_log": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\34-replay-two-first-http-gap.log",
+  "output_sha256": "9aad4e2750866eb397ba1fc669ee88e313a0101e8de422911f018c19ecd6c31f"
+}

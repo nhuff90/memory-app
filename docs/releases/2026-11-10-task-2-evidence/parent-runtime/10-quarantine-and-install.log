@@ -1,0 +1,49 @@
+Path guard passed: /data is a mount point; stage and quarantine resolve directly inside it.
+--- /data before
+total 136
+drwxr-xr-x 4 1000 1000  4096 Nov 11 20:50 .
+drwxr-xr-x 1    0    0  4096 Nov 11 20:49 ..
+drwxr-xr-x 3 1000 1000  4096 Nov 10 14:04 photos
+-rw-r--r-- 1 1000 1000 90112 Nov 11 13:03 recall.db
+-rw-r--r-- 1 1000 1000 32768 Nov 11 18:02 recall.db-shm
+-rw-r--r-- 1 1000 1000     0 Nov 11 13:04 recall.db-wal
+drwxr-xr-x 3    0    0  4096 Nov 10 22:03 restore-v3-20261110-090500
+--- /data after
+total 96
+drwxr-xr-x 5 1000 1000  4096 Nov 11 20:50 .
+drwxr-xr-x 1    0    0  4096 Nov 11 20:49 ..
+drwxr-xr-x 3 1000 1000  4096 Nov 10 22:03 photos
+drwxr-xr-x 3    0    0  4096 Nov 11 20:50 post-v4-20261110-090500
+-rw-r--r-- 1 1000 1000 77824 Nov 10 22:03 recall.db
+drwxr-xr-x 2    0    0  4096 Nov 11 20:50 restore-v3-20261110-090500
+--- quarantine
+/data/post-v4-20261110-090500:
+total 132
+drwxr-xr-x 3    0    0  4096 Nov 11 20:50 .
+drwxr-xr-x 5 1000 1000  4096 Nov 11 20:50 ..
+drwxr-xr-x 3 1000 1000  4096 Nov 10 14:04 photos
+-rw-r--r-- 1 1000 1000 90112 Nov 11 13:03 recall.db
+-rw-r--r-- 1 1000 1000 32768 Nov 11 18:02 recall.db-shm
+-rw-r--r-- 1 1000 1000     0 Nov 11 13:04 recall.db-wal
+
+/data/post-v4-20261110-090500/photos:
+total 12
+drwxr-xr-x 3 1000 1000 4096 Nov 10 14:04 .
+drwxr-xr-x 3    0    0 4096 Nov 11 20:50 ..
+drwxr-xr-x 3 1000 1000 4096 Nov 10 14:04 2026
+
+/data/post-v4-20261110-090500/photos/2026:
+total 12
+drwxr-xr-x 3 1000 1000 4096 Nov 10 14:04 .
+drwxr-xr-x 3 1000 1000 4096 Nov 10 14:04 ..
+drwxr-xr-x 2 1000 1000 4096 Nov 10 14:04 11
+
+/data/post-v4-20261110-090500/photos/2026/11:
+total 24
+drwxr-xr-x 2 1000 1000 4096 Nov 10 14:04 .
+drwxr-xr-x 3 1000 1000 4096 Nov 10 14:04 ..
+-rw-r--r-- 1 1000 1000  798 Nov 10 14:04 09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5.jpg
+-rw-r--r-- 1 1000 1000  792 Nov 10 14:04 09b1b5d0-3cf9-4f89-a0cb-dc7bbe9394f5_thumb.jpg
+-rw-r--r-- 1 1000 1000  796 Nov 10 14:04 fe84276b-f458-45bb-9e8b-698c3b345e7f.jpg
+-rw-r--r-- 1 1000 1000  794 Nov 10 14:04 fe84276b-f458-45bb-9e8b-698c3b345e7f_thumb.jpg
+Installed matched v3 database and photos; v4 database, sidecars and photos are in /data/post-v4-20261110-090500.

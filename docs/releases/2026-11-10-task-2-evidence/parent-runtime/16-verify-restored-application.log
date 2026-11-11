@@ -1,0 +1,131 @@
+{
+  "at": "2026-11-11T20:51:33.436Z",
+  "browser": "chromium 153.0.8010.12",
+  "comparedWith": "03-baseline",
+  "health": {
+    "firstHealthyAt": "2026-11-11T20:51:17.268Z",
+    "pollStartedAt": "2026-11-11T20:51:15.242Z",
+    "waitedMs": 2027
+  },
+  "server": {
+    "indexAsset": "/assets/index-DWaWk5OZ.js",
+    "swSha256": "8291b1af5547c2504e7769cad29655ff76b60f60aa4cdba3e961216ad2e51e92"
+  },
+  "signIn": "logged in with the fixture password",
+  "sameServerAsSeed": true,
+  "searches": [
+    {
+      "kind": "text",
+      "query": "heartworm",
+      "expected": "heartworm",
+      "uiShown": [
+        "heartworm"
+      ],
+      "apiResults": [
+        "Biscuit the beagle takes a heartworm tablet on the first of every month."
+      ]
+    },
+    {
+      "kind": "tag",
+      "query": "beverages",
+      "expected": "oat",
+      "uiShown": [
+        "oat"
+      ],
+      "apiResults": [
+        "Marisol prefers oat milk in her afternoon cortado."
+      ]
+    },
+    {
+      "kind": "caption",
+      "query": "teal",
+      "expected": "shed",
+      "uiShown": [
+        "shed"
+      ],
+      "apiResults": [
+        "Spare key for the Larkspur Lane shed hangs behind the garden calendar."
+      ]
+    }
+  ],
+  "photos": [
+    {
+      "note": "heartworm",
+      "renderedSrc": "/api/photos/1?size=thumb",
+      "rendered": true
+    },
+    {
+      "note": "shed",
+      "renderedSrc": "/api/photos/2?size=thumb",
+      "rendered": true
+    }
+  ],
+  "keywordSearchAfterRestore": {
+    "query": "Quillon",
+    "results": []
+  },
+  "memoriesMatchSeed": true,
+  "photoHashesMatchSeed": true,
+  "tokensMatchSeed": true,
+  "pinnedFieldPresent": false,
+  "sirikey": {
+    "status": 400,
+    "error": "invalid_request",
+    "meaning": "key accepted; empty capture refused, nothing saved"
+  },
+  "log": {
+    "pageErrors": [],
+    "dialogs": [],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 401,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "POST",
+        "path": "/api/login",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/me",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=20",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/memories?limit=30",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=heartworm",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=beverages",
+        "status": 200,
+        "fromServiceWorker": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/search?q=teal",
+        "status": 200,
+        "fromServiceWorker": false
+      }
+    ]
+  }
+}
+

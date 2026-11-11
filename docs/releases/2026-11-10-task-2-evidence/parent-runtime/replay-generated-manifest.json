@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-11-11T21:28:43.9518522+00:00",
+  "baseline_checkpoint": "3acb51494d500aa560302fc1f18821ac4af05be6b80e347fa060b265babf5761",
+  "pre_existing_files_preserved": 72,
+  "files": [
+    {
+      "relative": "observations\\10-browser-replay-prepared.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\10-browser-replay-prepared.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay-generated-repo-files\\observations\\10-browser-replay-prepared.json",
+      "sha256": "ca39240118e0840f9180df472353237e599b6be098b32ae916039e97620a90da"
+    },
+    {
+      "relative": "observations\\http-down-browser-replay-switch-1.json",
+      "source": "C:\\Users\\Nate\\repos\\memory-app\\docs\\releases\\2026-11-10-task-2-evidence\\observations\\http-down-browser-replay-switch-1.json",
+      "destination": "C:\\Users\\Nate\\.codex\\visualizations\\2026\\11\\05\\01a1ac1a-f315-7de0-a1ed-cb6517f1fc06\\task2-20261111-sol-runtime\\replay-generated-repo-files\\observations\\http-down-browser-replay-switch-1.json",
+      "sha256": "df9ec15fbef773311397c39d972379ccdc25e806b9ae965a80e878f67fae50cf"
+    }
+  ],
+  "result": "Replay warming interrupted before login due to unbounded service-worker-ready wait; no switch occurred"
+}

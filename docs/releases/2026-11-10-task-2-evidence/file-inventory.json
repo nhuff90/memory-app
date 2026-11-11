@@ -1,0 +1,1070 @@
+{
+  "purpose": "Final Task 2 file accounting and current preserved Task 1/plan hashes; excludes this inventory itself",
+  "files": [
+    {
+      "path": ".cursor/plans/recall_release_path_904186b3.plan.md",
+      "bytes": 25143,
+      "sha256": "400795a7f4865d9f6516c1a1dacaeb3eb6dd4d3f56d6527a58d5a4c31df8af88"
+    },
+    {
+      "path": "docs/pinned-keywords-related-rollout.md",
+      "bytes": 21379,
+      "sha256": "a44e0f4e2d1ea92f1e2691118276816f34133531f50e0d32b1d1ff178eb9821e"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/after-meaning-search.png",
+      "bytes": 24635,
+      "sha256": "445d2aa9584892bcc9984348a7216c436ecd06ee8d1ef66c2197380a974ab627"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/after-note-with-photo.png",
+      "bytes": 39776,
+      "sha256": "f123b8e5cc1b4795c6d348fcb62b01862d56abf505df1e7de644647dffeae959"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/after-pinned-filter.png",
+      "bytes": 24498,
+      "sha256": "b0ac4db5eba57f046fa1112a65ef2ee507078c7350233e167a12426f2acc01e5"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/after-related-navigation.png",
+      "bytes": 36994,
+      "sha256": "d5c858b8db94a95eb23ce55d84214fc8025e1f82b55240f835ed20c6617a688c"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/before-meaning-search.png",
+      "bytes": 25178,
+      "sha256": "b4a7e95d27b1d6a088fa9a50aa3314135b28e43e263f398feda4b86a3974d4a9"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/before-note-with-photo.png",
+      "bytes": 40113,
+      "sha256": "08a46b26347aee9112401b98b0c0cde9d45049af98073c6d0396aa1fdd58c8b1"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/before-pinned-filter.png",
+      "bytes": 25167,
+      "sha256": "5a57562f4bde17e6a93eed5c0f2ec5cee17ffa63e0467c436fe5a5c45bdad63a"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/before-related-navigation.png",
+      "bytes": 37513,
+      "sha256": "d4f5d1608c645425ada50016471496657b0872e8b71147bdf2d94255edc869ab"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/container-probe.mjs",
+      "bytes": 9708,
+      "sha256": "8c04a88ca922d32793f63b2738080d3ac44b14de9a542efdd35f510505848e77"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/exact-context.mjs",
+      "bytes": 5902,
+      "sha256": "c2a586525cd8ee61233fbf347351df20e77d8d0730d2536ce5992ab47a45a51b"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/runtime-after.json",
+      "bytes": 2306,
+      "sha256": "186652afc6484932ad715bb97c3c9d79bb9ec7aa21270b331ef102732724d2ca"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/runtime-before.json",
+      "bytes": 2365,
+      "sha256": "e53428876873e70d20f9c46bfe349e2f5114497c7538a1c4fb5d318bf378179e"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1-evidence/runtime-browser.mjs",
+      "bytes": 13393,
+      "sha256": "d7f3ab4e775a46ec0b1edf06a89582ee0944af2e5d99a332aefb2e0924802b2b"
+    },
+    {
+      "path": "docs/releases/2026-11-05-task-1.md",
+      "bytes": 19494,
+      "sha256": "ef7d40edf00d44796700caca694d751078402c78165c853d50694b43e37e930d"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/.gitignore",
+      "bytes": 135,
+      "sha256": "a50b42d489b639658849958117b25cb8809c00ba7cd2ea08dee3d27ba17d7f0c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/extracted/local-verify.mjs",
+      "bytes": 1259,
+      "sha256": "426d4893a207578228028d54cc11e98b37fcfb5ff7b130758e01e20a7b69012d"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/extracted/recall-backup.mjs",
+      "bytes": 3638,
+      "sha256": "9881bfbb6a5784f926d9b406eed6157fa47d66dde3367d9c28d7f3980d0b8493"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/fixture-enrich.mjs",
+      "bytes": 2631,
+      "sha256": "620efc958112407f39fe7f75d6ce72d9241f25864c3e68509f5614b68f46cce4"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/01-preflight.json",
+      "bytes": 1617,
+      "sha256": "4d5252860d2b2cef0f46d81977d22f360ad8261ae8a45c70ceb7c49a1e6c9db7"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/02-seed.json",
+      "bytes": 6018,
+      "sha256": "5e5f2d388a2f8ae287eaf3a0790280141442c2c084573383656d69bcc74d129b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/03-baseline.json",
+      "bytes": 4932,
+      "sha256": "79adfcac1d11d7c12d0bbc2e5c4ac0f2c5ce8b00832205cebfa980456244b991"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/05-candidate.json",
+      "bytes": 10188,
+      "sha256": "f8084367c4105a1ba8df7909bf2524f1fd61d01bf8aa02fc275953267a0f9dac"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/08-restored.json",
+      "bytes": 5012,
+      "sha256": "21570584250cbeca790c0f8a995e990199a65ab14d7d6c6664662f0c097f3288"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/09-cached-client-resume-1.json",
+      "bytes": 4307,
+      "sha256": "4c3b64f6ee21dd4b4fcc8ea73b29bb2813fdf44fae9643f491f9cbda177c6af3"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/10-browser-replay-2-reuse.json",
+      "bytes": 6220,
+      "sha256": "c4f3a6dff8140ec6db1b643e80dad933cf1ba4dbd12b241883ae697f1f0c7e9e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/10-browser-replay-2.json",
+      "bytes": 5320,
+      "sha256": "d97d003a7111047fff3ac99b614c3c8a0de50fdfbda4dd3fdeb5cbd15c3acab2"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/10-browser-replay-3-ready.json",
+      "bytes": 7793,
+      "sha256": "8d1efe001a9afbab15d19e113bfe67afa7552203be7087ed34bcee1c6201a6df"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/10-browser-replay-3-reuse.json",
+      "bytes": 6220,
+      "sha256": "23ba16a5cf1ea65e0c60295a06015fc72cb69aa0428111b9ee4bfd4c8d94269d"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/10-browser-replay-3.json",
+      "bytes": 28580,
+      "sha256": "706bfc0e19dd8b1bdade51531ac342d97e06edd5b4e84c6244c98f1b529836df"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/10-browser-replay-prepared.json",
+      "bytes": 6564,
+      "sha256": "ca39240118e0840f9180df472353237e599b6be098b32ae916039e97620a90da"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/11-replay-retention.json",
+      "bytes": 1795,
+      "sha256": "1568abff430cdbf4bbe5e86b5b25ed57a7e2ab473b67bdea1ede861414503b66"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/12-cleanup-temp.json",
+      "bytes": 435,
+      "sha256": "7ed9f9a2c0cb5b04b61f98a89075389eb0c01023db7cfbd1a255b07eb2edbea2"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/archive-v3.json",
+      "bytes": 1965,
+      "sha256": "6cda325d0c3efa6f4da74afcb6f5271fe49e4f21b3d5f6f1660da5d29aa660e6"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-after-cleanup.json",
+      "bytes": 296,
+      "sha256": "4010fa26763e7f6caab64795fa0ed1cec826dd417f2c96a3d280596a4bed20f4"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-browser-replay-2-switch-1.json",
+      "bytes": 308,
+      "sha256": "30232fdf1f3f4bb14b39f1032c373e0048f8a09e842c879c85242c3df00176ff"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-browser-replay-3-switch-1.json",
+      "bytes": 308,
+      "sha256": "0161a0be7e9e840a4634d1e095a5e29983d3a77bca29be7a0eb91ed4b2cb5cc4"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-browser-replay-3-switch-2.json",
+      "bytes": 308,
+      "sha256": "3fb0b82cbea9c558d1d8d4814ac099dc5a559253281186c9f62da7c84cee2912"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-browser-replay-switch-1.json",
+      "bytes": 306,
+      "sha256": "df9ec15fbef773311397c39d972379ccdc25e806b9ae965a80e878f67fae50cf"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-maintenance-1.json",
+      "bytes": 296,
+      "sha256": "9fde34b4a3319020ff8430bb0776ddda268c6152fd6bc13ca8b0c7588ec67725"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-maintenance-2-parent.json",
+      "bytes": 303,
+      "sha256": "04fc55148630ad45fba56be1c3ced51128845093ccbd2845268b5076b5b18604"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/http-down-maintenance-2.json",
+      "bytes": 296,
+      "sha256": "26ff356f7f744ed82ab891afb68b1254c85f4e5e483057ae3b5885a1808e1060"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/inspect-quarantine-v4.json",
+      "bytes": 4252,
+      "sha256": "aaf0ba11165789ffb0e4aa01403a3836d416dd658c989caa26a457dc80392e39"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/inspect-v3-verified.json",
+      "bytes": 4164,
+      "sha256": "55a6b840dba5f447d3f1689b36e0c193c71c91fde31a1e3ae55c0f5acac7c7d3"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/observations/migrate-time.json",
+      "bytes": 426,
+      "sha256": "bb7e61497207479d33c48fc4c8e5f068dacfad516489ea41a855c345eda79630"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/01-containers.json",
+      "bytes": 736,
+      "sha256": "8f5a711e95750e85e57fa1adc172e7b637089911f97779279c17029fe4a6728e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/01-containers.log",
+      "bytes": 298,
+      "sha256": "9690c01ad1de673fa9ee45b02a1ac7d97ac082e3543090e17ba9a3c0c2903d84"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/02-resource-guards.json",
+      "bytes": 1064,
+      "sha256": "6bb60ec16c5d97321c493a55eda8578ec67020e402ea8d4f7b4a082cd12365a3"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/02-resource-guards.log",
+      "bytes": 2416,
+      "sha256": "cb294e9a056529e5161c5e6fabb828112f5938e5a219368ff215e295a867a6fe"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/03-maintenance-http-down.json",
+      "bytes": 709,
+      "sha256": "22470f18f4661aa8aa0796156b93202908c66ef400b7183aab200a56248fae9a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/03-maintenance-http-down.log",
+      "bytes": 320,
+      "sha256": "034f10ce97a9209b7b91158e92377296133c96d8ed77fb2a2f293b00a400229b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/04-copy-backup-verifier.json",
+      "bytes": 760,
+      "sha256": "7760e5ebe67bf3d846a13d8beeb0fdf40f076d216c7dcf580829039c8fbeef6f"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/04-copy-backup-verifier.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/05-copy-verified-v3-archive.json",
+      "bytes": 850,
+      "sha256": "bba575554b9be31324e3612210a8b8dabd53e91d1452bce1860cd4623ee7d8dd"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/05-copy-verified-v3-archive.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/06-staged-archive-hash.json",
+      "bytes": 713,
+      "sha256": "e4227c526b2ffc1f9e6dff791ed0440f6bf77f04a09c89eaa3caac63b35c9e91"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/06-staged-archive-hash.log",
+      "bytes": 94,
+      "sha256": "9ea3926a4d690143146cb122f5dd84be8e5c1be63e618d3657810a2b6d1f4440"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/07-create-restore-stage.json",
+      "bytes": 717,
+      "sha256": "9427bc20cbadf6cd25381a0e193bc03857e2879c415dc2f13a8449466ae7c0e9"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/07-create-restore-stage.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/08-extract-restore-stage.json",
+      "bytes": 776,
+      "sha256": "8f6d32963694de72e6ce0f84fb58dcb5151668936ef8efd08164e9e065956bc1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/08-extract-restore-stage.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/09-verify-staged-backup.json",
+      "bytes": 764,
+      "sha256": "0124df5d3d09649bb5e0b93b5f4ae7fdf9682a2fa744caf77fc0999c2bd8dbd6"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/09-verify-staged-backup.log",
+      "bytes": 68,
+      "sha256": "1cc75cb427e5cf24a9f364246cea20daa1fea05deab1cb2631cf215b102a0e4b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/10-quarantine-and-install.json",
+      "bytes": 714,
+      "sha256": "647d4b4a8156997794a997f537924990c079cb713952f9fede67c6716e8112de"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/10-quarantine-and-install.log",
+      "bytes": 2208,
+      "sha256": "ba61a2b25bc4b5335649725121cb815884b7f0a6d0594d1e1c1582c342f3a105"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/11-retain-quarantined-v4.json",
+      "bytes": 847,
+      "sha256": "9b8d097b8f4cc0dcb5847041a6bde93fe845c0da5e75489a10500554681487fe"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/11-retain-quarantined-v4.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/12-inspect-retained-v4.json",
+      "bytes": 851,
+      "sha256": "759071943a6c6622956d2159fd8f10c547a37fd00b1379e212eed953006c33d8"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/12-inspect-retained-v4.log",
+      "bytes": 4393,
+      "sha256": "8bee80b14e879c808ae277aa2186dd9fa5b9b8ea16d9f0be39970da8d531341a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/13-probe-restored-v3.json",
+      "bytes": 797,
+      "sha256": "90aa3ecdb9b7dfd18879dc48daebdec84b3e5a01b7f68b81de3e13f19b962bad"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/13-probe-restored-v3.log",
+      "bytes": 6364,
+      "sha256": "4ca555f7a3a04f26eb62261de123a29fc943e2d572178343f18ccfc8e5e564d0"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/14-end-maintenance.json",
+      "bytes": 661,
+      "sha256": "e87a4355de58f259bace390098bbddd3ec8f8db7a161ebab9ac58138b9f9f4ec"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/14-end-maintenance.log",
+      "bytes": 39,
+      "sha256": "6db6c5704a07798df2fab64c0ddeec41df018349af0bd5ce81ea028389c9a383"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/15-start-restored-old.json",
+      "bytes": 1130,
+      "sha256": "3f52950cdaf999c774882839c314ed370e8aad690663df3a06cb00a4aa36ced8"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/15-start-restored-old.log",
+      "bytes": 66,
+      "sha256": "dbc4a88478f83e35141e9c07cae4097b5c72a8a9288cdf9f06458c2d0429fcf5"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/16-verify-restored-application.json",
+      "bytes": 691,
+      "sha256": "dfbab35fec93f5b0b19d09017fab3d8a105c5b7ceda8240bda22db67bd926ea6"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/16-verify-restored-application.log",
+      "bytes": 3089,
+      "sha256": "e318b3ca357e16250a32ab40cc3ca70b78bbae6971397199e17df9a765de7f31"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/17-cached-candidate-to-old-reload.json",
+      "bytes": 702,
+      "sha256": "1f5af977840ff292c84f7cd4a7cc289a6d306ae40915ab6180ee6f350643dea5"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/17-cached-candidate-to-old-reload.log",
+      "bytes": 627,
+      "sha256": "7df61c2e181dab6464e305d0d2a2d4dbc8f11cb31c382df98eaffd5ed3dfe64c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/18-cached-client-recovery.json",
+      "bytes": 720,
+      "sha256": "3e7d6866593e5760f3b9949c8c0123c5c75e66b5d6557dd03d7b048373fada53"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/18-cached-client-recovery.log",
+      "bytes": 5022,
+      "sha256": "abf958c96886d6812c49ff14c9839669bc10f202150d0e6de9fc38ebcf77875e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/19-replay-resource-inventory.json",
+      "bytes": 755,
+      "sha256": "14e7e8c052582049f4e7c9f415811933c2eaa082b5807de6f409d6970d9bf336"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/19-replay-resource-inventory.log",
+      "bytes": 268,
+      "sha256": "aee59caf13cf425bcfeab91383c6f81fae875bebaabb03f1682f25eeebb3b375"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/20-restored-resource-bindings.json",
+      "bytes": 766,
+      "sha256": "87a4f3fd86fcd916feba4a0f439a1f45fa265b0d2290423d2a2660967f35147c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/20-restored-resource-bindings.log",
+      "bytes": 540,
+      "sha256": "e12749871f4dfaeefb1c941dddd99da84801f921467546ce88fa6b3df37f1973"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/21-prepare-browser-replay.json",
+      "bytes": 687,
+      "sha256": "24385a33bd901e573c4787b78a2a703615e5b2dfd6a5bf8829072e1256c1753c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/21-prepare-browser-replay.log",
+      "bytes": 6752,
+      "sha256": "d6bd4da336ea6c6536dfc0af116296b7e729eef65504befaf96a0830c4a763fe"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/22-stop-restored-for-browser-switch.json",
+      "bytes": 688,
+      "sha256": "06d0757bd0f7d4666b05aa8205c62bff7ab0f9a0c93e1bceeb60f94a18325b1c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/22-stop-restored-for-browser-switch.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/23-browser-switch-one-http-down.json",
+      "bytes": 726,
+      "sha256": "ef8981d28547986a8295d7f491104a370162aafb489432bf9577b57f9de41ab3"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/23-browser-switch-one-http-down.log",
+      "bytes": 323,
+      "sha256": "5a39632ce00938827d5466edd868d759675e7478d4d0a8983769bead5c0ab4df"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/24-start-candidate-on-scratch.json",
+      "bytes": 1098,
+      "sha256": "efd2049ced3e0dadc05c664b15277b167e31794378ded735bf56d0e373eb4480"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/24-start-candidate-on-scratch.log",
+      "bytes": 66,
+      "sha256": "039306ab6147734410da77369916ec73080083c85cea612df0460706d23ae5a8"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/25-verify-scratch-binding.json",
+      "bytes": 763,
+      "sha256": "76ca38428463042ab0fea994f191d025941179892d3f6cc0e2ab107a9819e896"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/25-verify-scratch-binding.log",
+      "bytes": 310,
+      "sha256": "c91a596591e1170009fbf690c887b2ca8a87111d86f8559d0c61fbc3c4f8dd43"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/26-browser-replay-interrupted.json",
+      "bytes": 966,
+      "sha256": "2af11d3278323ac7c31a907ddf852c48db65cfac1bd8debf8b7819ef04c30980"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/27-replay-candidate-startup-log.json",
+      "bytes": 706,
+      "sha256": "3552049c396d9bb0ec699435f5105efc54bfad2c6ee7aca0b3e1139ea3a61238"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/27-replay-candidate-startup-log.log",
+      "bytes": 236,
+      "sha256": "e879a476bf04b9a561d9f8934b54ddf1b445b7a65a0b229561339f6e46c7cfd9"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/28-stop-stalled-replay-candidate.json",
+      "bytes": 687,
+      "sha256": "55c2fd54484540f05bb92c83e29ecdde40f03b6f2eb9ff91863e04c18958f7cb"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/28-stop-stalled-replay-candidate.log",
+      "bytes": 46,
+      "sha256": "57303fb0da06f55adca0b014c541d7cbdfdf968ed8670c86877f2316382502c1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/29-restore-old-listener-after-harness-stop.json",
+      "bytes": 703,
+      "sha256": "c6938206d9c23eead27d7ca0cef9dc084807dd392c26f0da1467a5b338a15798"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/29-restore-old-listener-after-harness-stop.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/30-replay-two-resource-inventory.json",
+      "bytes": 763,
+      "sha256": "bd76b3e8a3ba335286df3af04d6d24e7f3ac8e6ed9bdc0ec2050153c14e58b59"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/30-replay-two-resource-inventory.log",
+      "bytes": 341,
+      "sha256": "0a35426ff99cc006ef243bd3fda4d310073af72219b054cf80077fda87dc4451"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/31-replay-two-resource-bindings.json",
+      "bytes": 849,
+      "sha256": "78cdc64de6cf9cfe687b0684459800d44bb3b059fa961420bd5de73e5923576e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/31-replay-two-resource-bindings.log",
+      "bytes": 995,
+      "sha256": "d4f7e4704d5e5a7368234da47e3b069a93fd600c88a8232bf6587dcd5a40add5"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/32-verify-scratch-reuse.json",
+      "bytes": 690,
+      "sha256": "c58289dc67dd3c0c79191777455588297729deaff23700168334c955a035a374"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/32-verify-scratch-reuse.log",
+      "bytes": 6396,
+      "sha256": "b3817ebfbc52b9605bceeafb919c19a9d9e6a38aa8f4685da13420d91a2d7381"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/33-stop-old-for-replay-two.json",
+      "bytes": 670,
+      "sha256": "64a2cd3c5ef2da22cccdb2bb803bca754e39ae32be81078b2830acb831bd51ba"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/33-stop-old-for-replay-two.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/34-replay-two-first-http-gap.json",
+      "bytes": 722,
+      "sha256": "80d0d86a341f2bc6e5b11f7f8dcf8e76942a76dbbbbf739d01f7f8e5d94e6c88"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/34-replay-two-first-http-gap.log",
+      "bytes": 325,
+      "sha256": "9aad4e2750866eb397ba1fc669ee88e313a0101e8de422911f018c19ecd6c31f"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/35-start-existing-scratch-candidate.json",
+      "bytes": 694,
+      "sha256": "33b7de3bd78fa137baadcb1e215584d45235131d8234ffc297b92c753e071889"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/35-start-existing-scratch-candidate.log",
+      "bytes": 46,
+      "sha256": "57303fb0da06f55adca0b014c541d7cbdfdf968ed8670c86877f2316382502c1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/36-confirm-reused-candidate-binding.json",
+      "bytes": 809,
+      "sha256": "759db8594639a62d3e43c9c035c64f777ad804c541c0a9d5f8153ba513c2deef"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/36-confirm-reused-candidate-binding.log",
+      "bytes": 383,
+      "sha256": "aad97b40501e6620020ac6caeb787dfb72429c0386cfa4d71a933d0731f21930"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/37-browser-replay-two.json",
+      "bytes": 678,
+      "sha256": "5c596896b49ecdb137ef8a8f17d99a3612a51c2095cc8d1a62833db1f319b62b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/37-browser-replay-two.log",
+      "bytes": 5922,
+      "sha256": "b75e8e9221ea2992277e20f0a327a81ddfd1337d02ab20032f98dadb8bfd39f4"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/38-stop-candidate-after-controller-timeout.json",
+      "bytes": 707,
+      "sha256": "a450980362e6d83d76f7956d7ff2223a35939a6f0bdb54ad42272abaa5460847"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/38-stop-candidate-after-controller-timeout.log",
+      "bytes": 46,
+      "sha256": "57303fb0da06f55adca0b014c541d7cbdfdf968ed8670c86877f2316382502c1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/39-restore-old-listener-after-controller-timeout.json",
+      "bytes": 715,
+      "sha256": "18ca198e99b53cedd7ca220c0eb505fa8d8b3c69f42f6a58542eb6bbdbe8a979"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/39-restore-old-listener-after-controller-timeout.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/40-replay-three-resource-inventory.json",
+      "bytes": 767,
+      "sha256": "f7a377e64c28a50573cb87ffb75db8eb64a182581d2f9e80e1c64ffb18e28717"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/40-replay-three-resource-inventory.log",
+      "bytes": 339,
+      "sha256": "8e409286a8c3cffd520527b8a628d99568758bcdced066fd6d28d3b342cc69ee"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/41-replay-three-resource-bindings.json",
+      "bytes": 853,
+      "sha256": "d9951629423553089f34c5476f7a23e1ebc8fd35e222d9a2f3401e180c971d25"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/41-replay-three-resource-bindings.log",
+      "bytes": 995,
+      "sha256": "48d37987892a3ccf28ae3839abd3f5bc59a2f6c9b1c66dc7882c18a6d249279d"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/42-verify-scratch-for-third-replay.json",
+      "bytes": 712,
+      "sha256": "46f8fe41a410d1a91ddf11cb66be98ac049710757caafaf74c90f1e3a0371639"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/42-verify-scratch-for-third-replay.log",
+      "bytes": 6396,
+      "sha256": "f6ea19240e40ddf89c1266d24f173e037545a406a0f54eb709c6341295e85bbe"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/43-stop-old-for-third-replay.json",
+      "bytes": 674,
+      "sha256": "590dd0cd1e4ba8469289e866c7641ea62f0a03b4cd9f45c3e600ce83870b1d6f"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/43-stop-old-for-third-replay.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/44-third-replay-first-http-gap.json",
+      "bytes": 726,
+      "sha256": "634b17f193e17a44d326b1136055b89a3d584789781e93fd5b37171be3b03c66"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/44-third-replay-first-http-gap.log",
+      "bytes": 325,
+      "sha256": "88fc1f0f3143e3ef74c8bb3b2806c618b2365ed67d606fa0ea83762ccc82d5d2"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/45-start-candidate-third-replay.json",
+      "bytes": 686,
+      "sha256": "a0e9e5b73987412f4296701c1c339934c1be8bab3ea604ac1a7ef76b79c399ff"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/45-start-candidate-third-replay.log",
+      "bytes": 46,
+      "sha256": "57303fb0da06f55adca0b014c541d7cbdfdf968ed8670c86877f2316382502c1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/46-confirm-third-replay-binding.json",
+      "bytes": 801,
+      "sha256": "d98b7581ea915962101eab5d9fa818b88f3ca0ecf6dacee8feaf64bff9019977"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/46-confirm-third-replay-binding.log",
+      "bytes": 383,
+      "sha256": "aad97b40501e6620020ac6caeb787dfb72429c0386cfa4d71a933d0731f21930"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/47-browser-replay-three.json",
+      "bytes": 682,
+      "sha256": "c5cdd23e59a9b2154094bfdc32e881c7be8e63e3960ddaf22488e61d8089c940"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/47-browser-replay-three.log",
+      "bytes": 29793,
+      "sha256": "4fb5b0bcc53b02426344f213536ac6b264928f585111e5c52de58340d7948c14"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/48-replay-three-stop-candidate.json",
+      "bytes": 683,
+      "sha256": "982f76a28cb697a789c5f41b874cea6717a47bc64a5de267b5e9aad6ba2eae9b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/48-replay-three-stop-candidate.log",
+      "bytes": 46,
+      "sha256": "57303fb0da06f55adca0b014c541d7cbdfdf968ed8670c86877f2316382502c1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/49-replay-three-http-gap-two.json",
+      "bytes": 722,
+      "sha256": "265d2bdb5d8af61d42e08980ad69fe067be0e5e2d6dc3c2170696f574d1553cc"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/49-replay-three-http-gap-two.log",
+      "bytes": 325,
+      "sha256": "88b76aa5374f4f15a9e1b89c6f218271bb7ed608f73d3a9bfe0fcae09531d16a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/50-replay-three-start-restored.json",
+      "bytes": 679,
+      "sha256": "b9795e344bc5f245701989a0da982a3403b0f336c3be352225a427d56c076e1e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/50-replay-three-start-restored.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/51-verify-replay-retention.json",
+      "bytes": 698,
+      "sha256": "18b9465324b16fc3aeb1de453f12a5d2d7e92e9b3d2d871b209d274d1539f89d"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/51-verify-replay-retention.log",
+      "bytes": 1842,
+      "sha256": "df0a5513a14224c0623da7a6987fbd9475db95012846e2ba7a7521cfc0de28b0"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/52-final-restored-v3-probe.json",
+      "bytes": 811,
+      "sha256": "affec45930a6e6eb1ec2358a9e0af7b9996f25c6ea3fe36d7587b13c9473e23a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/52-final-restored-v3-probe.log",
+      "bytes": 6741,
+      "sha256": "89f4dcec3e89e20ffb7121eac89a3ffc4a8bfd8586db380160937ff337db0126"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/53-final-restored-logs.json",
+      "bytes": 683,
+      "sha256": "a5f459eddadba70c1b6095e8f467327f29d6eb053ca4ea32054a5db7d2003cf8"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/53-final-restored-logs.log",
+      "bytes": 5028,
+      "sha256": "d7ed10f69f4c2f7544cdd630b0e90dbd9107351738c3eeab85574aae6b4d3b7e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/54-precleanup-resource-identities.json",
+      "bytes": 964,
+      "sha256": "4fe72b413c6a940c9ff768c1db8ace452cd2b2f104fc98f8f3d275af029401fc"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/54-precleanup-resource-identities.log",
+      "bytes": 2365,
+      "sha256": "ca0663a3651d95cad503eec2a7f054c56caaf7f26f3f1bd9c98e37180c5f9a5d"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/55-stop-restored-for-cleanup.json",
+      "bytes": 674,
+      "sha256": "f0f9318ba8fac15132e44783cde3598246e98eab0810f9363bbe4d10e299b1bf"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/55-stop-restored-for-cleanup.log",
+      "bytes": 41,
+      "sha256": "0adfda783c64fb878c8b7874b5ad9f00f7bb204035745ae1cc16706bea220ced"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/56-remove-task-containers.json",
+      "bytes": 854,
+      "sha256": "2123f35be7c725ace0a8c185acb96c0129969a3d05f12e9152dfd960573eb765"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/56-remove-task-containers.log",
+      "bytes": 201,
+      "sha256": "3833ed14fdc9a2112812f46397fb50fb1596b0bc64bf34ef80367ef585e1cfc9"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/57-remove-task-volume.json",
+      "bytes": 669,
+      "sha256": "4e9ce45c30758dfdd89f7692e6bd75c6363d507b051fccc1c353c47706ff1ecb"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/57-remove-task-volume.log",
+      "bytes": 37,
+      "sha256": "a227e14a340fa04ac59ba54308c62e01f5cfe5c00211c7839a52108923b0f09f"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/58-cleanup-task-temp.json",
+      "bytes": 675,
+      "sha256": "19dcbee51a53cfdfa8a17b4b6a8aaa00b7735e90a422212afb24c75a0feabaee"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/58-cleanup-task-temp.log",
+      "bytes": 454,
+      "sha256": "41a9dfa686a5b2b80abbb0f221f8a4d7b3c35a780882b3d4fded7f3208b63ae8"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/59-postcleanup-containers.json",
+      "bytes": 690,
+      "sha256": "10673caad891355af6a93f2a7cb311891275f166221ecf7909365c10570d2b0f"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/59-postcleanup-containers.log",
+      "bytes": 72,
+      "sha256": "8dd8bdf373a35501fb40d0a89536c30a63b93556d613921c70075ad82808c10c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/60-postcleanup-volumes.json",
+      "bytes": 688,
+      "sha256": "a8eef9b1e5c69b7f72e6046587a1869294d81144ea545fac37052d466ca98fdc"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/60-postcleanup-volumes.log",
+      "bytes": 23,
+      "sha256": "b9471b5da241cd1f5008186a9cc0f27c33d3d3380ca46782bb41eb900fb54493"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/61-postcleanup-http-down.json",
+      "bytes": 702,
+      "sha256": "c3975330d11db5e432cf4fbc106796e2846a86d0a8e66d6a3ac03dbc37b76b08"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/61-postcleanup-http-down.log",
+      "bytes": 313,
+      "sha256": "dff0d3b391156bd49ade8214a592a938eb2892a7e7c15dcf33ab96ad658410ab"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/62-preserved-image-identities.json",
+      "bytes": 911,
+      "sha256": "1300ccf5e3062485a6116487b84d5e9419957cde8ee5a122b15bab5bc4c58945"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/62-preserved-image-identities.log",
+      "bytes": 345,
+      "sha256": "92680508e7071d1cec06afa1bf9edb6492946cd5d3e976f52e23d7c26b3b39c5"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/cleanup-process-inventory.json",
+      "bytes": 226,
+      "sha256": "9e745f281b15744bf80a43bb4a0451601882c684d2f4d12c682c896b5c11f28e"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/owner-authorization.json",
+      "bytes": 743,
+      "sha256": "4728451e5385b566aac73b909e337b2bb4849f5e7340b6d6cc1595fbf5822587"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/precleanup-evidence-custody.json",
+      "bytes": 3778,
+      "sha256": "5a01a70ab1bb344d97578cc8e428b87f57fabc544e142aa9d0c0e78800dbb783"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/recovery-generated-manifest.json",
+      "bytes": 2121,
+      "sha256": "5ce298104087c7616ed6cfe995757e93e7256ebb09b9ec0f0236c5c1c080cd01"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay-coordinator-disposition.json",
+      "bytes": 1383,
+      "sha256": "96d52ec4d6f309fa81e9dd13069cb31e56949313882238d6874729dcc1bd8e75"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay-generated-manifest.json",
+      "bytes": 1420,
+      "sha256": "b2a0bb6ac1c0cab0c4f73b18a05312f564b7e353dc98e8ebd0a8f08d5c4e0e3f"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay-repository-baseline.json",
+      "bytes": 17358,
+      "sha256": "015114284b47193bf59f64f7e96e88484792add38eff31410a956d8c4260d5e1"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay2-browser-launch.json",
+      "bytes": 289,
+      "sha256": "5ca50681a56e726bb2895eaa511cb514a1d36f96a5d4c2ebc302880bfe9566fe"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay2-generated-manifest.json",
+      "bytes": 2498,
+      "sha256": "02c7cced32b2ea639882af6a32819d532963a4882a7fbaa6c9519d14d596a5c9"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay2-readiness-diagnosis.json",
+      "bytes": 1161,
+      "sha256": "5d062bf9cf9ec928284ce340b62e02070313efcf9de1ed006e2f1bcab39a0a0c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay2-repository-baseline.json",
+      "bytes": 23909,
+      "sha256": "edce79f6f1ec35c135e25266991d0db1254f1b89a0975c255305c9eb92061e69"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay3-browser-launch.json",
+      "bytes": 289,
+      "sha256": "e11429a049ef4d1478e144711d079d5106e75aa12cd42bfa949404ad758c1e22"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay3-generated-manifest.json",
+      "bytes": 9189,
+      "sha256": "485a304f27ee68aa6bc2cac686ec4f4fe25b673c8148c6bf5f84d2e0d4398844"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/replay3-repository-baseline.json",
+      "bytes": 30878,
+      "sha256": "a7e2c369758aed55de6fc35ed95ea438671de03896a81d61b2833cc2c9b09829"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/repository-evidence-baseline.json",
+      "bytes": 4626,
+      "sha256": "3279d58f1881b0f7229915764483882ed67084f3841f2286bb838f2a8ec6ea14"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/retention-verification.json",
+      "bytes": 2987,
+      "sha256": "1136f4ca9cded2da83a5f2d42182c42f83d4ff21b355b45957fd95eacdc1dd08"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/runtime-completion.json",
+      "bytes": 609,
+      "sha256": "620b7b6bfe795056de9524c758eea42be612000b68ef30d569a252034887e681"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/parent-runtime/runtime-generated-manifest.json",
+      "bytes": 3553,
+      "sha256": "bb88008e2b872dea4a8a0157ef946476a5c126a88f1e5af13c0dc7e870b616b4"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/probe.mjs",
+      "bytes": 5547,
+      "sha256": "c5b85aca7986dbc9a85c04c040950b5aa313276db7c1679afe1216f38d4dd04a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/progress.md",
+      "bytes": 32309,
+      "sha256": "f0008586c0752561e700405247bb21e9f7c3f70aca63f433a311e9f326a629ac"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/quarantine-install.sh",
+      "bytes": 2207,
+      "sha256": "91fc0f6d9dbd3c3465b2b3443947107fadf01a6d7c6b6066d4a037598d7e227a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/runtime-handoff.md",
+      "bytes": 12749,
+      "sha256": "61a297321f513e5185e5e73fda4dbc19cbc6816f9a4700445765802f0a0e7572"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/09-cached-client-resume-1-01-initial-worker-and-assets.png",
+      "bytes": 2741,
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/09-cached-client-resume-1-failure.png",
+      "bytes": 2741,
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-2-warmup-failure.png",
+      "bytes": 38998,
+      "sha256": "2ddf221c33c9a5589e45d9be671a999c4f1a0c6283cefb14bf2948655e5d25f5"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-00-candidate-controlled.png",
+      "bytes": 41159,
+      "sha256": "dda7c8aa7d606fa1ff21ecce3f4b4559615b49107d055c33f8d3e54d3fd598dc"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-01-initial-worker-and-assets.png",
+      "bytes": 41159,
+      "sha256": "dda7c8aa7d606fa1ff21ecce3f4b4559615b49107d055c33f8d3e54d3fd598dc"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-02-candidate-pinned-against-old.png",
+      "bytes": 40868,
+      "sha256": "f92cb4531c38d199312da26f82c75b8b09e551e423409221e4f1b50a9f961c97"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-03-edit-outcome.png",
+      "bytes": 2741,
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-04-new-tab-before-reload.png",
+      "bytes": 40341,
+      "sha256": "a4de6b0d269476770d9898e752de35b62ddcfb9a57e31add4a35bc8a67e6d59b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-05-real-update-banner.png",
+      "bytes": 44644,
+      "sha256": "6a13634e62042c10f34548d78d63498a4690a507ba4524cb0246265182fd830b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-06-old-app-after-banner-reload.png",
+      "bytes": 40696,
+      "sha256": "57d43fed2a1a8aec5ad36432ca7002ca6aabd3d3358bd77a15bc02b29f326c97"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/10-browser-replay-3-07-old-edit-saved.png",
+      "bytes": 43402,
+      "sha256": "bc6036d42e22cf79426e744867cbbb1ec75952ac8a272b898877ecaf9419730a"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/baseline-old-app-v3.png",
+      "bytes": 39613,
+      "sha256": "fda6764455255d844747fff233ce8cd749d9ecee04f283b5cf135079144b09ed"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/cached-2-candidate-pinned-filter-against-old-server.png",
+      "bytes": 40359,
+      "sha256": "feacbfdd9d4df9a3688754c7749ed1192af140b5cb45e1ff026557dbd50b7764"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/cached-3-candidate-edit-against-old-server.png",
+      "bytes": 2741,
+      "sha256": "f21fbebeaf291dfb0fa92fed90d5549c91f43277df5c35bc0be7e8addf6cb5bd"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/candidate-1-update-banner-on-cached-old-app.png",
+      "bytes": 44999,
+      "sha256": "216e06bcbc279fdca0aec7397150343f99a502a93db79569f2e4ed4e8db57bc9"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/candidate-2-after-reload.png",
+      "bytes": 40341,
+      "sha256": "a4de6b0d269476770d9898e752de35b62ddcfb9a57e31add4a35bc8a67e6d59b"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/candidate-3-pinned-filter.png",
+      "bytes": 30111,
+      "sha256": "e5b0d9a18696d874433140039b34ed9ee476868c1b1eca4e4aaafb4e6bf3eddc"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/restored-1-old-app-fresh-login.png",
+      "bytes": 40441,
+      "sha256": "5f771f5ebf568e44b3cf9db8a783ff13eef1df9473a2645dbb6f8dcca14395fa"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/screenshots/seed-old-app.png",
+      "bytes": 40014,
+      "sha256": "9a803377ef1c0f44133fc95f991d6919af78b8fd99428f96c8cda13c3fa02523"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/task2.mjs",
+      "bytes": 61974,
+      "sha256": "67ffe1254262d4b86e4d5ca5d9290500ff294869889f1dbb51c3b83ffb84e4ae"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2-evidence/verify-evidence.mjs",
+      "bytes": 6443,
+      "sha256": "4bbeee7a9bcd88bc52fc93240b0314004a3977cd627d48978e1a2a1c73dd837c"
+    },
+    {
+      "path": "docs/releases/2026-11-10-task-2.md",
+      "bytes": 27898,
+      "sha256": "1a60e22658ac812079ec6a4f44629ad4a97a5c34b73130742d53ee133481c113"
+    }
+  ]
+}
