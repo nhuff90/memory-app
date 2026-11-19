@@ -85,6 +85,10 @@ function PendingCard({
                   Keep Recall's version
                 </button>
               </>
+            ) : item.held.reason === "missing" ? (
+              <button type="button" onClick={() => void recover("upload")} disabled={recovering} className={`${action} text-indigo-700 dark:text-indigo-300`}>
+                {recovering ? "Uploading…" : "Upload again"}
+              </button>
             ) : (
               <button type="button" onClick={() => void recover()} disabled={recovering} className={`${action} text-indigo-700 dark:text-indigo-300`}>
                 {recovering ? "Checking…" : item.held.reason === "unsupported" ? "Try again" : "Recover keywords"}

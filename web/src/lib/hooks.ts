@@ -28,15 +28,20 @@ export function useRecent({
   const [error, setError] = useState<string | null>(null);
   const scope = JSON.stringify([archived, category, photos, pinned, keyword]);
   const [listedScope, setListedScope] = useState<string | null>(null);
+  const loadedScope = useRef<string | null>(null);
   const generation = useRef(0);
 
   useEffect(() => {
     const current = ++generation.current;
     setListedScope(scope);
     setLoading(true);
-    setMemories([]);
-    setCursor(null);
-    setError(null);
+    // A refresh keeps the current cards on screen until the new page arrives; only a new filter clears them.
+    if (loadedScope.current !== scope) {
+      loadedScope.current = scope;
+      setMemories([]);
+      setCursor(null);
+      setError(null);
+    }
     listMemories({ archived, limit, category, photos, pinned, keyword })
       .then((page) => {
         if (current !== generation.current) return;
@@ -103,7 +108,7 @@ export function useSearch(
   } = {},
 ): SearchState {
   const trimmed = query.trim();
-  const scope = JSON.stringify([trimmed, archived, strict, refreshKey, limit, category, pinned, keyword]);
+  const scope = JSON.stringify([trimmed, archived, strict, limit, category, pinned, keyword]);
   const [state, setState] = useState<SearchState & { scope: string }>({ ...IDLE, scope: "" });
 
   useEffect(() => {
@@ -112,7 +117,12 @@ export function useSearch(
       return;
     }
     const controller = new AbortController();
-    setState({ results: [], query: trimmed, loading: true, error: null, scope });
+    // A refresh keeps the current results on screen; only a new query or filter clears them.
+    setState((previous) =>
+      previous.scope === scope
+        ? { ...previous, loading: true, error: null }
+        : { results: [], query: trimmed, loading: true, error: null, scope },
+    );
     const timer = setTimeout(() => {
       searchMemories(trimmed, { archived, strict, limit, category, pinned, keyword, signal: controller.signal })
         .then((response) => {

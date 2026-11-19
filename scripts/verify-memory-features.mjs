@@ -312,11 +312,13 @@ try {
   await kw.press("Enter");
   await rememberForm.getByRole("button", { name: "Save", exact: true }).click();
   await seen;
+  // The capture is stored on this phone before the upload starts, so the form is already clear for the next memory.
+  await until(async () => (await remember.inputValue()) === "", "form cleared once stored");
+  assert.deepEqual(await pillsIn(rememberForm), []);
   await remember.fill("Next capture typed while saving");
   await kw.pressSequentially("NextKey");
   await kw.press("Enter");
-  // The sent keyword is removed and selected again (same normalized keyword) for the next capture.
-  await rememberForm.getByRole("button", { name: "Remove keyword Inflight", exact: true }).click();
+  // The sent keyword selected again (same normalized keyword) belongs to the next capture.
   await kw.pressSequentially("inflight");
   await kw.press("Enter");
   await kw.pressSequentially("unfinished");

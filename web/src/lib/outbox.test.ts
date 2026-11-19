@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "../api";
-import { canEditHeld, Outbox, reconcileCapture, sendCapture, type OutboxItem, type OutboxStorage } from "./outbox";
+import { canEditHeld, HeldError, Outbox, reconcileCapture, sendCapture, type OutboxItem, type OutboxStorage } from "./outbox";
 
 function memoryStorage(initial: OutboxItem[] = []) {
   const saved = new Map(initial.map((item) => [item.clientId, item]));
@@ -137,6 +137,21 @@ describe("Outbox", () => {
     };
     expect(await new Outbox(broken, scripted().send).save(item("a"))).toBe("sent");
     await expect(new Outbox(broken, scripted(offline()).send).save(item("b"))).rejects.toThrow("Can't reach Recall");
+    // The server created it without confirming keywords: saved, so the caller must not keep the draft for a resave.
+    const unverified = new HeldError("unverified", "Recall answered, but couldn't confirm this memory's keywords were saved.");
+    expect(await new Outbox(broken, scripted(unverified).send).save(item("c"))).toBe("unconfirmed");
+    const unsupported = new HeldError("unsupported", "This Recall server can't save keywords yet, so nothing was uploaded.");
+    await expect(new Outbox(broken, scripted(unsupported).send).save(item("d"))).rejects.toThrow("can't save keywords");
+  });
+
+  it("tells the caller the memory is stored before the upload starts", async () => {
+    const { storage, saved } = memoryStorage();
+    const events: string[] = [];
+    const outbox = new Outbox(storage, async (entry) => {
+      events.push(`send ${entry.clientId} stored=${saved.has(entry.clientId)}`);
+    });
+    expect(await outbox.save(item("a"), () => events.push("stored"))).toBe("sent");
+    expect(events).toEqual(["stored", "send a stored=true"]);
   });
 });
 
@@ -402,6 +417,28 @@ describe("keyword captures across server versions", () => {
         expect(server.creates()).toBe(2); // the lost first create and its retry; recovery never creates again
       }
     }
+  });
+
+  it("asks before uploading again a possibly-saved capture the server no longer has (deleted elsewhere)", async () => {
+    const { outbox, saved } = setup();
+    claimCapability();
+    server.version = "old";
+    expect(await outbox.save(keyworded("deleted-01"))).toBe("held");
+    server.records.delete("deleted-01"); // deleted on another device; its receipt goes with it
+    server.version = "new";
+    expect(await outbox.recover("deleted-01")).toBe("held");
+    const held = saved.get("deleted-01")!;
+    expect(held.held).toMatchObject({ reason: "missing" });
+    expect(canEditHeld(held)).toBe(false);
+    expect(await outbox.recover("deleted-01")).toBe("held"); // repeated recovery still doesn't re-create it
+    expect(await outbox.recover("deleted-01", "keep")).toBe("held");
+    expect(server.records.size).toBe(0);
+    expect(server.creates()).toBe(1);
+    // Only the user's explicit choice uploads it again, with the original clientId.
+    expect(await outbox.recover("deleted-01", "upload")).toBe("recovered");
+    expect(server.records.get("deleted-01")!.customKeywords).toEqual(["Christmas", "Garage"]);
+    expect(server.creates()).toBe(2);
+    expect(saved.size).toBe(0);
   });
 
   it("holds a refused retry for reconciliation when an earlier attempt may have saved it", async () => {

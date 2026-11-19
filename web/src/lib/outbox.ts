@@ -10,8 +10,10 @@ export interface HeldState {
    * unverified: an upload may have reached the server (a success without matching keywords, or an interrupted
    *   attempt); it can only be resolved by reconciling its original clientId.
    * conflict: the server has the recall without these keywords and it changed since; the user chooses add or keep.
+   * missing: an upload may have reached the server, but it has no recall for this clientId now (deleted elsewhere,
+   *   or the upload never arrived); it is only uploaded again when the user explicitly asks.
    */
-  reason: "unsupported" | "unverified" | "conflict";
+  reason: "unsupported" | "unverified" | "conflict" | "missing";
   message: string;
   /** The recall's updatedAt in the server's success response, proving later that it is untouched since. */
   savedUpdatedAt?: number | null;
@@ -39,7 +41,8 @@ export interface OutboxItem {
   uploadStarted?: boolean;
 }
 
-export type Resolution = "add" | "keep";
+/** "upload" is client-only: the user confirmed that a missing capture should be uploaded again. */
+export type Resolution = "add" | "keep" | "upload";
 /** Sends one capture. `onUpload` must be awaited right before the create request goes out. */
 export type SendCapture = (item: OutboxItem, onUpload: () => Promise<void>) => Promise<unknown>;
 export type ReconcileCapture = (item: OutboxItem, onUpload: () => Promise<void>, resolution?: Resolution) => Promise<unknown>;
@@ -50,7 +53,8 @@ export interface OutboxStorage {
   remove(clientId: string): Promise<void>;
 }
 
-export type SaveResult = "sent" | "queued" | "rejected" | "held";
+/** unconfirmed: no device storage, and the server saved the memory but couldn't confirm its keywords. */
+export type SaveResult = "sent" | "queued" | "rejected" | "held" | "unconfirmed";
 export type RecoverResult = "recovered" | "held";
 
 /** The capture can't be confirmed as saved with its keywords; hold it for the user instead of retrying. */
@@ -137,16 +141,25 @@ export class Outbox {
     return () => this.sentListeners.delete(listener);
   }
 
-  async save(item: OutboxItem): Promise<SaveResult> {
+  /** `onStored` runs once the item is durably queued, before any upload, so the caller can clear its draft. */
+  async save(item: OutboxItem, onStored: () => void = () => {}): Promise<SaveResult> {
     await this.ready;
     try {
       await this.storage.put(item);
     } catch {
       // No storage on this device (some private modes): upload directly, and let errors reach the caller.
-      await this.send(item, async () => {});
+      let result: SaveResult = "sent";
+      try {
+        await this.send(item, async () => {});
+      } catch (error) {
+        // The server already created it: saving the draft again would duplicate it, so report it as saved.
+        if (!(error instanceof HeldError && error.reason === "unverified")) throw error;
+        result = "unconfirmed";
+      }
       this.sentListeners.forEach((listener) => listener());
-      return "sent";
+      return result;
     }
+    onStored();
     this.items = [...this.items, item];
     this.notify();
     await this.flush();
@@ -341,14 +354,16 @@ export async function reconcileCapture(
     clientId: item.clientId,
     customKeywords: keywords,
     expectedUpdatedAt: resolution === "add" ? (item.held?.conflict?.updatedAt ?? null) : (item.held?.savedUpdatedAt ?? null),
-    resolution: resolution ?? null,
+    resolution: resolution === "add" || resolution === "keep" ? resolution : null,
   });
   switch (result?.status) {
     case "missing":
-      if (resolution === "keep") {
-        throw new HeldError("unverified", "Recall no longer has this memory. Recover it to upload it again, or discard it.");
-      }
-      return sendCapture(item, onUpload);
+      // A receipt is deleted with its recall, so "missing" can't tell a lost upload from a memory deleted elsewhere.
+      if (resolution === "upload" || (!item.uploadStarted && !resolution)) return sendCapture(item, onUpload);
+      throw new HeldError(
+        "missing",
+        "Recall doesn't have this memory. It may have been deleted on another device, or the earlier upload never arrived. Upload it again, or discard it.",
+      );
     case "already-saved":
     case "kept":
       return;

@@ -165,23 +165,36 @@ export function RememberTab({
     setPills(committed);
     setSaving(true);
     setStatus(null);
-    try {
-      const result = await getOutbox().save({
-        clientId: newClientId(),
-        body,
-        createdAt: Date.now(),
-        photos: sent.map(({ full, thumb }) => ({ full, thumb })),
-        customKeywords: sentKeywords,
-      });
-      // Anything typed, selected or added while the upload was in flight belongs to the next memory.
+    let cleared = false;
+    // Runs as soon as the capture is queued on this phone, so a closed app never restores it as a draft too.
+    const clearSent = () => {
+      if (cleared) return;
+      cleared = true;
+      // Anything typed, selected or added while the save was in flight belongs to the next memory.
       setDraft((current) => (current === body ? "" : current));
       // The saved memory's keywords leave the form, except any the user removed and selected again meanwhile;
-      // pills added and text typed during the upload stay for the next one.
+      // pills added and text typed during the save stay for the next one.
       const leaving = (keyword: string) => flight.keys.has(keywordKey(keyword)) && !flight.readded.has(keywordKey(keyword));
       setPills((current) => ({ keywords: current.keywords.filter((keyword) => !leaving(keyword)), input: current.input }));
       setPhotos((list) => list.filter((photo) => !sent.includes(photo)));
       sent.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
+    };
+    try {
+      const result = await getOutbox().save(
+        {
+          clientId: newClientId(),
+          body,
+          createdAt: Date.now(),
+          photos: sent.map(({ full, thumb }) => ({ full, thumb })),
+          customKeywords: sentKeywords,
+        },
+        clearSent,
+      );
+      clearSent();
       if (result === "sent") setStatus({ kind: "saved", message: "Saved." });
+      else if (result === "unconfirmed") {
+        setStatus({ kind: "held", message: "Saved, but Recall couldn't confirm its keywords. Open the memory to check them." });
+      }
       else if (result === "queued") setStatus({ kind: "saved", message: "Saved on this phone. It will upload when you're online." });
       else if (result === "held") {
         setStatus({

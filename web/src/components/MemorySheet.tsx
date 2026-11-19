@@ -113,7 +113,9 @@ export function MemorySheet({
     if (committed.input) return;
     setPills(committed);
     return run("save", async () => {
-      const updated = await updateMemory(memory.id, { body, customKeywords: committed.keywords });
+      // Unchanged keywords stay out of the request, so text edits still work against servers without keywords.
+      const keywordsChanged = !sameKeywordList(committed.keywords, memory.customKeywords);
+      const updated = await updateMemory(memory.id, keywordsChanged ? { body, customKeywords: committed.keywords } : { body });
       apply(updated);
       setBody(updated.body);
       setPills({ keywords: updated.customKeywords, input: "" });
