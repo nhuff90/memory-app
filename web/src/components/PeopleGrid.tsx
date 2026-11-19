@@ -8,13 +8,16 @@ import { PracticeSheet } from "./PracticeSheet";
 export function PeopleGrid({
   archived,
   refreshKey,
+  keyword = null,
   onOpen,
 }: {
   archived: boolean;
   refreshKey: number;
+  /** The active exact keyword filter, which this photo view respects too. */
+  keyword?: string | null;
   onOpen: (memory: Memory) => void;
 }) {
-  const faces = useRecent({ archived, refreshKey, category: "people", photos: true, limit: 60 });
+  const faces = useRecent({ archived, refreshKey, category: "people", photos: true, limit: 60, keyword });
   const [practicing, setPracticing] = useState(false);
   const stopPracticing = useCallback(() => setPracticing(false), []);
   if (faces.memories.length === 0) return null;

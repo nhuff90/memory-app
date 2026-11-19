@@ -9,6 +9,7 @@ import { RecallTab } from "./components/RecallTab";
 import { RememberTab } from "./components/RememberTab";
 import { SettingsSheet } from "./components/SettingsSheet";
 import { UpdateBanner } from "./components/UpdateBanner";
+import { useKeywordVocabulary } from "./lib/hooks";
 import { useOutboxSync } from "./lib/outbox";
 
 type Tab = "remember" | "recall";
@@ -27,6 +28,7 @@ export default function App() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [openMemory, setOpenMemory] = useState<Memory | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [keywordFilter, setKeywordFilter] = useState<string | null>(null);
   const rememberInput = useRef<HTMLTextAreaElement>(null);
   const recallInput = useRef<HTMLInputElement>(null);
 
@@ -58,6 +60,7 @@ export default function App() {
 
   const changed = useCallback(() => setRefreshKey((key) => key + 1), []);
   useOutboxSync(auth === "in", changed);
+  const { vocabulary, error: vocabularyError } = useKeywordVocabulary(refreshKey, auth === "in");
   const closeMemory = useCallback(() => setOpenMemory(null), []);
   const closeSettings = useCallback(() => setSettingsOpen(false), []);
 
@@ -66,6 +69,14 @@ export default function App() {
     flushSync(() => setTab(next));
     localStorage.setItem(TAB_KEY, next);
     (next === "remember" ? rememberInput : recallInput).current?.focus();
+  }
+
+  /** Exact keyword browsing: one visible, removable filter in Recall; other filters are kept. */
+  function browseKeyword(keyword: string) {
+    setOpenMemory(null);
+    setKeywordFilter(keyword);
+    flushSync(() => setTab("recall"));
+    localStorage.setItem(TAB_KEY, "recall");
   }
 
   if (auth === "checking") return null;
@@ -116,13 +127,22 @@ export default function App() {
 
       <main className="mx-auto max-w-xl px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)]">
         <div hidden={tab !== "remember"}>
-          <RememberTab inputRef={rememberInput} refreshKey={refreshKey} onOpen={setOpenMemory} onChanged={changed} />
+          <RememberTab
+            inputRef={rememberInput}
+            refreshKey={refreshKey}
+            vocabulary={vocabulary}
+            vocabularyError={vocabularyError}
+            onOpen={setOpenMemory}
+            onChanged={changed}
+          />
         </div>
         <div hidden={tab !== "recall"}>
           <RecallTab
             inputRef={recallInput}
             refreshKey={refreshKey}
             aiEnabled={me?.aiEnabled ?? false}
+            keyword={keywordFilter}
+            onKeywordChange={setKeywordFilter}
             onOpen={setOpenMemory}
           />
         </div>
@@ -135,6 +155,9 @@ export default function App() {
           onClose={closeMemory}
           onChanged={changed}
           onOpen={setOpenMemory}
+          onBrowseKeyword={browseKeyword}
+          vocabulary={vocabulary}
+          vocabularyError={vocabularyError}
           onDeleted={() => {
             setOpenMemory(null);
             changed();

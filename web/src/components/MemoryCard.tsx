@@ -57,6 +57,11 @@ export function MemoryCard({
       <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500 dark:text-stone-400">
         <span>{formatWhen(memory.createdAt)}</span>
         {memory.pinned && <span aria-label="Pinned" title="Pinned">📌</span>}
+        {(memory.customKeywords ?? []).map((keyword) => (
+          <span key={keyword} className="rounded-full bg-indigo-50 px-2 py-0.5 font-medium text-indigo-800 dark:bg-indigo-950/50 dark:text-indigo-200">
+            {keyword}
+          </span>
+        ))}
         {memory.archivedAt !== null && (
           <span className="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">
             Outdated

@@ -7,9 +7,33 @@ import type {
   MeResponse,
   Memory,
   MemoryList,
+  ReconcileResponse,
   SearchResponse,
   UsageSummary,
 } from "../../shared/types";
+
+/**
+ * Older servers return memories without newer fields (pins, custom keywords). Fill safe defaults so the UI never
+ * crashes on an older response shape.
+ */
+export function normalizeMemory(raw: Memory): Memory {
+  const memory = (raw ?? {}) as Partial<Memory>;
+  const strings = (value: unknown) => (Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string") : []);
+  return {
+    ...(memory as Memory),
+    body: typeof memory.body === "string" ? memory.body : "",
+    category: memory.category ?? null,
+    categorySetByUser: memory.categorySetByUser === true,
+    tags: strings(memory.tags),
+    pinned: memory.pinned === true,
+    customKeywords: strings(memory.customKeywords),
+    archivedAt: typeof memory.archivedAt === "number" ? memory.archivedAt : null,
+    enrichedAt: typeof memory.enrichedAt === "number" ? memory.enrichedAt : null,
+    photos: Array.isArray(memory.photos) ? memory.photos : [],
+  };
+}
+
+const normalizeList = (list: unknown): Memory[] => (Array.isArray(list) ? list.map(normalizeMemory) : []);
 
 export class ApiError extends Error {
   constructor(
@@ -34,6 +58,11 @@ interface RequestOptions extends Omit<RequestInit, "body"> {
 }
 
 export async function api<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return (await apiWithStatus<T>(path, options)).data;
+}
+
+/** Like `api`, also returning the HTTP status (for example 201 Created versus 200 for an idempotent retry). */
+export async function apiWithStatus<T>(path: string, options: RequestOptions = {}): Promise<{ status: number; data: T }> {
   const { json, ...init } = options;
   const headers = new Headers(init.headers);
   let body = init.body;
@@ -53,8 +82,8 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
     const data = (await response.json().catch(() => null)) as Partial<ApiErrorBody> | null;
     throw new ApiError(response.status, data?.error ?? "error", data?.message ?? "Something went wrong. Please try again.");
   }
-  if (response.status === 204) return undefined as T;
-  return (await response.json()) as T;
+  if (response.status === 204) return { status: 204, data: undefined as T };
+  return { status: response.status, data: (await response.json()) as T };
 }
 
 export interface PhotoBlobs {
@@ -73,8 +102,20 @@ export const browserTimeZone = () => Intl.DateTimeFormat().resolvedOptions().tim
 
 export const getMe = () => api<MeResponse>("/api/me");
 
-export const askQuestion = (question: string, signal?: AbortSignal) =>
-  api<AskResponse>("/api/ask", { method: "POST", json: { question, timeZone: browserTimeZone() }, signal });
+export const askQuestion = async (question: string, signal?: AbortSignal) => {
+  const response = await api<AskResponse>("/api/ask", { method: "POST", json: { question, timeZone: browserTimeZone() }, signal });
+  return { ...response, usedIds: Array.isArray(response.usedIds) ? response.usedIds : [], results: normalizeList(response.results) };
+};
+
+export const getKeywords = (signal?: AbortSignal) => api<unknown>("/api/keywords", { signal });
+
+export const reconcileMemory = (input: {
+  clientId: string;
+  customKeywords: string[];
+  expectedUpdatedAt?: number | null;
+  resolution?: "add" | "keep" | null;
+}) =>
+  api<ReconcileResponse | null>("/api/memories/reconcile", { method: "POST", json: input });
 
 export const getUsage = () => api<UsageSummary>(`/api/usage?tz=${encodeURIComponent(browserTimeZone())}`);
 
@@ -92,9 +133,17 @@ export const login = (password: string) => api<{ ok: true }>("/api/login", { met
 
 export const logout = () => api<{ ok: true }>("/api/logout", { method: "POST" });
 
-export function listMemories(
-  options: { cursor?: string | null; limit?: number; archived?: boolean; category?: Category | null; photos?: boolean; pinned?: boolean } = {},
-) {
+export async function listMemories(
+  options: {
+    cursor?: string | null;
+    limit?: number;
+    archived?: boolean;
+    category?: Category | null;
+    photos?: boolean;
+    pinned?: boolean;
+    keyword?: string | null;
+  } = {},
+): Promise<MemoryList> {
   const params = new URLSearchParams();
   if (options.cursor) params.set("cursor", options.cursor);
   if (options.limit) params.set("limit", String(options.limit));
@@ -102,46 +151,66 @@ export function listMemories(
   if (options.category) params.set("category", options.category);
   if (options.photos) params.set("photos", "1");
   if (options.pinned) params.set("pinned", "1");
-  return api<MemoryList>(`/api/memories?${params}`);
+  if (options.keyword) params.set("keyword", options.keyword);
+  const page = await api<MemoryList>(`/api/memories?${params}`);
+  return { memories: normalizeList(page?.memories), nextCursor: typeof page?.nextCursor === "string" ? page.nextCursor : null };
 }
 
-export function searchMemories(
+export async function searchMemories(
   query: string,
-  options: { archived?: boolean; strict?: boolean; limit?: number; category?: Category | null; pinned?: boolean; signal?: AbortSignal } = {},
-) {
+  options: {
+    archived?: boolean;
+    strict?: boolean;
+    limit?: number;
+    category?: Category | null;
+    pinned?: boolean;
+    keyword?: string | null;
+    signal?: AbortSignal;
+  } = {},
+): Promise<SearchResponse> {
   const params = new URLSearchParams({ q: query });
   if (options.archived) params.set("archived", "1");
   if (options.category) params.set("category", options.category);
   if (options.strict) params.set("strict", "1");
   if (options.pinned) params.set("pinned", "1");
+  if (options.keyword) params.set("keyword", options.keyword);
   if (options.limit) params.set("limit", String(options.limit));
-  return api<SearchResponse>(`/api/search?${params}`, { signal: options.signal });
+  const response = await api<SearchResponse>(`/api/search?${params}`, { signal: options.signal });
+  return { results: normalizeList(response?.results) };
 }
 
-export function createMemory(input: { body: string; photos: PhotoBlobs[]; clientId: string; createdAt?: number }) {
+/**
+ * Body, photos and keywords go up together in one request. The raw response is returned unnormalized so the outbox
+ * can tell an older server (which drops `customKeywords`) from a real save, with its status: 201 means this request
+ * created the recall; 200 means an earlier attempt had (the record may have been edited since).
+ */
+export function createMemory(input: { body: string; photos: PhotoBlobs[]; clientId: string; createdAt?: number; customKeywords?: string[] }) {
   const form = new FormData();
   form.set("body", input.body);
   form.set("clientId", input.clientId);
   if (input.createdAt) form.set("createdAt", String(input.createdAt));
+  for (const keyword of input.customKeywords ?? []) form.append("customKeywords", keyword);
   appendPhotos(form, input.photos);
-  return api<Memory>("/api/memories", { method: "POST", body: form });
+  return apiWithStatus<unknown>("/api/memories", { method: "POST", body: form });
 }
 
-export const relatedMemories = (id: number, signal?: AbortSignal) =>
-  api<SearchResponse>(`/api/memories/${id}/related`, { signal });
+export const relatedMemories = async (id: number, signal?: AbortSignal): Promise<SearchResponse> => {
+  const response = await api<SearchResponse>(`/api/memories/${id}/related`, { signal });
+  return { results: normalizeList(response?.results) };
+};
 
-export const updateMemory = (id: number, patch: { body?: string; archived?: boolean; category?: Category; pinned?: boolean; customKeywords?: string[] }) =>
-  api<Memory>(`/api/memories/${id}`, { method: "PATCH", json: patch });
+export const updateMemory = async (id: number, patch: { body?: string; archived?: boolean; category?: Category; pinned?: boolean; customKeywords?: string[] }) =>
+  normalizeMemory(await api<Memory>(`/api/memories/${id}`, { method: "PATCH", json: patch }));
 
 export const deleteMemory = (id: number) => api<void>(`/api/memories/${id}`, { method: "DELETE" });
 
-export function addPhotos(id: number, photos: PhotoBlobs[]) {
+export async function addPhotos(id: number, photos: PhotoBlobs[]) {
   const form = new FormData();
   appendPhotos(form, photos);
-  return api<Memory>(`/api/memories/${id}/photos`, { method: "POST", body: form });
+  return normalizeMemory(await api<Memory>(`/api/memories/${id}/photos`, { method: "POST", body: form }));
 }
 
-export const deletePhoto = (photoId: number) => api<Memory>(`/api/photos/${photoId}`, { method: "DELETE" });
+export const deletePhoto = async (photoId: number) => normalizeMemory(await api<Memory>(`/api/photos/${photoId}`, { method: "DELETE" }));
 
 export function errorMessage(error: unknown): string {
   if (error instanceof ApiError || error instanceof Error) return error.message;

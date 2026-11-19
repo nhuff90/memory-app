@@ -1,17 +1,27 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
-import type { Memory } from "../../../shared/types";
+import type { KeywordUsage, Memory } from "../../../shared/types";
 import { errorMessage, updateMemory } from "../api";
+import {
+  DRAFT_TEXT_KEY,
+  loadDraftKeywords,
+  loadDraftPhotos,
+  putDraftPhoto,
+  removeDraftPhoto,
+  saveDraftKeywords,
+} from "../lib/draft";
 import { useAutosize, useRecent, useSearch } from "../lib/hooks";
 import { newClientId } from "../lib/ids";
 import { preparePhoto, type PreparedPhoto } from "../lib/images";
-import { getOutbox, useOutbox, type OutboxItem } from "../lib/outbox";
+import { keywordKey } from "../../../shared/keywords";
+import { applyKeywordInput, pendingKeywordError, type PillInput } from "../lib/keywords";
+import { canEditHeld, getOutbox, useOutbox, type OutboxItem, type Resolution } from "../lib/outbox";
 import { AlreadySaved } from "./AlreadySaved";
 import { CheckIcon, CloseIcon } from "./icons";
+import { KeywordPills } from "./KeywordPills";
 import { MemoryList } from "./MemoryCard";
 import { PendingList } from "./PendingList";
 import { PhotoButton } from "./PhotoButton";
 
-const DRAFT_KEY = "recall:draft";
 const MAX_PHOTOS = 10;
 const MAX_LENGTH = 10_000;
 /** Shorter drafts match too loosely to be worth showing. */
@@ -19,32 +29,44 @@ const SIMILAR_MIN_LENGTH = 4;
 
 interface PendingPhoto extends PreparedPhoto {
   key: string;
+  addedAt: number;
 }
 
 type Status =
-  | { kind: "saved" | "error"; message: string }
+  | { kind: "saved" | "error" | "held"; message: string }
   | { kind: "outdated"; message: string; memoryId: number }
   | null;
 
 export function RememberTab({
   inputRef,
   refreshKey,
+  vocabulary,
+  vocabularyError,
   onOpen,
   onChanged,
 }: {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   refreshKey: number;
+  vocabulary: readonly KeywordUsage[];
+  vocabularyError: string | null;
   onOpen: (memory: Memory) => void;
   onChanged: () => void;
 }) {
-  const [draft, setDraft] = useState(() => localStorage.getItem(DRAFT_KEY) ?? "");
+  const [draft, setDraft] = useState(() => localStorage.getItem(DRAFT_TEXT_KEY) ?? "");
+  const [pills, setPills] = useState<PillInput>(loadDraftKeywords);
   const [photos, setPhotos] = useState<PendingPhoto[]>([]);
+  const [photosLoaded, setPhotosLoaded] = useState(false);
   const [preparing, setPreparing] = useState(0);
   const [saving, setSaving] = useState(false);
   const [marking, setMarking] = useState(false);
   const [status, setStatus] = useState<Status>(null);
   const photosRef = useRef(photos);
   photosRef.current = photos;
+  const persistedPhotos = useRef(new Set<string>());
+  const pillsRef = useRef(pills);
+  pillsRef.current = pills;
+  /** The keywords of the capture being uploaded, and which of them the user selected again meanwhile. */
+  const inFlight = useRef<{ keys: Set<string>; readded: Set<string> } | null>(null);
   const pending = useOutbox();
   const recent = useRecent({ archived: false, refreshKey, limit: 20 });
   const similar = useSearch(draft.trim().length >= SIMILAR_MIN_LENGTH ? draft : "", {
@@ -54,21 +76,54 @@ export function RememberTab({
     refreshKey,
   });
   useAutosize(inputRef, draft, 112);
+  const keywordError = pendingKeywordError(pills.keywords, pills.input);
 
   useEffect(() => {
-    if (draft) localStorage.setItem(DRAFT_KEY, draft);
-    else localStorage.removeItem(DRAFT_KEY);
+    if (draft) localStorage.setItem(DRAFT_TEXT_KEY, draft);
+    else localStorage.removeItem(DRAFT_TEXT_KEY);
   }, [draft]);
+
+  useEffect(() => saveDraftKeywords(pills), [pills]);
+
+  // Draft photos live in IndexedDB so a reload or a closed app keeps them with the text and keywords.
+  useEffect(() => {
+    let cancelled = false;
+    void loadDraftPhotos().then((stored) => {
+      if (cancelled) return;
+      stored.forEach((photo) => persistedPhotos.current.add(photo.key));
+      const restored = stored.map((photo) => ({ ...photo, previewUrl: URL.createObjectURL(photo.thumb) }));
+      setPhotos((list) => [...restored, ...list.filter((photo) => !persistedPhotos.current.has(photo.key))]);
+      setPhotosLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!photosLoaded) return;
+    const current = new Set(photos.map((photo) => photo.key));
+    for (const photo of photos) {
+      if (persistedPhotos.current.has(photo.key)) continue;
+      persistedPhotos.current.add(photo.key);
+      void putDraftPhoto({ key: photo.key, full: photo.full, thumb: photo.thumb, addedAt: photo.addedAt });
+    }
+    for (const key of [...persistedPhotos.current]) {
+      if (current.has(key)) continue;
+      persistedPhotos.current.delete(key);
+      void removeDraftPhoto(key);
+    }
+  }, [photos, photosLoaded]);
 
   useEffect(() => () => photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.previewUrl)), []);
 
   useEffect(() => {
-    if (status === null || status.kind === "error") return;
+    if (status === null || status.kind === "error" || status.kind === "held") return;
     const timer = setTimeout(() => setStatus(null), status.kind === "outdated" ? 6000 : 2500);
     return () => clearTimeout(timer);
   }, [status]);
 
-  const canSave = (draft.trim().length > 0 || photos.length > 0) && preparing === 0 && !saving;
+  const canSave = (draft.trim().length > 0 || photos.length > 0) && preparing === 0 && !saving && keywordError === null;
 
   async function addFiles(files: File[]) {
     setStatus(null);
@@ -79,7 +134,7 @@ export function RememberTab({
     for (const file of accepted) {
       try {
         const prepared = await preparePhoto(file);
-        setPhotos((list) => [...list, { ...prepared, key: newClientId() }]);
+        setPhotos((list) => [...list, { ...prepared, key: newClientId(), addedAt: Date.now() }]);
       } catch (error) {
         setStatus({ kind: "error", message: errorMessage(error) });
       } finally {
@@ -96,16 +151,18 @@ export function RememberTab({
     });
   }
 
-  function clearDraft() {
-    photos.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
-    setPhotos([]);
-    setDraft("");
-  }
-
   async function save() {
     if (!canSave) return;
+    // Valid unfinished keyword text is added before saving; invalid text blocks the save (and stays visible).
+    const committed = applyKeywordInput(pills.keywords, pills.input, true);
+    if (committed.input) return;
     const body = draft;
     const sent = photos;
+    const sentKeywords = committed.keywords;
+    const flight = { keys: new Set(sentKeywords.map(keywordKey)), readded: new Set<string>() };
+    inFlight.current = flight;
+    pillsRef.current = committed;
+    setPills(committed);
     setSaving(true);
     setStatus(null);
     try {
@@ -114,20 +171,45 @@ export function RememberTab({
         body,
         createdAt: Date.now(),
         photos: sent.map(({ full, thumb }) => ({ full, thumb })),
+        customKeywords: sentKeywords,
       });
-      // Anything typed or added while the upload was in flight belongs to the next memory.
+      // Anything typed, selected or added while the upload was in flight belongs to the next memory.
       setDraft((current) => (current === body ? "" : current));
+      // The saved memory's keywords leave the form, except any the user removed and selected again meanwhile;
+      // pills added and text typed during the upload stay for the next one.
+      const leaving = (keyword: string) => flight.keys.has(keywordKey(keyword)) && !flight.readded.has(keywordKey(keyword));
+      setPills((current) => ({ keywords: current.keywords.filter((keyword) => !leaving(keyword)), input: current.input }));
       setPhotos((list) => list.filter((photo) => !sent.includes(photo)));
       sent.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
       if (result === "sent") setStatus({ kind: "saved", message: "Saved." });
       else if (result === "queued") setStatus({ kind: "saved", message: "Saved on this phone. It will upload when you're online." });
-      else setStatus({ kind: "error", message: "Recall couldn't save that. It's below, so you can fix it." });
+      else if (result === "held") {
+        setStatus({
+          kind: "held",
+          message: "Kept on this phone: Recall couldn't confirm its keywords. It's below, held until you recover it.",
+        });
+      } else setStatus({ kind: "error", message: "Recall couldn't save that. It's below, so you can fix it." });
       inputRef.current?.focus();
     } catch (error) {
       setStatus({ kind: "error", message: errorMessage(error) });
     } finally {
+      inFlight.current = null;
       setSaving(false);
     }
+  }
+
+  /** Pill changes from the user. During an upload, notes keywords of the sent memory that were selected again. */
+  function changePills(next: PillInput) {
+    const flight = inFlight.current;
+    if (flight) {
+      const before = new Set(pillsRef.current.keywords.map(keywordKey));
+      for (const keyword of next.keywords) {
+        const key = keywordKey(keyword);
+        if (!before.has(key) && flight.keys.has(key)) flight.readded.add(key);
+      }
+    }
+    pillsRef.current = next;
+    setPills(next);
   }
 
   async function setOutdated(memoryId: number, archived: boolean) {
@@ -143,18 +225,50 @@ export function RememberTab({
     }
   }
 
-  function editPending(item: OutboxItem) {
-    if ((draft.trim() || photos.length > 0) && !window.confirm("Replace what you're typing with this memory?")) return;
-    clearDraft();
+  async function editPending(item: OutboxItem) {
+    // A capture that may already be on the server is only resolvable by its original clientId, never re-saved.
+    if (!canEditHeld(item)) return;
+    const hasDraft = draft.trim() || photos.length > 0 || pills.keywords.length > 0 || pills.input.trim();
+    if (hasDraft && !window.confirm("Replace what you're typing with this memory?")) return;
+    photos.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
+    const restored = item.photos.map((photo, index) => ({
+      ...photo,
+      previewUrl: URL.createObjectURL(photo.thumb),
+      key: newClientId(),
+      addedAt: Date.now() + index,
+    }));
+    const keywords = { keywords: item.customKeywords ?? [], input: "" };
+    // Write the draft durably before the queued copy is removed, so nothing is lost if the app closes now.
+    localStorage.setItem(DRAFT_TEXT_KEY, item.body);
+    saveDraftKeywords(keywords);
+    await Promise.all(restored.map((photo) => putDraftPhoto({ key: photo.key, full: photo.full, thumb: photo.thumb, addedAt: photo.addedAt })));
+    restored.forEach((photo) => persistedPhotos.current.add(photo.key));
     setDraft(item.body);
-    setPhotos(item.photos.map((photo) => ({ ...photo, previewUrl: URL.createObjectURL(photo.thumb), key: newClientId() })));
+    setPills(keywords);
+    setPhotos(restored);
     setStatus(null);
-    void getOutbox().discard(item.clientId);
+    await getOutbox().discard(item.clientId);
     inputRef.current?.focus();
   }
 
+  async function recoverPending(item: OutboxItem, resolution?: Resolution) {
+    const result = await getOutbox().recover(item.clientId, resolution);
+    setStatus(
+      result === "recovered"
+        ? {
+            kind: "saved",
+            message: resolution === "keep" ? "Kept Recall's version of the memory." : "Recovered. The memory is saved with its keywords.",
+          }
+        : { kind: "held", message: "Still held on this phone. Nothing was lost; see the note below." },
+    );
+  }
+
   function discardPending(item: OutboxItem) {
-    if (window.confirm("Discard this memory? It was never saved.")) void getOutbox().discard(item.clientId);
+    const message =
+      item.held && !canEditHeld(item)
+        ? "Recall may already have this memory without these keywords. Discard the copy kept on this phone?"
+        : "Discard this memory? It was never saved.";
+    if (window.confirm(message)) void getOutbox().discard(item.clientId);
   }
 
   return (
@@ -207,6 +321,16 @@ export function RememberTab({
             ))}
           </div>
         )}
+        <div className="px-4 pb-3">
+          <KeywordPills
+            id="remember-keywords"
+            label="Keywords"
+            value={pills}
+            onChange={changePills}
+            vocabulary={vocabulary}
+            vocabularyError={vocabularyError}
+          />
+        </div>
         <div className="flex items-center justify-between gap-2 border-t border-stone-100 px-2 py-2 dark:border-stone-800">
           <PhotoButton onFiles={(files) => void addFiles(files)} disabled={photos.length + preparing >= MAX_PHOTOS} />
           <button
@@ -247,10 +371,16 @@ export function RememberTab({
             </button>
           </p>
         )}
+        {status?.kind === "held" && <p className="text-amber-800 dark:text-amber-300">{status.message}</p>}
         {status?.kind === "error" && <p className="text-red-700 dark:text-red-400">{status.message}</p>}
       </div>
 
-      <PendingList items={pending} onEdit={editPending} onDiscard={discardPending} />
+      <PendingList
+        items={pending}
+        onEdit={(item) => void editPending(item)}
+        onDiscard={discardPending}
+        onRecover={(item, resolution) => recoverPending(item, resolution)}
+      />
 
       <h2 className="mt-3 mb-2 px-1 text-sm font-semibold text-stone-500 dark:text-stone-400">Recent</h2>
       {recent.error && recent.memories.length === 0 ? (

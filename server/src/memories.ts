@@ -1,5 +1,5 @@
-import type { Category, Memory, Photo } from "../../shared/types.js";
-import { normalizeKeywords } from "../../shared/keywords.js";
+import type { Category, KeywordUsage, Memory, Photo, ReconcileResponse } from "../../shared/types.js";
+import { keywordKey, normalizeKeywords } from "../../shared/keywords.js";
 import { isCategory } from "../../shared/types.js";
 import type { DB } from "./db.js";
 import { badRequest, notFound, tooLarge } from "./errors.js";
@@ -26,6 +26,8 @@ export interface CreateMemoryInput {
   clientId?: string | null;
   createdAt?: number | null;
   photos?: PhotoUpload[];
+  /** Saved in the same transaction as the body and photos. Older clients omit it: no keywords. */
+  customKeywords?: string[];
 }
 
 export interface UpdateMemoryInput {
@@ -49,6 +51,21 @@ export interface ListOptions {
   category?: Category | null;
   includeArchived?: boolean;
   withPhotosOnly?: boolean;
+  /** Exact whole custom keyword, matched by normalized identity. */
+  keyword?: string | null;
+}
+
+/** SQL fragment matching memories (aliased `alias`) carrying the normalized keyword bound to the placeholder. */
+export function keywordClause(alias: string): string {
+  return `EXISTS (SELECT 1 FROM memory_keywords k WHERE k.memory_id = ${alias}.id AND k.keyword = ?)`;
+}
+
+function parseKeywords(values: readonly string[]): string[] {
+  try {
+    return normalizeKeywords(values);
+  } catch (error) {
+    throw badRequest((error as Error).message);
+  }
 }
 
 export type MemoryChange =
@@ -153,9 +170,12 @@ export class MemoryStore {
     if (body.length > MAX_BODY_LENGTH) throw badRequest(`Keep memories under ${MAX_BODY_LENGTH} characters.`);
     if (!body && uploads.length === 0) throw badRequest("Type something or add a photo first.");
     validatePhotos(uploads);
+    // Validated before anything is stored: an invalid keyword list saves nothing at all.
+    const keywords = parseKeywords(input.customKeywords ?? []);
 
     const clientId = input.clientId ?? null;
     if (clientId) {
+      // A retry of a capture that already arrived: return it unchanged, never a second copy or a second count.
       const existing = this.findByClientId(clientId);
       if (existing) return { memory: existing, created: false };
     }
@@ -169,10 +189,16 @@ export class MemoryStore {
       inserted = this.db.transaction(() => {
         const result = this.db
           .prepare(
-            `INSERT INTO memories (client_id, body, created_at, updated_at) VALUES (?, ?, ?, ?)`,
+            `INSERT INTO memories (client_id, body, custom_keywords, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
           )
-          .run(clientId, body, createdAt, now);
+          .run(clientId, body, keywords.join(", "), createdAt, now);
         const id = Number(result.lastInsertRowid);
+        this.syncKeywordRows(id, keywords, now);
+        if (clientId) {
+          this.db
+            .prepare(`INSERT INTO capture_receipts (client_id, memory_id, custom_keywords, received_at) VALUES (?, ?, ?, ?)`)
+            .run(clientId, id, JSON.stringify(keywords), now);
+        }
         return { id, photoIds: this.insertPhotoRows(id, stored, now) };
       })();
     } catch (error) {
@@ -224,6 +250,11 @@ export class MemoryStore {
       params.push(options.category);
     }
     if (options.withPhotosOnly) where.push("EXISTS (SELECT 1 FROM photos p WHERE p.memory_id = memories.id)");
+    const key = options.keyword ? keywordKey(options.keyword) : "";
+    if (key) {
+      where.push(keywordClause("memories"));
+      params.push(key);
+    }
     if (options.cursor) {
       const [createdAt, id] = parseCursor(options.cursor);
       where.push("(created_at < ? OR (created_at = ? AND id < ?))");
@@ -246,18 +277,16 @@ export class MemoryStore {
     const sets: string[] = [];
     const params: (string | number | null)[] = [];
     let bodyChanged = false;
+    let keywords: string[] | null = null;
 
     if (input.customKeywords !== undefined) {
-      let keywords: string[];
-      try {
-        keywords = normalizeKeywords(input.customKeywords);
-      } catch (error) {
-        throw badRequest((error as Error).message);
-      }
+      keywords = parseKeywords(input.customKeywords);
       const stored = keywords.join(", ");
       if (stored !== current.custom_keywords) {
         sets.push("custom_keywords = ?");
         params.push(stored);
+      } else {
+        keywords = null;
       }
     }
     if (input.pinned !== undefined && Number(input.pinned) !== current.pinned) {
@@ -286,11 +315,109 @@ export class MemoryStore {
     }
     if (sets.length === 0) return this.require(id);
 
+    const now = this.now();
     sets.push("updated_at = ?");
-    params.push(this.now());
-    this.db.prepare(`UPDATE memories SET ${sets.join(", ")} WHERE id = ?`).run(...params, id);
+    params.push(now);
+    this.db.transaction(() => {
+      this.db.prepare(`UPDATE memories SET ${sets.join(", ")} WHERE id = ?`).run(...params, id);
+      if (keywords) this.syncKeywordRows(id, keywords, now);
+    })();
     await this.emit({ kind: "updated", id, bodyChanged });
     return this.require(id);
+  }
+
+  /**
+   * Reconciles a capture held on a device by its original clientId.
+   * - No recall with that clientId: `missing` (the device may upload it).
+   * - A recall this server saved with its keywords (receipt): `already-saved`; differences are later edits.
+   * - A recall an older server created without the keywords (no receipt): nobody recorded what happened to its
+   *   keywords since, so a held keyword that is absent now may have been removed on purpose. The missing keywords
+   *   are only added when the recall is provably untouched since that capture (`expectedUpdatedAt` equals the
+   *   `updatedAt` the device received in the create's 201 response, and it still has no keywords; a retry's 200
+   *   response is never such proof), or when the user explicitly chose `add` after seeing the
+   *   current keywords (`expectedUpdatedAt` from that `conflict` answer, so a newer edit is never overwritten).
+   *   Otherwise nothing changes and the answer is `conflict`, with the current recall and the missing keywords.
+   *   `keep` records the user's choice to keep the recall as it is.
+   */
+  async reconcile(
+    clientId: string,
+    customKeywords: string[],
+    options: { expectedUpdatedAt?: number | null; resolution?: "add" | "keep" | null } = {},
+  ): Promise<ReconcileResponse> {
+    const held = parseKeywords(customKeywords);
+    const row = this.db.prepare(`SELECT * FROM memories WHERE client_id = ?`).get(clientId) as MemoryRow | undefined;
+    if (!row) return { status: "missing", memory: null };
+    const receipt = this.db.prepare(`SELECT 1 FROM capture_receipts WHERE client_id = ?`).get(clientId);
+    if (receipt) return { status: "already-saved", memory: this.require(row.id) };
+
+    const current = parseTags(row.custom_keywords);
+    const currentKeys = new Set(current.map(keywordKey));
+    const missing = held.filter((keyword) => !currentKeys.has(keywordKey(keyword)));
+    const writeReceipt = () =>
+      this.db
+        .prepare(`INSERT INTO capture_receipts (client_id, memory_id, custom_keywords, received_at) VALUES (?, ?, ?, ?)`)
+        .run(clientId, row.id, JSON.stringify(held), this.now());
+    if (missing.length === 0 || options.resolution === "keep") {
+      writeReceipt();
+      return { status: missing.length === 0 ? "reconciled" : "kept", memory: this.require(row.id) };
+    }
+    const sameVersion = typeof options.expectedUpdatedAt === "number" && options.expectedUpdatedAt === row.updated_at;
+    // Without an explicit "add", the recall must also still look exactly as the older server created it: that server
+    // never stored keywords, so any keyword now present proves later keyword edits (and a removal may be among them).
+    const untouched = sameVersion && (options.resolution === "add" || current.length === 0);
+    if (!untouched) return { status: "conflict", memory: this.require(row.id), missingKeywords: missing };
+
+    let merged: string[];
+    try {
+      merged = normalizeKeywords([...current, ...held]);
+    } catch (error) {
+      throw badRequest(
+        `This memory already has ${current.length} keyword${current.length === 1 ? "" : "s"}. ${(error as Error).message} Remove some, then try again.`,
+      );
+    }
+    const now = this.now();
+    this.db.transaction(() => {
+      // Guarded by updated_at too, so an edit landing between the check and this write is never overwritten.
+      const result = this.db
+        .prepare(`UPDATE memories SET custom_keywords = ?, updated_at = ? WHERE id = ? AND updated_at = ?`)
+        .run(merged.join(", "), now, row.id, row.updated_at);
+      if (result.changes === 0) throw badRequest("This memory just changed. Try recovering again.");
+      this.syncKeywordRows(row.id, merged, now);
+      writeReceipt();
+    })();
+    await this.emit({ kind: "updated", id: row.id, bodyChanged: false });
+    return { status: "reconciled", memory: this.require(row.id) };
+  }
+
+  /**
+   * Every custom keyword with its active usage count (once per recall, outdated recalls excluded) and last genuine
+   * assignment time. Keywords found only on outdated recalls are listed with a count of 0, for typed matches only.
+   */
+  keywordVocabulary(): KeywordUsage[] {
+    const rows = this.db
+      .prepare(
+        `SELECT k.keyword AS key, k.label, k.assigned_at, m.archived_at
+         FROM memory_keywords k JOIN memories m ON m.id = k.memory_id`,
+      )
+      .all() as { key: string; label: string; assigned_at: number | null; archived_at: number | null }[];
+    const byKey = new Map<string, { count: number; last: number | null; labels: Map<string, number>; anyLabel: string }>();
+    for (const row of rows) {
+      const entry = byKey.get(row.key) ?? { count: 0, last: null, labels: new Map(), anyLabel: row.label };
+      if (row.archived_at === null) {
+        entry.count++;
+        if (row.assigned_at !== null) entry.last = Math.max(entry.last ?? 0, row.assigned_at);
+        entry.labels.set(row.label, (entry.labels.get(row.label) ?? 0) + 1);
+      }
+      if (row.label < entry.anyLabel) entry.anyLabel = row.label;
+      byKey.set(row.key, entry);
+    }
+    return [...byKey.entries()]
+      .map(([key, entry]) => {
+        // The most used spelling among active recalls; alphabetical on ties so it never flickers.
+        const labels = [...entry.labels.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+        return { keyword: labels[0]?.[0] ?? entry.anyLabel, key, count: entry.count, lastAssignedAt: entry.last };
+      })
+      .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
   }
 
   /** Memories still waiting for auto-tagging, newest first. */
@@ -462,6 +589,32 @@ export class MemoryStore {
   private findByClientId(clientId: string): Memory | null {
     const row = this.db.prepare(`SELECT * FROM memories WHERE client_id = ?`).get(clientId) as MemoryRow | undefined;
     return row ? this.hydrate([row])[0]! : null;
+  }
+
+  /**
+   * Keeps the keyword assignment rows equal to the saved list. Only keywords new to this recall get a fresh
+   * assignment time; kept keywords keep theirs (a respelling is not a new assignment), removed ones are dropped.
+   * Must run inside the transaction that writes `custom_keywords`.
+   */
+  private syncKeywordRows(memoryId: number, keywords: string[], now: number): void {
+    const existing = new Map(
+      (this.db.prepare(`SELECT keyword, label FROM memory_keywords WHERE memory_id = ?`).all(memoryId) as {
+        keyword: string;
+        label: string;
+      }[]).map((row) => [row.keyword, row.label]),
+    );
+    const next = new Map(keywords.map((keyword) => [keywordKey(keyword), keyword]));
+    const remove = this.db.prepare(`DELETE FROM memory_keywords WHERE memory_id = ? AND keyword = ?`);
+    const relabel = this.db.prepare(`UPDATE memory_keywords SET label = ? WHERE memory_id = ? AND keyword = ?`);
+    const insert = this.db.prepare(
+      `INSERT INTO memory_keywords (memory_id, keyword, label, assigned_at) VALUES (?, ?, ?, ?)`,
+    );
+    for (const key of existing.keys()) if (!next.has(key)) remove.run(memoryId, key);
+    for (const [key, label] of next) {
+      const previous = existing.get(key);
+      if (previous === undefined) insert.run(memoryId, key, label, now);
+      else if (previous !== label) relabel.run(label, memoryId, key);
+    }
   }
 
   private insertPhotoRows(memoryId: number, stored: StoredPhotoFiles[], createdAt: number): number[] {

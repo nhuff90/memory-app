@@ -5,10 +5,12 @@ import { bodyLimit } from "hono/body-limit";
 import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
 import { z } from "zod";
+import { KEYWORD_CAPTURE_CAPABILITY } from "../../shared/keywords.js";
 import {
   CATEGORIES,
   type AskResponse,
   type CaptureResponse,
+  type KeywordVocabulary,
   type MeResponse,
   type MemoryList,
   type SearchResponse,
@@ -74,7 +76,18 @@ const createBody = z.object({
   body: z.string().default(""),
   clientId: z.string().optional(),
   createdAt: z.number().optional(),
+  customKeywords: z.array(z.string().max(1000)).max(100).optional(),
 });
+const reconcileBody = z
+  .object({
+    clientId: z.string(),
+    customKeywords: z.array(z.string().max(1000)).max(100),
+    /** The recall's updatedAt the device last saw (create response or conflict answer). */
+    expectedUpdatedAt: z.number().nullable().optional(),
+    resolution: z.enum(["add", "keep"]).nullable().optional(),
+  })
+  .strict();
+const keywordParam = z.string().max(200).optional();
 const updateBody = z
   .object({
     body: z.string().optional(),
@@ -91,6 +104,7 @@ const searchQuery = z.object({
   category: z.enum(CATEGORIES).optional(),
   archived: z.enum(["0", "1"]).optional(),
   strict: z.enum(["0", "1"]).optional(),
+  keyword: keywordParam,
 });
 const askBody = z.object({
   question: z.string().trim().min(1).max(500),
@@ -106,6 +120,7 @@ const listQuery = z.object({
   category: z.enum(CATEGORIES).optional(),
   archived: z.enum(["0", "1"]).optional(),
   photos: z.enum(["0", "1"]).optional(),
+  keyword: keywordParam,
 });
 
 function parseWith<T>(schema: z.ZodType<T>, data: unknown, message = "That request was not valid."): T {
@@ -170,6 +185,15 @@ function formString(form: ParsedForm, name: string): string | undefined {
   return typeof value === "string" ? value : undefined;
 }
 
+/** Repeated `customKeywords` text fields. Absent for older clients, which means no keywords. */
+function formKeywords(form: ParsedForm): string[] {
+  const values = formValues(form, "customKeywords");
+  if (values.length > 100 || values.some((value) => typeof value !== "string" || value.length > 1000)) {
+    throw badRequest("That request was not valid.");
+  }
+  return values as string[];
+}
+
 async function formPhotos(form: ParsedForm): Promise<PhotoUpload[]> {
   const fulls = formValues(form, "photos").filter((value): value is File => typeof value !== "string");
   const thumbs = formValues(form, "thumbs").filter((value): value is File => typeof value !== "string");
@@ -219,6 +243,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
     model: llm?.model ?? null,
     photoCaptions: llm !== null && settings.photoCaptions(),
     counts: store.counts(),
+    capabilities: [KEYWORD_CAPTURE_CAPABILITY],
   });
 
   app.use("*", requestLog(deps.accessLog ?? ((line) => console.log(line))));
@@ -336,6 +361,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
       category: query.category ?? null,
       includeArchived: query.archived === "1",
       withPhotosOnly: query.photos === "1",
+      keyword: query.keyword ?? null,
     });
     return c.json(result);
   });
@@ -348,15 +374,36 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
         body: formString(form, "body") ?? "",
         clientId: parseClientId(formString(form, "clientId")),
         createdAt: parseCreatedAt(formString(form, "createdAt")),
+        customKeywords: formKeywords(form),
         photos: await formPhotos(form),
       };
     } else {
       const json = parseWith(createBody, await readJson(c));
-      input = { body: json.body, clientId: parseClientId(json.clientId), createdAt: parseCreatedAt(json.createdAt) };
+      input = {
+        body: json.body,
+        clientId: parseClientId(json.clientId),
+        createdAt: parseCreatedAt(json.createdAt),
+        customKeywords: json.customKeywords ?? [],
+      };
     }
     const { memory, created } = await store.create(input);
     return c.json(memory, created ? 201 : 200);
   });
+
+  /** Recovers a capture held on a device (keywords an older server discarded) by its original clientId. */
+  app.post("/api/memories/reconcile", async (c) => {
+    const json = parseWith(reconcileBody, await readJson(c));
+    const clientId = parseClientId(json.clientId);
+    if (!clientId) throw badRequest("That save had an invalid id.");
+    return c.json(
+      await store.reconcile(clientId, json.customKeywords, {
+        expectedUpdatedAt: json.expectedUpdatedAt ?? null,
+        resolution: json.resolution ?? null,
+      }),
+    );
+  });
+
+  app.get("/api/keywords", (c) => c.json({ keywords: store.keywordVocabulary() } satisfies KeywordVocabulary));
 
   app.get("/api/search", async (c) => {
     const query = parseWith(searchQuery, c.req.query());
@@ -366,6 +413,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
       category: query.category ?? null,
       includeArchived: query.archived === "1",
       strict: query.strict === "1",
+      keyword: query.keyword ?? null,
     });
     const response: SearchResponse = { results: store.getMany(hits.map((hit) => hit.id)) };
     return c.json(response);

@@ -18,11 +18,16 @@ export function RecallTab({
   inputRef,
   refreshKey,
   aiEnabled,
+  keyword,
+  onKeywordChange,
   onOpen,
 }: {
   inputRef: RefObject<HTMLInputElement | null>;
   refreshKey: number;
   aiEnabled: boolean;
+  /** One exact custom keyword filter, intersected with every other filter. */
+  keyword: string | null;
+  onKeywordChange: (keyword: string | null) => void;
   onOpen: (memory: Memory) => void;
 }) {
   const [query, setQuery] = useState("");
@@ -33,8 +38,16 @@ export function RecallTab({
   // Tagged with the refresh count it was asked at: once any memory changes, the answer may be stale.
   const [asked, setAsked] = useState<{ state: AnswerState; refreshKey: number } | null>(null);
   const asking = useRef<AbortController | null>(null);
-  const search = useSearch(query, { archived: showOutdated, refreshKey, category, pinned });
-  const recent = useRecent({ archived: showOutdated, refreshKey, category, pinned });
+  const search = useSearch(query, { archived: showOutdated, refreshKey, category, pinned, keyword });
+  const recent = useRecent({ archived: showOutdated, refreshKey, category, pinned, keyword });
+  // Ask is never scoped to a filtered view, so say so whenever one is active.
+  const askLabel = pinned || keyword ? "Ask all memories" : "Ask";
+
+  // A new keyword (set here or from a memory) starts a fresh view: an answer from before no longer applies.
+  useEffect(() => {
+    asking.current?.abort();
+    setAsked(null);
+  }, [keyword]);
   const trimmed = query.trim();
   const searching = trimmed.length > 0;
   const showFaces = category === "people" && !searching;
@@ -93,7 +106,7 @@ export function RecallTab({
           autoComplete="off"
           autoCorrect="off"
           className={`w-full rounded-2xl bg-white py-3 pl-11 text-base shadow-sm ring-1 ring-stone-200 outline-none placeholder:text-stone-400 focus:ring-2 focus:ring-indigo-500 dark:bg-stone-900 dark:ring-stone-800 [&::-webkit-search-cancel-button]:hidden ${
-            aiEnabled && searching ? (pinned ? "pr-48" : "pr-28") : "pr-11"
+            aiEnabled && searching ? (askLabel !== "Ask" ? "pr-48" : "pr-28") : "pr-11"
           }`}
         />
         {query && (
@@ -116,7 +129,7 @@ export function RecallTab({
                 className="flex items-center gap-1 rounded-xl bg-indigo-700 py-1.5 pr-3 pl-2.5 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
               >
                 <SparkIcon />
-                {pinned ? "Ask all memories" : "Ask"}
+                {askLabel}
               </button>
             )}
           </div>
@@ -140,6 +153,23 @@ export function RecallTab({
           </button>
         ))}
       </div>
+
+      {keyword && (
+        <div role="group" aria-label="Keyword filter" className="mt-3 flex items-center gap-2 px-1 text-sm">
+          <span className="text-stone-500 dark:text-stone-400">Keyword</span>
+          <span className="inline-flex min-h-11 items-center rounded-full bg-indigo-700 pl-3.5 font-medium text-white dark:bg-indigo-600">
+            {keyword}
+            <button
+              type="button"
+              onClick={() => onKeywordChange(null)}
+              aria-label={`Clear keyword filter ${keyword}`}
+              className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-indigo-800"
+            >
+              <CloseIcon />
+            </button>
+          </span>
+        </div>
+      )}
 
       {answer && <AnswerCard state={answer} onRetry={ask} />}
 
@@ -175,10 +205,12 @@ export function RecallTab({
           !search.loading &&
           !answered && (
             <p className="px-1 text-sm leading-relaxed text-stone-500">
-              Nothing found for “{trimmed}”{category ? ` in ${CATEGORY_LABELS[category]}` : ""}.{" "}
+              Nothing found for “{trimmed}”{category ? ` in ${CATEGORY_LABELS[category]}` : ""}
+              {keyword ? ` labeled “${keyword}”` : ""}.{" "}
               {orList([
                 "Try a different word",
                 ...(category ? ["tap All"] : []),
+                ...(keyword ? ["clear the keyword"] : []),
                 ...(showOutdated ? [] : ["turn on Show outdated"]),
                 ...(aiEnabled ? ["tap Ask"] : []),
               ])}
@@ -190,11 +222,19 @@ export function RecallTab({
         <p className="px-1 text-sm text-stone-500">{recent.error}</p>
       ) : (
         <>
-          {showFaces && <PeopleGrid archived={showOutdated} refreshKey={refreshKey} onOpen={onOpen} />}
+          {showFaces && <PeopleGrid archived={showOutdated} refreshKey={refreshKey} keyword={keyword} onOpen={onOpen} />}
           <MemoryList memories={recentMemories} onOpen={onOpen} />
           {!recent.loading && recent.memories.length === 0 && (
             <p className="px-1 text-sm leading-relaxed text-stone-500">
-              {pinned ? "No pinned memories yet. Open a memory and tap Pin." : category
+              {keyword
+                ? `No ${pinned ? "pinned " : ""}${showOutdated ? "" : "current "}memories${
+                    category ? ` in ${CATEGORY_LABELS[category]}` : ""
+                  } are labeled “${keyword}”. ${orList([
+                    ...(pinned || category ? ["tap All"] : []),
+                    ...(showOutdated ? [] : ["turn on Show outdated"]),
+                    "clear the keyword",
+                  ]).replace(/^./, (first) => first.toUpperCase())}.`
+                : pinned ? "No pinned memories yet. Open a memory and tap Pin." : category
                 ? `Nothing in ${CATEGORY_LABELS[category]} yet. ${
                     aiEnabled ? "New memories are sorted automatically." : "Open any memory to choose its category."
                   }`

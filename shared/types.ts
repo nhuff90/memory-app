@@ -58,6 +58,40 @@ export interface MeResponse {
   model: string | null;
   photoCaptions: boolean;
   counts: { memories: number; photos: number };
+  /** Features this server supports. Older servers omit the field entirely. */
+  capabilities?: string[];
+}
+
+/** One custom keyword in the user's vocabulary, for suggestions. */
+export interface KeywordUsage {
+  /** Display spelling. */
+  keyword: string;
+  /** Normalized identity shared by counts, recency and filtering. */
+  key: string;
+  /** Active (not outdated) saved recalls carrying it, once per recall. */
+  count: number;
+  /** Last successful new assignment on an active recall; null until one is recorded. */
+  lastAssignedAt: number | null;
+}
+
+export interface KeywordVocabulary {
+  keywords: KeywordUsage[];
+}
+
+/**
+ * Result of reconciling a held capture by its original clientId.
+ * - missing: no recall has that clientId; the capture never reached the server and may be uploaded.
+ * - reconciled: the existing recall now carries the held keywords (later edits kept).
+ * - already-saved: this server saved the capture with its keywords; current differences are later edits.
+ * - conflict: an older server created the recall without its keywords and it has changed since, so a missing
+ *   keyword may have been removed on purpose. Nothing changed; the user decides (add or keep).
+ * - kept: the user chose to keep the recall as it is.
+ */
+export interface ReconcileResponse {
+  status: "missing" | "reconciled" | "already-saved" | "conflict" | "kept";
+  memory: Memory | null;
+  /** Held keywords the recall does not carry now (conflict only). */
+  missingKeywords?: string[];
 }
 
 export interface UsageSummary {

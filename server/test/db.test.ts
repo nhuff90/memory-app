@@ -47,7 +47,8 @@ describe("database", () => {
     old.close();
     const db = openDb(file);
     try {
-      expect(db.pragma("user_version", { simple: true })).toBe(4);
+      // Upgrades through 004 and every later forward migration (005 keyword assignments).
+      expect(db.pragma("user_version", { simple: true })).toBe(MIGRATIONS.length);
       expect(db.prepare(`SELECT * FROM memories`).get()).toEqual({ ...before as object, pinned: 0, custom_keywords: "" });
       expect(db.prepare(`SELECT * FROM photos`).all()).toEqual(photoBefore);
       expect(db.prepare(`SELECT * FROM embeddings`).all()).toEqual(vectorBefore);

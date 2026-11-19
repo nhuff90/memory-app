@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { normalizeKeywords } from "../../../shared/keywords";
-import { CATEGORIES, CATEGORY_LABELS, photoUrl, type Category, type Memory, type Photo } from "../../../shared/types";
+import {
+  CATEGORIES,
+  CATEGORY_LABELS,
+  photoUrl,
+  type Category,
+  type KeywordUsage,
+  type Memory,
+  type Photo,
+} from "../../../shared/types";
 import { addPhotos, deleteMemory, deletePhoto, errorMessage, relatedMemories, updateMemory } from "../api";
 import { formatFullDate } from "../lib/format";
 import { useAutosize } from "../lib/hooks";
 import { preparePhoto } from "../lib/images";
+import { applyKeywordInput, pendingKeywordError, sameKeywordList, type PillInput } from "../lib/keywords";
 import { ArchiveIcon, CloseIcon, TrashIcon } from "./icons";
+import { KeywordPills } from "./KeywordPills";
 import { PhotoButton } from "./PhotoButton";
 import { PhotoViewer } from "./PhotoViewer";
 import { Sheet } from "./Sheet";
@@ -19,25 +28,33 @@ export function MemorySheet({
   onChanged,
   onDeleted,
   onOpen,
+  onBrowseKeyword,
+  vocabulary,
+  vocabularyError = null,
 }: {
   memory: Memory;
   onClose: () => void;
   onChanged: (memory: Memory) => void;
   onDeleted: (id: number) => void;
   onOpen: (memory: Memory) => void;
+  /** Opens exact keyword browsing for a saved keyword. */
+  onBrowseKeyword: (keyword: string) => void;
+  vocabulary: readonly KeywordUsage[];
+  vocabularyError?: string | null;
 }) {
   const [memory, setMemory] = useState(initial);
   const [body, setBody] = useState(initial.body);
-  const [keywords, setKeywords] = useState(initial.customKeywords.join(", "));
+  const [pills, setPills] = useState<PillInput>({ keywords: initial.customKeywords, input: "" });
   const [busy, setBusy] = useState<Busy>(null);
   const [error, setError] = useState<string | null>(null);
   const [viewing, setViewing] = useState<Photo | null>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
   useAutosize(textarea, body, 96);
 
-  const dirty = body.trim() !== memory.body || keywords !== memory.customKeywords.join(", ");
-  let keywordError: string | null = null;
-  try { normalizeKeywords([keywords]); } catch (caught) { keywordError = errorMessage(caught); }
+  // Unfinished keyword text counts as an unsaved change too.
+  const dirty =
+    body.trim() !== memory.body || !sameKeywordList(pills.keywords, memory.customKeywords) || pills.input.trim() !== "";
+  const keywordError = pendingKeywordError(pills.keywords, pills.input);
   const archived = memory.archivedAt !== null;
 
   const [retry, setRetry] = useState(0);
@@ -60,6 +77,11 @@ export function MemorySheet({
   const openRelated = (next: Memory) => {
     if (busy || (dirty && !window.confirm("Discard your changes?"))) return;
     onOpen(next);
+  };
+
+  const browseKeyword = (keyword: string) => {
+    if (busy || (dirty && !window.confirm("Discard your changes?"))) return;
+    onBrowseKeyword(keyword);
   };
 
   const close = useCallback(() => {
@@ -85,13 +107,24 @@ export function MemorySheet({
     onChanged(updated);
   }
 
-  const saveBody = () =>
-    run("save", async () => {
-      const updated = await updateMemory(memory.id, { body, customKeywords: normalizeKeywords([keywords]) });
+  const saveBody = () => {
+    // Valid unfinished keyword text is saved too; invalid text blocks the whole save so nothing changes partially.
+    const committed = applyKeywordInput(pills.keywords, pills.input, true);
+    if (committed.input) return;
+    setPills(committed);
+    return run("save", async () => {
+      const updated = await updateMemory(memory.id, { body, customKeywords: committed.keywords });
       apply(updated);
       setBody(updated.body);
-      setKeywords(updated.customKeywords.join(", "));
+      setPills({ keywords: updated.customKeywords, input: "" });
     });
+  };
+
+  const cancelEdits = () => {
+    setBody(memory.body);
+    setPills({ keywords: memory.customKeywords, input: "" });
+    setError(null);
+  };
 
   const toggleArchived = () =>
     run("archive", async () => apply(await updateMemory(memory.id, { archived: !archived })));
@@ -160,18 +193,22 @@ export function MemorySheet({
         placeholder="Add a note to this photo…"
         className="mt-3 block w-full resize-none rounded-xl bg-stone-50 px-3 py-2.5 text-base leading-relaxed ring-1 ring-stone-200 outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-stone-950 dark:ring-stone-800"
       />
-      <label htmlFor="memory-keywords" className="mt-4 block text-sm font-semibold">Custom keywords</label>
-      <input id="memory-keywords" type="text" value={keywords} disabled={busy === "save"}
-        onChange={(event) => setKeywords(event.target.value)}
-        aria-describedby="keyword-help keyword-error" aria-invalid={keywordError !== null}
-        className="mt-1 w-full rounded-xl bg-stone-50 px-3 py-2.5 text-base ring-1 ring-stone-200 outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-stone-950 dark:ring-stone-800" />
-      <p id="keyword-help" className="mt-1 text-xs text-stone-500">Separate with commas. Up to 10 keywords, 40 characters each. These are separate from automatic tags.</p>
-      {keywordError && <p id="keyword-error" role="alert" className="mt-1 text-sm text-red-700 dark:text-red-400">{keywordError}</p>}
+      <div className="mt-4">
+        <KeywordPills
+          id="memory-keywords"
+          label="Custom keywords"
+          value={pills}
+          onChange={setPills}
+          vocabulary={vocabulary}
+          vocabularyError={vocabularyError}
+          disabled={busy === "save"}
+        />
+      </div>
       {dirty && (
         <div className="mt-2 flex justify-end gap-2">
           <button
             type="button"
-            onClick={() => { setBody(memory.body); setKeywords(memory.customKeywords.join(", ")); setError(null); }}
+            onClick={cancelEdits}
             disabled={busy !== null}
             className="rounded-full px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
           >
@@ -185,6 +222,28 @@ export function MemorySheet({
           >
             {busy === "save" ? "Saving…" : "Save changes"}
           </button>
+        </div>
+      )}
+      {memory.customKeywords.length > 0 && (
+        <div className="mt-3">
+          <p id="browse-keywords-label" className="mb-1 text-xs font-semibold text-stone-500 dark:text-stone-400">
+            Browse memories with the same keyword
+          </p>
+          <ul aria-labelledby="browse-keywords-label" className="flex flex-wrap gap-2">
+            {memory.customKeywords.map((keyword) => (
+              <li key={keyword}>
+                <button
+                  type="button"
+                  onClick={() => browseKeyword(keyword)}
+                  disabled={busy !== null}
+                  aria-label={`Show memories labeled ${keyword}`}
+                  className="min-h-11 rounded-full bg-white px-3.5 text-sm font-medium text-indigo-800 ring-1 ring-indigo-200 hover:bg-indigo-50 disabled:opacity-50 dark:bg-stone-900 dark:text-indigo-200 dark:ring-indigo-800"
+                >
+                  {keyword}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

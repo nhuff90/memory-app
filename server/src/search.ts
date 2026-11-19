@@ -1,8 +1,9 @@
+import { keywordKey } from "../../shared/keywords.js";
 import { searchTerms } from "../../shared/text.js";
 import type { Category } from "../../shared/types.js";
 import type { DB } from "./db.js";
 import type { Embedder } from "./embed.js";
-import type { MemoryChange, MemoryStore } from "./memories.js";
+import { keywordClause, type MemoryChange, type MemoryStore } from "./memories.js";
 
 /** Reciprocal rank fusion constant: dampens the gap between the top few ranks. */
 const RRF_K = 60;
@@ -30,6 +31,8 @@ export interface SearchOptions {
   limit?: number;
   category?: Category | null;
   includeArchived?: boolean;
+  /** Exact whole custom keyword (normalized). Applied before both searches' candidate limits. */
+  keyword?: string | null;
   /** Only close matches: used while typing a new memory to show what's already saved. */
   strict?: boolean;
   minSimilarity?: number;
@@ -56,6 +59,10 @@ export function matchQuery(terms: string[]): string {
  */
 export function embeddingText(memory: { body: string; captions: string | null }): string {
   return memory.body.trim() || (memory.captions ?? "").trim();
+}
+
+function filterKey(options: SearchOptions): string | null {
+  return options.keyword ? keywordKey(options.keyword) || null : null;
 }
 
 function dot(a: Float32Array, b: Float32Array): number {
@@ -258,6 +265,7 @@ export class SearchIndex {
 
   private keywordMatches(terms: string[], options: SearchOptions): CandidateRow[] {
     if (terms.length === 0) return [];
+    const key = filterKey(options);
     return this.db
       .prepare(
         `SELECT m.id, m.category, m.archived_at, m.created_at
@@ -267,11 +275,13 @@ export class SearchIndex {
            AND (? IS NULL OR m.category = ?)
            AND (? = 0 OR m.pinned = 1)
            AND (? IS NULL OR m.id != ?)
+           ${key ? `AND ${keywordClause("m")}` : ""}
          ORDER BY bm25(memories_fts, 1.0, 0.5, 0.5, 0.5), m.created_at DESC
          LIMIT ?`,
       )
       .all(matchQuery(terms), options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null,
-        options.pinned ? 1 : 0, options.excludeId ?? null, options.excludeId ?? null, CANDIDATES) as CandidateRow[];
+        options.pinned ? 1 : 0, options.excludeId ?? null, options.excludeId ?? null, ...(key ? [key] : []),
+        CANDIDATES) as CandidateRow[];
   }
 
   private async meaningMatches(
@@ -289,12 +299,15 @@ export class SearchIndex {
       return none;
     }
     let eligible: Set<number> | undefined;
-    if (options.pinned || options.excludeId !== undefined) {
+    const key = filterKey(options);
+    if (options.pinned || options.excludeId !== undefined || key) {
       const rows = this.db.prepare(`SELECT id FROM memories
         WHERE (? = 0 OR pinned = 1) AND (? IS NULL OR id != ?)
-          AND (? = 1 OR archived_at IS NULL) AND (? IS NULL OR category = ?)`)
+          AND (? = 1 OR archived_at IS NULL) AND (? IS NULL OR category = ?)
+          ${key ? `AND ${keywordClause("memories")}` : ""}`)
         .all(options.pinned ? 1 : 0, options.excludeId ?? null, options.excludeId ?? null,
-          options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null) as { id: number }[];
+          options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null,
+          ...(key ? [key] : [])) as { id: number }[];
       eligible = new Set(rows.map((row) => row.id));
     }
     const nearest = this.vectors.nearest(queryVector, CANDIDATES * 3, minSimilarity, eligible);
