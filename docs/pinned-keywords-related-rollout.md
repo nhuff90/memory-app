@@ -6,6 +6,74 @@ The configured app is `mem-recall-app`, region `iad`, one Machine, volume `recal
 
 Before maintenance, finish and verify saved edits, or copy unsaved text/keywords and retain original photos outside the app. Reload can discard an in-memory draft; do not rely on a discard prompt from the update banner. Check each device's queued/rejected captures and preserve their contents before any client transition. Rejected captures remain for user action; transient failures may retry automatically when service returns. After upgrade or rollback, sign in if needed and reconcile queued captures with the server before resubmitting, checking each arrived once. A capture acknowledged after the backup can be lost on rollback even if it has left the device's queue. Do not clear site storage or discard a rejected item until its contents are recovered.
 
+## Feature follow-up: keyword pills and reuse — November 18, 2026
+
+**Proposed scope, not implemented or validated by this update.** The sections from “Local release checks” onward retain the original migration 004 rollout procedure and its historical evidence; they are not a release procedure or test results for keyword pills. The current checkout contains pinning, editable custom keywords and related-memory navigation. It does not establish that these features are deployed. The latest [Task3E diagnosis](releases/2026-11-16-task-3-ssh-diagnosis.md) leaves current production state and rollout readiness unknown. Recheck the actual baseline before any future rollout; do not assume production still has schema v3 or that an older backup is suitable.
+
+### Product goal and first release
+
+Make a recall easy to label with the user's own vocabulary, then easy to find through those labels. Keep labeling optional so a quick text or photo capture remains quick. Build on `customKeywords`; pinning remains a separate way to mark an individual recall as important.
+
+The first release includes reusable keyword pills during capture and editing, suggestions from existing custom keywords, and exact keyword browsing. Example: “Christmas lights are in the blue bin” can carry `Christmas` and `Garage`. Tapping `Garage` on a saved recall opens recalls explicitly labeled `Garage`, with the selected filter visible and removable.
+
+### Carry forward the existing behavior
+
+- Preserve the shared [keyword rules](../shared/keywords.ts): trim whitespace, ignore empty values, split comma-separated pasted values, deduplicate case-insensitively, and allow at most ten keywords of forty characters each. Preserve display spelling; case variants represent the same keyword for suggestions and filtering.
+- Keep custom keywords separate from automatic tags and broad categories. Accepting a suggestion is an explicit user action; no keyword is silently attached. Automatic tags remain separate search metadata.
+- Preserve explicit Save/Cancel in the editor. Adding or removing a pill changes the draft until Save. Pin/unpin remains independent and must neither save nor erase unsaved body or keyword changes. Close, Related and keyword navigation all require discard protection, including unfinished text in the keyword input.
+- Keep keywords searchable immediately after saving and separate from embedding input. Keyword-only edits must not invoke AI enrichment or regenerate embeddings. Preserve the existing Ask distinction between user-provided search metadata and factual recall content.
+- Keep readable `customKeywords`, automatic tags and pin state distinct in JSON/Markdown exports. Outdated recalls retain their keywords for restoration and export.
+- Preserve Related memories and its same-sheet loading, empty, retryable-error and late-response handling. Exact keyword browsing is an additional navigation path, not a replacement for Related.
+
+### Pill entry and suggestions
+
+Use the same control in Remember and the recall editor: removable pills, a text input, matching existing keywords, and an explicit way to create a new keyword. Enter accepts a selection or creates the typed keyword; it must not accidentally submit the recall form. Save commits valid unfinished input before saving. Invalid input stays visible with an explanation and blocks the save without partially changing the recall. Support keyboard navigation, labeled remove buttons and touch targets suitable for a phone.
+
+Show at most five suggestions, excluding keywords already selected. When typing, text matches take priority. With an empty input, reserve up to two slots for recently assigned keywords and fill the remaining slots with frequently used keywords; fill unused recent slots from frequency. Use a stable alphabetical tie-break so suggestions do not move unpredictably.
+
+Frequency means the number of active saved recalls carrying the normalized keyword, counted once per recall. Suggestion clicks, repeated saves and upload retries do not increase it. Exclude keywords found only on outdated recalls from default suggestions; restoring a recall makes its assignments eligible again. An existing pill on the recall being edited remains visible even if it is absent from suggestions.
+
+Recency means the last successful new assignment of a keyword, whether during capture or editing. A body edit or pin/unpin must not make its keywords “recent.” Persist that assignment metadata with the successful save; existing keywords use frequency until genuine assignment recency is available. Pending offline captures do not affect server usage counts until accepted. Share the same normalized identity between counts, recency and filtering, without silently merging distinct words or synonyms.
+
+Suggestions are optional assistance. If loading fails or the device is offline, typing and saving still work; a cached vocabulary may supply suggestions. A failure must not clear selected pills or block capture. Context-based/AI suggestions and global rename/merge are later additions after observing real usage.
+
+### Exact keyword browsing
+
+Add a dedicated keyword filter rather than placing the keyword in the free-text search box. Match the whole normalized custom keyword: `Home` must not match `Homework`, a body-only mention of “home,” or an automatic tag alone.
+
+For the first release, allow one active keyword filter. It intersects with the existing category or Pinned selection, search text, photo mode and outdated visibility; the existing category/Pinned exclusivity remains unchanged. Clearing the keyword preserves those other selections. Changing any filter resets pagination, and exact filtering must happen before candidate limits and pagination in both lexical and semantic retrieval. Hide outdated recalls by default and respect “Show outdated.”
+
+Show the selected keyword and a clear empty state even when there are no matches. Explicitly label the action “Ask all memories” while a keyword filter is active, extending the existing Pinned-view wording; do not imply that Ask is scoped to the keyword view without separately implementing that behavior. Related remains its existing similarity view and must not be presented as an exact keyword result set.
+
+### Capture, persistence and compatibility
+
+Carry `customKeywords` through the entire capture path: draft persistence, queued/rejected item display and editing, outbox storage, the client API, JSON and multipart create requests, validation, database insert and response. Save body/photos/keywords together; do not create the recall and attach keywords in a second PATCH. Preserve the stable `clientId` retry contract so an interrupted upload cannot create a duplicate recall or double-count keyword usage.
+
+Old drafts, queued items and older clients without the field continue to mean an empty keyword list. Restoring or editing a queued item must retain its selected keywords. Clearing a successful capture must not erase anything the user typed or selected for the next recall while that save was in flight. On validation or upload failure, retain the draft or queued item for correction.
+
+The existing create endpoint ignores unknown fields. Consequently, a new client talking to an old server can receive success while its keywords are discarded. Add an explicit server capability check for keyword capture and verify the normalized returned saved keywords before clearing a keyword-bearing outbox item. If support is absent or persistence cannot be confirmed, retain the local content in a held “needs reconciliation” state, excluded from automatic retries. Do not report complete success or blindly create another recall. Provide an authenticated recovery flow that reconciles the original `clientId` with any already-created server record and lets the user recover missing keywords without overwriting later edits; repeating create alone cannot repair that record. Missing keyword fields in older responses must not crash the UI.
+
+Do not rewrite migration 004. If assignment metadata or a keyword index requires a schema change, add a new forward migration and specify the resulting upgrade/rollback path separately. Preserve existing labels, FTS behavior, embeddings and export fidelity. An older binary's database-version guard still applies; the original v3 restore commands below must not be reused as a generic rollback for this follow-up.
+
+### Acceptance and release evidence to add
+
+Extend the existing focused tests and disposable browser rehearsal, using fake providers and no live AI calls:
+
+1. Create text-only and photo recalls with pills; reopen and export them. Cover old clients/queued items without keywords, shared limits, comma paste, case deduplication, unfinished input and invalid saves with no partial updates.
+2. Verify editor Save/Cancel, removal, dirty pin/unpin, discard protection on close/Related/keyword navigation, and continued typing during an in-flight capture. Include keyboard operation and phone-sized layouts.
+3. Verify suggestion ranking, deterministic ties, exclusion of selected/outdated-only keywords, count changes after removal/archive/restore/delete, and no count/recency changes on pinning, unrelated edits or retry. Suggestion failures must leave manual entry usable.
+4. Verify exact filtering, clear/reset behavior, combined filters, pagination and both search paths. Include a keyword-only match, body-only and automatic-tag-only nonmatches, and similar spellings. Confirm Ask remains accurately labeled and Related navigation still works.
+5. Capture offline, reload, edit a rejected item and retry after reconnecting. Verify body/photos/keywords arrive together exactly once. Exercise an old queued record and an interrupted upload whose first request reached the server.
+6. Exercise actual service-worker activation and mixed old/new client/server responses. A successful HTTP response with missing keyword persistence must retain recoverable local data in a held state without automatic retry loops. Verify reconciliation recovers missing keywords without duplicating the recall or overwriting later edits. Verify the UI survives old response shapes and that no recovery step clears site storage to hide a failure.
+
+Run the repository typecheck, test and build checks after implementation, then the updated browser rehearsal. Historical results below cover only their original scope. Record fresh results against the candidate revision; Chromium mobile emulation does not establish physical iPhone/Safari behavior. Reuse the matched database/photo backup, draft preservation and client-recovery principles from the original rollout, with new commands and schema expectations reviewed for the actual release baseline.
+
+### Delivery order and deferred ideas
+
+Implement capture/edit pills and persistence first, add reuse suggestions, then exact keyword browsing; all three form the first feature release. Validate the complete flow before release. Keyword cleanup/merge and content-based suggestions can follow if usage justifies them. Keyword-filtered people practice is a useful later extension of the existing practice feature.
+
+One-off reminders and linked updates/history remain separate proposed features. They should not expand this keyword release or inherit its acceptance evidence.
+
 ## Local release checks
 
 Dependencies already exist. Do not install anything for these checks. Leave `RECALL_LIVE_AI` unset/empty.
