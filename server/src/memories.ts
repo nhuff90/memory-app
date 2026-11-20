@@ -1,5 +1,5 @@
-import type { Category, KeywordUsage, Memory, Photo, ReconcileResponse } from "../../shared/types.js";
-import { keywordKey, normalizeKeywords } from "../../shared/keywords.js";
+import type { Category, KeywordRenameResult, KeywordUsage, Memory, Photo, ReconcileResponse } from "../../shared/types.js";
+import { keywordKey, keywordsError, normalizeKeywords } from "../../shared/keywords.js";
 import { isCategory } from "../../shared/types.js";
 import type { DB } from "./db.js";
 import { badRequest, notFound, tooLarge } from "./errors.js";
@@ -418,6 +418,94 @@ export class MemoryStore {
         return { keyword: labels[0]?.[0] ?? entry.anyLabel, key, count: entry.count, lastAssignedAt: entry.last };
       })
       .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+  }
+
+  /**
+   * Renames one custom keyword on every recall that carries it, outdated ones included, in one transaction. Renaming
+   * to a keyword that already exists merges the two; a recall that had both keeps the target at its own position.
+   * `to` becomes the display spelling on every recall carrying the resulting keyword. Assignment times are kept (a
+   * rename is not a new assignment): where a recall had both, the later non-null time wins. Only recalls whose saved
+   * keyword list text changes get a new `updated_at` and a change event; nothing is enriched or re-embedded.
+   */
+  async renameKeyword(from: string, to: string): Promise<KeywordRenameResult> {
+    const fromKey = keywordKey(from);
+    const label = to.trim();
+    if (!label) throw badRequest("Type the new keyword.");
+    if (label.includes(",")) throw badRequest("A keyword can't contain a comma.");
+    const invalid = keywordsError([label]);
+    if (invalid) throw badRequest(invalid);
+    const toKey = keywordKey(label);
+
+    const now = this.now();
+    const result = this.db.transaction(() => {
+      const assignments = this.db
+        .prepare(
+          `SELECT memory_id, keyword, assigned_at FROM memory_keywords WHERE keyword IN (?, ?) ORDER BY memory_id`,
+        )
+        .all(fromKey, toKey) as { memory_id: number; keyword: string; assigned_at: number | null }[];
+      const byMemory = new Map<number, { from?: number | null; to?: number | null }>();
+      for (const row of assignments) {
+        const entry = byMemory.get(row.memory_id) ?? {};
+        if (row.keyword === fromKey) entry.from = row.assigned_at;
+        if (row.keyword === toKey) entry.to = row.assigned_at;
+        byMemory.set(row.memory_id, entry);
+      }
+      if (!fromKey || ![...byMemory.values()].some((entry) => entry.from !== undefined)) {
+        throw notFound("No memory has that keyword.");
+      }
+      const merging = toKey !== fromKey && [...byMemory.values()].some((entry) => entry.to !== undefined);
+
+      const selectRow = this.db.prepare(`SELECT custom_keywords FROM memories WHERE id = ?`);
+      const saveList = this.db.prepare(`UPDATE memories SET custom_keywords = ?, updated_at = ? WHERE id = ?`);
+      const relabel = this.db.prepare(
+        `UPDATE memory_keywords SET label = ? WHERE memory_id = ? AND keyword = ? AND label IS NOT ?`,
+      );
+      const rekey = this.db.prepare(
+        `UPDATE memory_keywords SET keyword = ?, label = ? WHERE memory_id = ? AND keyword = ?`,
+      );
+      const combine = this.db.prepare(
+        `UPDATE memory_keywords SET label = ?, assigned_at = ? WHERE memory_id = ? AND keyword = ?`,
+      );
+      const remove = this.db.prepare(`DELETE FROM memory_keywords WHERE memory_id = ? AND keyword = ?`);
+
+      const changed: number[] = [];
+      let relabeled = 0;
+      for (const [memoryId, entry] of byMemory) {
+        const row = selectRow.get(memoryId) as { custom_keywords: string } | undefined;
+        if (!row) continue;
+        const hasTarget = toKey !== fromKey && entry.to !== undefined;
+        const next: string[] = [];
+        for (const keyword of parseTags(row.custom_keywords)) {
+          const key = keywordKey(keyword);
+          if (key === fromKey && hasTarget) continue; // merged into the target, which keeps its own position
+          next.push(key === fromKey || key === toKey ? label : keyword);
+        }
+        const text = next.join(", ");
+        if (text !== row.custom_keywords) {
+          saveList.run(text, now, memoryId);
+          changed.push(memoryId);
+        }
+
+        if (toKey === fromKey || entry.from === undefined) {
+          relabeled += relabel.run(label, memoryId, toKey, label).changes;
+        } else if (hasTarget) {
+          const times = [entry.from, entry.to].filter((time): time is number => time !== null && time !== undefined);
+          combine.run(label, times.length > 0 ? Math.max(...times) : null, memoryId, toKey);
+          remove.run(memoryId, fromKey);
+          relabeled++;
+        } else {
+          rekey.run(toKey, label, memoryId, fromKey);
+          relabeled++;
+        }
+      }
+
+      const status: KeywordRenameResult["status"] =
+        toKey !== fromKey ? (merging ? "merged" : "renamed") : changed.length > 0 || relabeled > 0 ? "respelled" : "unchanged";
+      return { status, changed };
+    })();
+
+    for (const id of result.changed) await this.emit({ kind: "updated", id, bodyChanged: false });
+    return { status: result.status, keyword: label, key: toKey, affected: result.changed.length };
   }
 
   /** Memories still waiting for auto-tagging, newest first. */

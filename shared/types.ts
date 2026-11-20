@@ -79,6 +79,23 @@ export interface KeywordVocabulary {
 }
 
 /**
+ * Result of renaming one custom keyword on every recall (active and outdated) that carries it.
+ * - renamed: the new keyword was on no recall.
+ * - merged: the new keyword (a different keyword) was already on at least one recall; the two are now one.
+ * - respelled: same keyword, new display spelling on at least one recall.
+ * - unchanged: same keyword, and every recall already used exactly that spelling.
+ */
+export interface KeywordRenameResult {
+  status: "renamed" | "merged" | "respelled" | "unchanged";
+  /** The new display spelling. */
+  keyword: string;
+  /** Its normalized identity. */
+  key: string;
+  /** Recalls whose saved keyword list changed. */
+  affected: number;
+}
+
+/**
  * Result of reconciling a held capture by its original clientId.
  * - missing: no recall has that clientId; the capture never reached the server and may be uploaded.
  * - reconciled: the existing recall now carries the held keywords (later edits kept).
