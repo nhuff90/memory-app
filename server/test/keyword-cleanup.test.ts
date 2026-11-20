@@ -1,10 +1,18 @@
+import { strFromU8, unzipSync } from "fflate";
 import { afterEach, describe, expect, it } from "vitest";
-import { keywordsError, MAX_CUSTOM_KEYWORD_LENGTH } from "../../shared/keywords.js";
+import {
+  KEYWORD_CAPTURE_CAPABILITY,
+  KEYWORD_RENAME_CAPABILITY,
+  keywordsError,
+  MAX_CUSTOM_KEYWORD_LENGTH,
+} from "../../shared/keywords.js";
+import type { KeywordRenameResult, KeywordVocabulary, MeResponse, MemoryList } from "../../shared/types.js";
 import { UsageLog } from "../src/ai.js";
 import { Enricher } from "../src/enrich.js";
 import type { MemoryChange } from "../src/memories.js";
+import { TokenStore } from "../src/tokens.js";
 import { FakeLlm } from "./fakeLlm.js";
-import { DAY, makeContext, type TestContext } from "./helpers.js";
+import { client, DAY, login, makeContext, type TestContext } from "./helpers.js";
 
 let ctx: TestContext;
 afterEach(() => ctx?.cleanup());
@@ -346,5 +354,225 @@ describe("renameKeyword", () => {
     expect(ctx.store.require(a).tags).toEqual(["automatic"]);
     expect(ctx.db.prepare(`SELECT * FROM embeddings ORDER BY memory_id`).all()).toEqual(embeddings);
     enricher!.stop();
+  });
+});
+
+describe("POST /api/keywords/rename", () => {
+  const RENAME = "/api/keywords/rename";
+  type Api = ReturnType<typeof client>;
+  const vocabulary = async (api: Api) => ((await (await api.get("/api/keywords")).json()) as KeywordVocabulary).keywords;
+  const listedOver = async (api: Api, keyword: string) => {
+    const res = await api.get(`/api/memories?keyword=${encodeURIComponent(keyword)}`);
+    expect(res.status).toBe(200);
+    return ((await res.json()) as MemoryList).memories.map((memory) => memory.id).sort((a, b) => a - b);
+  };
+  const rawPost = (api: Api, body: string) =>
+    api.send(RENAME, { method: "POST", headers: { "content-type": "application/json" }, body });
+
+  it("renames a keyword with a session and the change shows in the vocabulary and the keyword filter", async () => {
+    ctx = makeContext();
+    const a = await make("blue bin by the door", ["Christmas", "garage"]);
+    const b = await make("rake hangs on the wall", ["Garage"]);
+    const other = await make("passport in the desk", ["Documents"]);
+    const api = client(ctx.app, await login(ctx.app));
+    ctx.clock.now += DAY;
+
+    const res = await api.postJson(RENAME, { from: "GARAGE", to: " Workshop " });
+
+    expect(res.status).toBe(200);
+    expect((await res.json()) as KeywordRenameResult).toEqual({
+      status: "renamed",
+      keyword: "Workshop",
+      key: "workshop",
+      affected: 2,
+    });
+    expect([keywordsOf(a), keywordsOf(b), keywordsOf(other)]).toEqual([["Christmas", "Workshop"], ["Workshop"], ["Documents"]]);
+    const keys = (await vocabulary(api)).map((entry) => [entry.key, entry.keyword, entry.count]);
+    expect(keys).toEqual([
+      ["christmas", "Christmas", 1],
+      ["documents", "Documents", 1],
+      ["workshop", "Workshop", 2],
+    ]);
+    expect(await listedOver(api, "workshop")).toEqual([a, b]);
+    expect(await listedOver(api, "Garage")).toEqual([]);
+  });
+
+  it("merges into an existing keyword over HTTP", async () => {
+    ctx = makeContext();
+    const both = await make("shelf one", ["garage", "Workshop"]);
+    const fromOnly = await make("shelf two", ["Garage"]);
+    const api = client(ctx.app, await login(ctx.app));
+
+    const res = await api.postJson(RENAME, { from: "garage", to: "workshop" });
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ status: "merged", keyword: "workshop", key: "workshop", affected: 2 });
+    expect([keywordsOf(both), keywordsOf(fromOnly)]).toEqual([["workshop"], ["workshop"]]);
+    expect(await vocabulary(api)).toEqual([expect.objectContaining({ key: "workshop", keyword: "workshop", count: 2 })]);
+    expect(await listedOver(api, "WORKSHOP")).toEqual([both, fromOnly]);
+    expect(await listedOver(api, "garage")).toEqual([]);
+  });
+
+  it("returns the existing 404 shape for an unknown keyword and changes nothing", async () => {
+    ctx = makeContext();
+    await make("drill", ["Garage"]);
+    const api = client(ctx.app, await login(ctx.app));
+    const before = snapshot();
+
+    const res = await api.postJson(RENAME, { from: "Workshop", to: "Shed" });
+
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({ error: "not_found", message: "No memory has that keyword." });
+    expect(snapshot()).toEqual(before);
+  });
+
+  it("rejects invalid bodies with 400 and changes nothing", async () => {
+    ctx = makeContext();
+    const id = await make("drill", ["Garage", "Tools"]);
+    const api = client(ctx.app, await login(ctx.app));
+    const before = snapshot();
+    const changes = recordChanges();
+    const tooLong = "x".repeat(MAX_CUSTOM_KEYWORD_LENGTH + 1);
+
+    const bodies: unknown[] = [
+      { from: "garage", to: "" },
+      { from: "garage", to: "   " },
+      { from: "garage", to: "Workshop, Shed" },
+      { from: "garage", to: tooLong },
+      { from: "garage" },
+      { to: "Workshop" },
+      {},
+      { from: 1, to: "Workshop" },
+      { from: "garage", to: ["Workshop"] },
+      { from: "garage", to: null },
+      ["garage", "Workshop"],
+      "garage",
+      null,
+    ];
+    for (const body of bodies) {
+      const res = await api.postJson(RENAME, body);
+      expect(res.status, JSON.stringify(body)).toBe(400);
+      expect(((await res.json()) as { error: string }).error).toBe("invalid_request");
+    }
+    const tooLongRes = await api.postJson(RENAME, { from: "garage", to: tooLong });
+    expect(((await tooLongRes.json()) as { message: string }).message).toBe(keywordsError([tooLong]));
+
+    for (const raw of ["{not json", "", '{"from": "garage", "to": "Workshop"']) {
+      const res = await rawPost(api, raw);
+      expect(res.status, raw).toBe(400);
+      expect(await res.json()).toEqual({ error: "invalid_request", message: "That request was not valid JSON." });
+    }
+
+    expect(snapshot()).toEqual(before);
+    expect(changes).toEqual([]);
+    expect(keywordsOf(id)).toEqual(["Garage", "Tools"]);
+  });
+
+  it("is session only: 401 without a session and 401 with a Siri Shortcuts key", async () => {
+    ctx = makeContext();
+    const id = await make("drill", ["Garage"]);
+    const token = new TokenStore(ctx.db).create("fictional Siri").token;
+    const before = snapshot();
+    const body = JSON.stringify({ from: "garage", to: "Workshop" });
+
+    const anonymous = await ctx.app.request(RENAME, { method: "POST", headers: { "content-type": "application/json" }, body });
+    expect(anonymous.status).toBe(401);
+    const siri = await ctx.app.request(RENAME, {
+      method: "POST",
+      headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+      body,
+    });
+    expect(siri.status).toBe(401);
+
+    expect(snapshot()).toEqual(before);
+    expect(keywordsOf(id)).toEqual(["Garage"]);
+  });
+
+  it("advertises keyword rename next to keyword capture", async () => {
+    ctx = makeContext();
+    const api = client(ctx.app, await login(ctx.app));
+    const me = (await (await api.get("/api/me")).json()) as MeResponse;
+    expect(KEYWORD_RENAME_CAPABILITY).toBe("keyword-rename");
+    expect(me.capabilities).toEqual(expect.arrayContaining([KEYWORD_CAPTURE_CAPABILITY, KEYWORD_RENAME_CAPABILITY]));
+  });
+
+  it("is safe to repeat: a respell answers unchanged the second time, a rename to another key answers 404", async () => {
+    ctx = makeContext();
+    await make("drill", ["garage", "Tools"]);
+    await make("saw", ["GARAGE"]);
+    await make("ladder", ["Paint"]);
+    const api = client(ctx.app, await login(ctx.app));
+
+    // Same key, new spelling: the repeat finds nothing left to change.
+    const first = await api.postJson(RENAME, { from: "garage", to: "Garage" });
+    expect(await first.json()).toEqual({ status: "respelled", keyword: "Garage", key: "garage", affected: 2 });
+    const afterRespell = snapshot();
+    ctx.clock.now += DAY;
+    const again = await api.postJson(RENAME, { from: "garage", to: "Garage" });
+    expect(again.status).toBe(200);
+    expect(await again.json()).toEqual({ status: "unchanged", keyword: "Garage", key: "garage", affected: 0 });
+    expect(snapshot()).toEqual(afterRespell);
+
+    // Different key: once renamed, the old keyword no longer exists.
+    const rename = await api.postJson(RENAME, { from: "Garage", to: "Workshop" });
+    expect(await rename.json()).toEqual({ status: "renamed", keyword: "Workshop", key: "workshop", affected: 2 });
+    const afterRename = snapshot();
+    ctx.clock.now += DAY;
+    const repeat = await api.postJson(RENAME, { from: "Garage", to: "Workshop" });
+    expect(repeat.status).toBe(404);
+    expect(await repeat.json()).toEqual({ error: "not_found", message: "No memory has that keyword." });
+    expect(snapshot()).toEqual(afterRename);
+  });
+
+  it("end to end: create recalls, merge, then export carries the merged spelling with tags and pins unchanged", async () => {
+    ctx = makeContext();
+    const api = client(ctx.app, await login(ctx.app));
+    const created: number[] = [];
+    for (const [body, customKeywords] of [
+      ["blue bin by the door", ["garage", "Christmas"]],
+      ["rake hangs on the wall", ["Workshop"]],
+      ["drill on the bench", ["Garage", "workshop"]],
+      ["passport in the desk", ["Documents"]],
+    ] as const) {
+      const res = await api.postJson("/api/memories", { body, customKeywords });
+      expect(res.status).toBe(201);
+      created.push(((await res.json()) as { id: number }).id);
+    }
+    const [bin, rake, drill, passport] = created as [number, number, number, number];
+    expect((await api.patch(`/api/memories/${bin}`, { pinned: true })).status).toBe(200);
+    expect((await api.patch(`/api/memories/${drill}`, { pinned: true })).status).toBe(200);
+    ctx.store.applyEnrichment(bin, { body: "blue bin by the door", captions: null }, { category: "things", tags: ["storage", "bin"] });
+    ctx.store.applyEnrichment(drill, { body: "drill on the bench", captions: null }, { category: "things", tags: ["tools"] });
+    const exportJson = async () => {
+      const res = await api.get("/api/export");
+      expect(res.status).toBe(200);
+      const files = unzipSync(new Uint8Array(await res.arrayBuffer()));
+      const parsed = JSON.parse(strFromU8(files["memories.json"]!)) as {
+        memories: { id: number; customKeywords: string[]; tags: string[]; pinned: boolean; category: string }[];
+      };
+      return new Map(parsed.memories.map((memory) => [memory.id, memory]));
+    };
+    const before = await exportJson();
+
+    const res = await api.postJson(RENAME, { from: "GARAGE", to: "Workshop" });
+    expect(res.status).toBe(200);
+    // The rake already carries the exact target spelling, so only the bin and the drill change.
+    expect(await res.json()).toEqual({ status: "merged", keyword: "Workshop", key: "workshop", affected: 2 });
+
+    const after = await exportJson();
+    expect(after.get(bin)!.customKeywords).toEqual(["Workshop", "Christmas"]);
+    expect(after.get(rake)!.customKeywords).toEqual(["Workshop"]);
+    expect(after.get(drill)!.customKeywords).toEqual(["Workshop"]);
+    expect(after.get(passport)!.customKeywords).toEqual(["Documents"]);
+    for (const id of created) {
+      const [was, now] = [before.get(id)!, after.get(id)!];
+      expect({ tags: now.tags, pinned: now.pinned, category: now.category }).toEqual({
+        tags: was.tags,
+        pinned: was.pinned,
+        category: was.category,
+      });
+    }
+    expect([after.get(bin)!.tags, after.get(drill)!.tags, after.get(rake)!.tags]).toEqual([["storage", "bin"], ["tools"], []]);
+    expect([bin, rake, drill, passport].map((id) => after.get(id)!.pinned)).toEqual([true, false, true, false]);
   });
 });

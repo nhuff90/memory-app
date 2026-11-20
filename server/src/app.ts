@@ -5,11 +5,12 @@ import { bodyLimit } from "hono/body-limit";
 import { HTTPException } from "hono/http-exception";
 import { secureHeaders } from "hono/secure-headers";
 import { z } from "zod";
-import { KEYWORD_CAPTURE_CAPABILITY } from "../../shared/keywords.js";
+import { KEYWORD_CAPTURE_CAPABILITY, KEYWORD_RENAME_CAPABILITY } from "../../shared/keywords.js";
 import {
   CATEGORIES,
   type AskResponse,
   type CaptureResponse,
+  type KeywordRenameResult,
   type KeywordVocabulary,
   type MeResponse,
   type MemoryList,
@@ -87,6 +88,7 @@ const reconcileBody = z
     resolution: z.enum(["add", "keep"]).nullable().optional(),
   })
   .strict();
+const keywordRenameBody = z.object({ from: z.string().max(1000), to: z.string().max(1000) }).strict();
 const keywordParam = z.string().max(200).optional();
 const updateBody = z
   .object({
@@ -243,7 +245,7 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
     model: llm?.model ?? null,
     photoCaptions: llm !== null && settings.photoCaptions(),
     counts: store.counts(),
-    capabilities: [KEYWORD_CAPTURE_CAPABILITY],
+    capabilities: [KEYWORD_CAPTURE_CAPABILITY, KEYWORD_RENAME_CAPABILITY],
   });
 
   app.use("*", requestLog(deps.accessLog ?? ((line) => console.log(line))));
@@ -404,6 +406,12 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
   });
 
   app.get("/api/keywords", (c) => c.json({ keywords: store.keywordVocabulary() } satisfies KeywordVocabulary));
+
+  /** Renames a custom keyword on every recall, or merges it into an existing one. Session only: not a Siri key route. */
+  app.post("/api/keywords/rename", async (c) => {
+    const { from, to } = parseWith(keywordRenameBody, await readJson(c));
+    return c.json((await store.renameKeyword(from, to)) satisfies KeywordRenameResult, 200);
+  });
 
   app.get("/api/search", async (c) => {
     const query = parseWith(searchQuery, c.req.query());
