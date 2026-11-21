@@ -4,6 +4,7 @@ import type {
   AskResponse,
   Category,
   CreatedApiToken,
+  KeywordRenameResult,
   MeResponse,
   Memory,
   MemoryList,
@@ -11,6 +12,7 @@ import type {
   SearchResponse,
   UsageSummary,
 } from "../../shared/types";
+import { keywordKey, keywordsError } from "../../shared/keywords";
 
 /**
  * Older servers return memories without newer fields (pins, custom keywords). Fill safe defaults so the UI never
@@ -108,6 +110,39 @@ export const askQuestion = async (question: string, signal?: AbortSignal) => {
 };
 
 export const getKeywords = (signal?: AbortSignal) => api<unknown>("/api/keywords", { signal });
+
+const RENAME_STATUSES: readonly KeywordRenameResult["status"][] = ["renamed", "merged", "respelled", "unchanged"];
+
+/**
+ * Checks a rename reply. A reply without a known status, with a spelling that is not one valid keyword under the
+ * shared rules, or with a key that is not that spelling's identity is an error, never partial data. A missing key is
+ * derived from the spelling.
+ */
+export function normalizeKeywordRenameResult(raw: unknown): KeywordRenameResult {
+  const data = (raw ?? {}) as Partial<Record<keyof KeywordRenameResult, unknown>>;
+  const status = RENAME_STATUSES.find((known) => known === data.status);
+  const keyword = typeof data.keyword === "string" ? data.keyword.trim() : "";
+  const key = keywordKey(keyword);
+  if (
+    !status ||
+    !keyword ||
+    keyword.includes(",") ||
+    keywordsError([keyword]) !== null ||
+    (data.key !== undefined && data.key !== key)
+  ) {
+    throw new Error("Recall sent an unexpected reply to the rename. Reload to check your keywords.");
+  }
+  return {
+    status,
+    keyword,
+    key,
+    affected: typeof data.affected === "number" && Number.isFinite(data.affected) && data.affected > 0 ? data.affected : 0,
+  };
+}
+
+/** Renames (or merges) one custom keyword on every recall. Session only. */
+export const renameKeyword = async (from: string, to: string): Promise<KeywordRenameResult> =>
+  normalizeKeywordRenameResult(await api<unknown>("/api/keywords/rename", { method: "POST", json: { from, to } }));
 
 export const reconcileMemory = (input: {
   clientId: string;
