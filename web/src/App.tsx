@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import type { MeResponse, Memory } from "../../shared/types";
+import type { KeywordRenameResult, MeResponse, Memory } from "../../shared/types";
 import { ApiError, getMe, onUnauthorized } from "./api";
 import { GearIcon } from "./components/icons";
 import { Login } from "./components/Login";
@@ -10,6 +10,7 @@ import { RememberTab } from "./components/RememberTab";
 import { SettingsSheet } from "./components/SettingsSheet";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { useKeywordVocabulary } from "./lib/hooks";
+import { keywordFilterAfterRename } from "./lib/keywords";
 import { useOutboxSync } from "./lib/outbox";
 
 type Tab = "remember" | "recall";
@@ -63,6 +64,11 @@ export default function App() {
   const { vocabulary, error: vocabularyError } = useKeywordVocabulary(refreshKey, auth === "in");
   const closeMemory = useCallback(() => setOpenMemory(null), []);
   const closeSettings = useCallback(() => setSettingsOpen(false), []);
+  /** After a keyword rename or merge: refetch the vocabulary and lists, and move a Recall filter on it to the new spelling. */
+  const keywordsRenamed = useCallback((fromKey: string, result: KeywordRenameResult) => {
+    setKeywordFilter((filter) => keywordFilterAfterRename(filter, fromKey, result));
+    setRefreshKey((key) => key + 1);
+  }, []);
 
   function switchTab(next: Tab) {
     // Render synchronously so focusing the input stays inside the tap, which iOS requires to open the keyboard.
@@ -164,7 +170,15 @@ export default function App() {
           }}
         />
       )}
-      {settingsOpen && <SettingsSheet onClose={closeSettings} onLoggedOut={() => setAuth("out")} />}
+      {settingsOpen && (
+        <SettingsSheet
+          onClose={closeSettings}
+          onLoggedOut={() => setAuth("out")}
+          vocabulary={vocabulary}
+          vocabularyError={vocabularyError}
+          onKeywordsRenamed={keywordsRenamed}
+        />
+      )}
       <UpdateBanner />
     </div>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { MeResponse, UsageSummary } from "../../../shared/types";
+import type { KeywordRenameResult, KeywordUsage, MeResponse, UsageSummary } from "../../../shared/types";
 import { browserTimeZone, errorMessage, getMe, getUsage, logout, updateSettings } from "../api";
+import { KeywordManager } from "./KeywordManager";
 import { Sheet } from "./Sheet";
 import { ShortcutsSetup } from "./ShortcutsSetup";
 
@@ -68,7 +69,19 @@ function Switch({
   );
 }
 
-export function SettingsSheet({ onClose, onLoggedOut }: { onClose: () => void; onLoggedOut: () => void }) {
+export function SettingsSheet({
+  onClose,
+  onLoggedOut,
+  vocabulary,
+  vocabularyError,
+  onKeywordsRenamed,
+}: {
+  onClose: () => void;
+  onLoggedOut: () => void;
+  vocabulary: readonly KeywordUsage[];
+  vocabularyError: string | null;
+  onKeywordsRenamed: (fromKey: string, result: KeywordRenameResult) => void;
+}) {
   const [me, setMe] = useState<MeResponse | null>(null);
   const [usage, setUsage] = useState<UsageSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -155,6 +168,16 @@ export function SettingsSheet({ onClose, onLoggedOut }: { onClose: () => void; o
           )}
         </Section>
       )}
+
+      <Section title="Keywords">
+        <KeywordManager
+          vocabulary={vocabulary}
+          vocabularyError={vocabularyError}
+          me={me}
+          meError={error}
+          onKeywordsRenamed={onKeywordsRenamed}
+        />
+      </Section>
 
       {me && (
         <Section title="Siri Shortcuts">
