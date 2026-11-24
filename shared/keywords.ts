@@ -4,6 +4,9 @@ export const MAX_CUSTOM_KEYWORD_LENGTH = 40;
 /** Advertised by `/api/me` once the create endpoint saves `customKeywords` together with the recall. */
 export const KEYWORD_CAPTURE_CAPABILITY = "keyword-capture";
 
+/** Advertised by `/api/me` once `POST /api/keywords/rename` renames or merges a custom keyword across the store. */
+export const KEYWORD_RENAME_CAPABILITY = "keyword-rename";
+
 /**
  * The identity of a keyword: case variants are the same keyword for deduplication, suggestions, counts and
  * filtering. Display spelling is kept separately. Distinct words and synonyms are never merged.

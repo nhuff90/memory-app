@@ -1,5 +1,5 @@
-import { keywordKey, keywordsError, normalizeKeywords } from "../../../shared/keywords";
-import type { KeywordUsage } from "../../../shared/types";
+import { KEYWORD_RENAME_CAPABILITY, keywordKey, keywordsError, normalizeKeywords } from "../../../shared/keywords";
+import type { KeywordRenameResult, KeywordUsage } from "../../../shared/types";
 
 export const MAX_SUGGESTIONS = 5;
 /** With an empty input, up to this many slots go to recently assigned keywords; the rest to frequent ones. */
@@ -92,6 +92,56 @@ export function applyKeywordInput(selected: readonly string[], text: string, com
 /** Whether two lists are the same keywords with the same spelling and order (unsaved-change detection). */
 export function sameKeywordList(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((keyword, index) => keyword === b[index]);
+}
+
+/** What renaming one keyword to the typed text would do, before anything is sent. */
+export type KeywordRenamePlan =
+  | { kind: "invalid"; message: string }
+  | { kind: "unchanged" }
+  | { kind: "respell"; to: string }
+  | { kind: "rename"; to: string }
+  | { kind: "merge"; to: string; target: KeywordUsage };
+
+/**
+ * Previews a rename with the shared keyword rules. Same spelling is unchanged; a case-only change is a respelling;
+ * a different keyword that is already in the vocabulary (outdated-only entries included) is a merge into that
+ * entry; anything else is a plain rename.
+ */
+export function planKeywordRename(vocabulary: readonly KeywordUsage[], from: KeywordUsage, input: string): KeywordRenamePlan {
+  const to = input.trim();
+  if (!to) return { kind: "invalid", message: "Type the new keyword." };
+  if (to.includes(",")) return { kind: "invalid", message: "Rename one keyword at a time, without commas." };
+  const invalid = keywordsError([to]);
+  if (invalid) return { kind: "invalid", message: invalid };
+  if (to === from.keyword) return { kind: "unchanged" };
+  const fromKey = keywordKey(from.key || from.keyword);
+  const toKey = keywordKey(to);
+  if (toKey === fromKey) return { kind: "respell", to };
+  const target = vocabulary.find((entry) => entry.key === toKey);
+  return target ? { kind: "merge", to, target } : { kind: "rename", to };
+}
+
+/** Whether a `/api/me` response advertises keyword rename. Older servers and malformed responses do not. */
+export function supportsKeywordRename(me: unknown): boolean {
+  const capabilities = (me as { capabilities?: unknown } | null | undefined)?.capabilities;
+  return Array.isArray(capabilities) && capabilities.includes(KEYWORD_RENAME_CAPABILITY);
+}
+
+/**
+ * The Recall keyword filter to use after a successful rename: the new spelling when the filter was on the renamed
+ * keyword (or, in a merge, on the target it merged into); otherwise the filter as it was.
+ */
+export function keywordFilterAfterRename(
+  filter: string | null,
+  fromKey: string,
+  result: Pick<KeywordRenameResult, "status" | "keyword" | "key">,
+): string | null {
+  if (filter === null) return null;
+  const filterKey = keywordKey(filter);
+  if (!filterKey) return filter;
+  if (filterKey === keywordKey(fromKey)) return result.keyword;
+  if (result.status === "merged" && filterKey === keywordKey(result.key)) return result.keyword;
+  return filter;
 }
 
 /** Accepts anything an older or newer server might send, keeping only well-formed entries. */
