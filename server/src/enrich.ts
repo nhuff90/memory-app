@@ -1,13 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import { CATEGORIES } from "../../shared/types.js";
-import type { LlmClient, LlmRequest, LlmResult, UsageLog } from "./ai.js";
+import type { LlmClient, LlmPart, LlmRequest, LlmResult, UsageLog } from "./ai.js";
 import type { MemoryStore } from "./memories.js";
 
 const SWEEP_EVERY_MS = 15 * 60 * 1000;
 const MAX_TAGS = 8;
 const MAX_TAG_LENGTH = 40;
 const MAX_CAPTION_LENGTH = 300;
+export const MAX_PHOTO_TEXT_LENGTH = 10_000;
 const PAUSED = "Auto-tagging paused until the next sweep";
 
 const TAGS_SCHEMA = {
@@ -20,15 +21,26 @@ const TAGS_SCHEMA = {
   additionalProperties: false,
 };
 
-const CAPTION_SCHEMA = {
+/** Caption only: used when a photo reply was cut off by the token limit. */
+export const CAPTION_SCHEMA = {
   type: "object",
   properties: { caption: { type: "string" } },
   required: ["caption"],
   additionalProperties: false,
 };
 
+/** One reply per photo: the caption and all of its readable text. */
+export const PHOTO_SCHEMA = {
+  type: "object",
+  properties: { caption: { type: "string" }, text: { type: "string" } },
+  required: ["caption", "text"],
+  additionalProperties: false,
+};
+
 const tagsShape = z.object({ category: z.enum(CATEGORIES), tags: z.array(z.string()) });
 const captionShape = z.object({ caption: z.string() });
+/** Only the caption is required: a missing or non-string `text` counts as no text. */
+const photoShape = z.object({ caption: z.string(), text: z.unknown().optional() });
 
 export const ENRICH_PROMPT = `You sort short personal notes for a memory app and add search tags.
 
@@ -44,6 +56,12 @@ Then give up to ${MAX_TAGS} lowercase tags someone might search for that are not
 export const CAPTION_PROMPT = `You describe photos for a personal memory app, so the user can find them later by searching.
 
 In one or two plain sentences, say what the photo shows: the main objects, the kind of place, and any readable text such as labels, signs, or handwriting (quote it exactly). Describe people only briefly, like "a smiling woman with curly hair", and never guess who they are. Don't mention anything you can't see. No markdown.`;
+
+export const PHOTO_PROMPT = `You describe photos for a personal memory app, so the user can find them later by searching.
+
+caption: In one or two plain sentences, say what the photo shows: the main objects, the kind of place, and the most important readable text, such as a label or a sign (quote it exactly). Describe people only briefly, like "a smiling woman with curly hair", and never guess who they are. Don't mention anything you can't see. No markdown.
+
+text: Copy out all the readable text in the photo, exactly as written, in reading order, one line per line of text. Include handwriting, labels, signs, screens and printed pages. Don't correct, summarize, translate or explain it, and don't add text that isn't there. If a word can't be read, write [?]. If there is no readable text, leave this empty. Stop after about 1,500 words and end with "…".`;
 
 export function cleanTags(tags: string[]): string[] {
   const clean = new Set<string>();
@@ -63,9 +81,28 @@ export function cleanCaption(caption: string): string | null {
 }
 
 /**
- * Works through new and edited memories one at a time in the background: describes their photos (when that's
- * turned on in Settings), then adds a category and synonym tags. Unfinished memories are swept up at startup
- * and every 15 minutes, so outages just delay the work.
+ * Tidies the text read from a photo, keeping its line breaks: normalizes line endings, drops trailing spaces, allows
+ * at most one blank line in a row, and caps it at a line or word boundary. Null when there's no text.
+ */
+export function cleanPhotoText(text: string): string | null {
+  const clean = text
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((line) => line.trimEnd())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  if (!clean) return null;
+  if (clean.length <= MAX_PHOTO_TEXT_LENGTH) return clean;
+  const head = clean.slice(0, MAX_PHOTO_TEXT_LENGTH);
+  const cut = Math.max(head.lastIndexOf("\n"), head.lastIndexOf(" "));
+  return `${(cut > 0 ? head.slice(0, cut) : head).trimEnd()}…`;
+}
+
+/**
+ * Works through new and edited memories one at a time in the background: describes their photos and reads their text
+ * (when that's turned on in Settings), then adds a category and synonym tags. Unfinished memories are swept up at
+ * startup and every 15 minutes, so outages just delay the work.
  */
 export class Enricher {
   private readonly queue = new Set<number>();
@@ -185,35 +222,66 @@ export class Enricher {
     }
   }
 
+  /**
+   * One call per photo returns both its caption and its readable text, and both are saved. A missing file, a refusal,
+   * an invalid reply or a skipped photo is marked done with no caption and no text, so it isn't sent again. An outage
+   * saves nothing and pauses, so the next sweep retries the photo.
+   */
   private async caption(photoId: number): Promise<"next" | "pause"> {
     const { store, usage } = this.deps;
     const path = store.photoPath(photoId, "full");
     const bytes = path ? await store.photos.read(path).catch(() => null) : null;
     if (!bytes) {
-      await store.saveCaption(photoId, null);
+      await store.saveCaption(photoId, null, null);
       return "next";
     }
+    const content: LlmPart[] = [
+      { type: "image", jpegBase64: bytes.toString("base64") },
+      { type: "text", text: "Describe this photo." },
+    ];
     const result = await this.call(
-      {
-        system: CAPTION_PROMPT,
-        content: [
-          { type: "image", jpegBase64: bytes.toString("base64") },
-          { type: "text", text: "Describe this photo." },
-        ],
-        schema: CAPTION_SCHEMA,
-        maxTokens: 300,
-      },
+      { system: PHOTO_PROMPT, content, schema: PHOTO_SCHEMA, maxTokens: 4096 },
       `the caption for photo ${photoId}`,
     );
     if (result === "pause") return "pause";
     if (result === "skip") {
-      await store.saveCaption(photoId, null);
+      await store.saveCaption(photoId, null, null);
+      return "next";
+    }
+    usage.record("caption", result);
+    const reply = photoShape.safeParse(result.json);
+    if (reply.success) {
+      const text = typeof reply.data.text === "string" ? cleanPhotoText(reply.data.text) : null;
+      await store.saveCaption(photoId, cleanCaption(reply.data.caption), text);
+      return "next";
+    }
+    if (result.stopReason === "max_tokens") return this.captionOnly(photoId, content);
+    this.log(`No caption for photo ${photoId}: unusable reply (stop reason: ${result.stopReason})`);
+    await store.saveCaption(photoId, null, null);
+    return "next";
+  }
+
+  /**
+   * A photo whose reply was cut off by the token limit (usually one with a lot of text) still gets a caption: one
+   * caption-only call, saved with no text. Turned off in the meantime, the photo isn't sent again and stays unread.
+   */
+  private async captionOnly(photoId: number, content: LlmPart[]): Promise<"next" | "pause"> {
+    const { store, usage } = this.deps;
+    if (!this.captionsEnabled()) return "next";
+    this.log(`Photo ${photoId}'s reply was cut off; asking for its caption alone`);
+    const result = await this.call(
+      { system: CAPTION_PROMPT, content, schema: CAPTION_SCHEMA, maxTokens: 300 },
+      `the caption for photo ${photoId}`,
+    );
+    if (result === "pause") return "pause";
+    if (result === "skip") {
+      await store.saveCaption(photoId, null, null);
       return "next";
     }
     usage.record("caption", result);
     const reply = captionShape.safeParse(result.json);
     if (!reply.success) this.log(`No caption for photo ${photoId}: unusable reply (stop reason: ${result.stopReason})`);
-    await store.saveCaption(photoId, reply.success ? cleanCaption(reply.data.caption) : null);
+    await store.saveCaption(photoId, reply.success ? cleanCaption(reply.data.caption) : null, null);
     return "next";
   }
 
