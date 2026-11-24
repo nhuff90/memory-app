@@ -17,6 +17,11 @@ export interface Photo {
   id: number;
   /** What Claude saw in the photo, when photo descriptions are turned on. */
   caption: string | null;
+  /**
+   * The full text read from the photo (signs, labels, notes), with its line breaks. Null when the photo hasn't been
+   * read or had no text. Keyword-searchable only: it never feeds meaning search or auto-tags.
+   */
+  text: string | null;
   createdAt: number;
 }
 

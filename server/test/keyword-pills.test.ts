@@ -371,7 +371,8 @@ it("forward-migrates version 4 keywords into assignments without rewriting migra
   old.close();
   const db = openDb(file);
   try {
-    expect(db.pragma("user_version", { simple: true })).toBe(5);
+    // Through 005 and every later forward migration (006 photo text).
+    expect(db.pragma("user_version", { simple: true })).toBe(MIGRATIONS.length);
     const store = new MemoryStore(db, ctx.photos);
     expect(store.keywordVocabulary()).toEqual([
       { keyword: "Garage", key: "garage", count: 2, lastAssignedAt: null },

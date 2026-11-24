@@ -93,6 +93,8 @@ export interface MemoryRow {
   category_set_by_user: number;
   /** Every photo caption, joined with "; ". */
   captions: string | null;
+  /** Every photo's text in photo id order, joined with a blank line; NULL when no photo has text. Keyword index only. */
+  photo_text: string | null;
 }
 
 interface PhotoRow {
@@ -103,6 +105,10 @@ interface PhotoRow {
   created_at: number;
   caption: string | null;
   captioned_at: number | null;
+  /** The text read from the photo, line breaks kept; NULL when none was read. */
+  extracted_text: string | null;
+  /** When a text reading finished, even one that found no text; NULL when never read. */
+  text_read_at: number | null;
 }
 
 export function normalizeBody(body: string): string {
@@ -560,14 +566,23 @@ export class MemoryStore {
   /**
    * Records what Claude saw in a photo, or null when it couldn't say, so the photo isn't sent again.
    * A new caption makes the memory findable by it and queues fresh tags.
+   *
+   * `text` is the text read from the photo. Omitted (`undefined`), the photo's text is left as it is. A string or null
+   * is saved in the same transaction and marks the reading done (`text_read_at`), even when there was no text. Text
+   * only feeds the keyword index: a change to it alone never resets tags, never re-embeds and emits no change.
    */
-  async saveCaption(photoId: number, caption: string | null): Promise<void> {
+  async saveCaption(photoId: number, caption: string | null, text?: string | null): Promise<void> {
     const photo = this.db.prepare(`SELECT memory_id FROM photos WHERE id = ?`).get(photoId) as
       | Pick<PhotoRow, "memory_id">
       | undefined;
     if (!photo) return;
     const changed = this.db.transaction(() => {
-      this.db.prepare(`UPDATE photos SET caption = ?, captioned_at = ? WHERE id = ?`).run(caption, this.now(), photoId);
+      const now = this.now();
+      this.db.prepare(`UPDATE photos SET caption = ?, captioned_at = ? WHERE id = ?`).run(caption, now, photoId);
+      if (text !== undefined) {
+        this.db.prepare(`UPDATE photos SET extracted_text = ?, text_read_at = ? WHERE id = ?`).run(text, now, photoId);
+        this.refreshPhotoText(photo.memory_id);
+      }
       return this.refreshCaptions(photo.memory_id);
     })();
     if (changed) await this.emit({ kind: "captioned", id: photo.memory_id });
@@ -619,6 +634,7 @@ export class MemoryStore {
     const captionsChanged = this.db.transaction(() => {
       this.db.prepare(`DELETE FROM photos WHERE id = ?`).run(photoId);
       this.db.prepare(`UPDATE memories SET updated_at = ? WHERE id = ?`).run(this.now(), photo.memory_id);
+      this.refreshPhotoText(photo.memory_id);
       return this.refreshCaptions(photo.memory_id);
     })();
     await this.photos.remove([photo.file, photo.thumb]);
@@ -655,7 +671,7 @@ export class MemoryStore {
     const photosByMemory = new Map<number, Photo[]>();
     for (const photo of photoRows) {
       const list = photosByMemory.get(photo.memory_id) ?? [];
-      list.push({ id: photo.id, caption: photo.caption, createdAt: photo.created_at });
+      list.push({ id: photo.id, caption: photo.caption, text: photo.extracted_text, createdAt: photo.created_at });
       photosByMemory.set(photo.memory_id, list);
     }
     return rows.map((row) => ({
@@ -724,6 +740,21 @@ export class MemoryStore {
       .prepare(`UPDATE memories SET captions = ?, enriched_at = NULL WHERE id = ? AND captions IS NOT ?`)
       .run(captions, memoryId, captions);
     return result.changes > 0;
+  }
+
+  /**
+   * Copies the photos' text onto the memory row for the keyword index: in photo id order, joined with a blank line,
+   * NULL when no photo has text. Leaves tags, `enriched_at`, `updated_at` and embeddings alone.
+   */
+  private refreshPhotoText(memoryId: number): void {
+    const rows = this.db
+      .prepare(`SELECT extracted_text FROM photos WHERE memory_id = ? AND extracted_text IS NOT NULL ORDER BY id`)
+      .all(memoryId) as { extracted_text: string }[];
+    const texts = rows.map((row) => row.extracted_text).filter((text) => text.trim() !== "");
+    const photoText = texts.length > 0 ? texts.join("\n\n") : null;
+    this.db
+      .prepare(`UPDATE memories SET photo_text = ? WHERE id = ? AND photo_text IS NOT ?`)
+      .run(photoText, memoryId, photoText);
   }
 
   private photoCount(memoryId: number): number {

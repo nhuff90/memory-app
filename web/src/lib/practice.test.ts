@@ -27,7 +27,7 @@ function person(id: number, body: string, { photos = 1, archivedAt = null }: { p
     updatedAt: NOW,
     archivedAt,
     enrichedAt: null,
-    photos: Array.from({ length: photos }, (_, index) => ({ id: id * 10 + index, caption: null, createdAt: NOW })),
+    photos: Array.from({ length: photos }, (_, index) => ({ id: id * 10 + index, caption: null, text: null, createdAt: NOW })),
   };
 }
 

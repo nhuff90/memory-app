@@ -201,7 +201,7 @@ describe("formatNotes", () => {
       ...(await save("Dave from accounting")),
       category: "people" as const,
       tags: ["coworker", "finance"],
-      photos: [{ id: 1, caption: "man with a red beard", createdAt: START_TIME }],
+      photos: [{ id: 1, caption: "man with a red beard", text: null, createdAt: START_TIME }],
     };
     const photoOnly = { ...memory, id: 99, body: "", category: null, tags: [], photos: [] };
     expect(formatNotes([memory, photoOnly], "America/New_York")).toBe(
