@@ -119,6 +119,11 @@ export class Enricher {
       usage: UsageLog;
       /** Whether photos may be sent to Claude. Read before each photo, so turning it off takes effect at once. */
       captionsEnabled?: () => boolean;
+      /**
+       * Whether the user asked to read the text in photos described before photo text existed. Those photos are only
+       * sent while `captionsEnabled` is also on.
+       */
+      readSavedPhotoText?: () => boolean;
       log?: (message: string, error?: unknown) => void;
     },
   ) {}
@@ -149,6 +154,7 @@ export class Enricher {
   sweep(): void {
     const ids = this.deps.store.unenriched();
     if (this.captionsEnabled()) ids.push(...this.deps.store.uncaptioned());
+    if (this.readingSavedPhotos()) ids.push(...this.deps.store.photosWithoutText());
     this.enqueue(ids);
   }
 
@@ -159,6 +165,11 @@ export class Enricher {
 
   private captionsEnabled(): boolean {
     return this.deps.captionsEnabled?.() ?? false;
+  }
+
+  /** Photos described before photo text existed are read only when the user asked and photos may be sent. */
+  private readingSavedPhotos(): boolean {
+    return this.captionsEnabled() && (this.deps.readSavedPhotoText?.() ?? false);
   }
 
   private log(message: string, error?: unknown): void {
@@ -202,6 +213,12 @@ export class Enricher {
     for (const photoId of this.deps.store.uncaptionedPhotos(id)) {
       if (!this.captionsEnabled()) break;
       if ((await this.caption(photoId)) === "pause") return "pause";
+    }
+    if (this.readingSavedPhotos()) {
+      for (const photoId of this.deps.store.photosWithoutTextIn(id)) {
+        if (!this.readingSavedPhotos()) break;
+        if ((await this.readText(photoId)) === "pause") return "pause";
+      }
     }
     return this.tag(id);
   }
@@ -282,6 +299,45 @@ export class Enricher {
     const reply = captionShape.safeParse(result.json);
     if (!reply.success) this.log(`No caption for photo ${photoId}: unusable reply (stop reason: ${result.stopReason})`);
     await store.saveCaption(photoId, reply.success ? cleanCaption(reply.data.caption) : null, null);
+    return "next";
+  }
+
+  /**
+   * Reads the text in a photo described before photo text existed, with the same call as a new photo, and saves only
+   * the text: the caption it already has, the memory's tags and its embedding stay as they are. A missing file, a
+   * skipped photo, a refusal, an invalid reply or one cut off by the token limit is saved as no text, so the photo
+   * isn't sent again; there is no caption-only retry because the caption already exists. An outage saves nothing and
+   * pauses, so a later sweep reads the photo.
+   */
+  private async readText(photoId: number): Promise<"next" | "pause"> {
+    const { store, usage } = this.deps;
+    const path = store.photoPath(photoId, "full");
+    const bytes = path ? await store.photos.read(path).catch(() => null) : null;
+    if (!bytes) {
+      store.savePhotoText(photoId, null);
+      return "next";
+    }
+    const content: LlmPart[] = [
+      { type: "image", jpegBase64: bytes.toString("base64") },
+      { type: "text", text: "Describe this photo." },
+    ];
+    const result = await this.call(
+      { system: PHOTO_PROMPT, content, schema: PHOTO_SCHEMA, maxTokens: 4096 },
+      `the text in photo ${photoId}`,
+    );
+    if (result === "pause") return "pause";
+    if (result === "skip") {
+      store.savePhotoText(photoId, null);
+      return "next";
+    }
+    usage.record("caption", result);
+    const reply = photoShape.safeParse(result.json);
+    if (!reply.success) {
+      this.log(`No text for photo ${photoId}: unusable reply (stop reason: ${result.stopReason})`);
+      store.savePhotoText(photoId, null);
+      return "next";
+    }
+    store.savePhotoText(photoId, typeof reply.data.text === "string" ? cleanPhotoText(reply.data.text) : null);
     return "next";
   }
 

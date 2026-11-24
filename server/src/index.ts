@@ -38,7 +38,15 @@ const search = new SearchIndex(db, embedder);
 search.attach(store);
 const llm = config.anthropicApiKey ? new AnthropicLlm(config.anthropicApiKey, config.model) : null;
 const usage = new UsageLog(db);
-const enricher = llm ? new Enricher({ store, llm, usage, captionsEnabled: () => settings.photoCaptions() }) : null;
+const enricher = llm
+  ? new Enricher({
+      store,
+      llm,
+      usage,
+      captionsEnabled: () => settings.photoCaptions(),
+      readSavedPhotoText: () => settings.readSavedPhotoText(),
+    })
+  : null;
 enricher?.attach();
 enricher?.start();
 

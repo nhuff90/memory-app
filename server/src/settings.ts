@@ -13,6 +13,18 @@ export class SettingsStore {
     this.write("photo_captions", on ? "1" : "0");
   }
 
+  /**
+   * Whether the user asked to read the text in photos described before photo text existed. Off until asked. The
+   * reading itself only runs while photo descriptions are on, so turning those off pauses it.
+   */
+  readSavedPhotoText(): boolean {
+    return this.read("read_saved_photo_text") === "1";
+  }
+
+  setReadSavedPhotoText(on: boolean): void {
+    this.write("read_saved_photo_text", on ? "1" : "0");
+  }
+
   private read(key: string): string | null {
     const row = this.db.prepare(`SELECT value FROM settings WHERE key = ?`).get(key) as { value: string } | undefined;
     return row?.value ?? null;

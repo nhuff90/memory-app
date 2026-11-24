@@ -564,6 +564,60 @@ export class MemoryStore {
   }
 
   /**
+   * Memories, outdated ones included, with a photo that was described before photo text existed and whose text has
+   * never been read, newest first.
+   */
+  photosWithoutText(limit = 1000): number[] {
+    const rows = this.db
+      .prepare(
+        `SELECT id FROM memories m
+         WHERE EXISTS (
+           SELECT 1 FROM photos p WHERE p.memory_id = m.id AND p.captioned_at IS NOT NULL AND p.text_read_at IS NULL
+         )
+         ORDER BY created_at DESC, id DESC LIMIT ?`,
+      )
+      .all(limit) as { id: number }[];
+    return rows.map((row) => row.id);
+  }
+
+  /** This memory's described photos whose text has never been read, in id order. */
+  photosWithoutTextIn(memoryId: number): number[] {
+    const rows = this.db
+      .prepare(
+        `SELECT id FROM photos WHERE memory_id = ? AND captioned_at IS NOT NULL AND text_read_at IS NULL ORDER BY id`,
+      )
+      .all(memoryId) as { id: number }[];
+    return rows.map((row) => row.id);
+  }
+
+  /** How many described photos, across every memory, still have text that has never been read. */
+  countPhotosWithoutText(): number {
+    const row = this.db
+      .prepare(`SELECT count(*) AS n FROM photos WHERE captioned_at IS NOT NULL AND text_read_at IS NULL`)
+      .get() as { n: number };
+    return row.n;
+  }
+
+  /**
+   * Saves the text read from an already described photo, or null when there was none or it couldn't be read, and
+   * marks the reading done so the photo isn't sent again. Only the text changes: the caption, the memory's captions,
+   * tags, `enriched_at` and `updated_at` stay as they are, and no change is emitted, so nothing is re-tagged or
+   * re-embedded. Does nothing when the photo no longer exists.
+   */
+  savePhotoText(photoId: number, text: string | null): void {
+    const photo = this.db.prepare(`SELECT memory_id FROM photos WHERE id = ?`).get(photoId) as
+      | Pick<PhotoRow, "memory_id">
+      | undefined;
+    if (!photo) return;
+    this.db.transaction(() => {
+      this.db
+        .prepare(`UPDATE photos SET extracted_text = ?, text_read_at = ? WHERE id = ?`)
+        .run(text, this.now(), photoId);
+      this.refreshPhotoText(photo.memory_id);
+    })();
+  }
+
+  /**
    * Records what Claude saw in a photo, or null when it couldn't say, so the photo isn't sent again.
    * A new caption makes the memory findable by it and queues fresh tags.
    *
