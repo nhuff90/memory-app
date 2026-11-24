@@ -13,7 +13,9 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/api": "http://localhost:8080",
+      // Keep the browser's Host header: the server rejects writes whose Origin host differs from Host, and the
+      // string shorthand would turn on changeOrigin and send Host: localhost:8080.
+      "/api": { target: "http://localhost:8080", changeOrigin: false },
     },
     // The web app imports ../shared, which sits outside the Vite root.
     fs: { allow: [fileURLToPath(new URL(".", import.meta.url))] },
