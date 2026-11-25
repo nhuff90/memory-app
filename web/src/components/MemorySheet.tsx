@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   CATEGORIES,
   CATEGORY_LABELS,
@@ -13,6 +13,7 @@ import { formatFullDate } from "../lib/format";
 import { useAutosize } from "../lib/hooks";
 import { preparePhoto } from "../lib/images";
 import { applyKeywordInput, pendingKeywordError, sameKeywordList, type PillInput } from "../lib/keywords";
+import { addTextToNote } from "../lib/photoText";
 import { ArchiveIcon, CloseIcon, TrashIcon } from "./icons";
 import { KeywordPills } from "./KeywordPills";
 import { PhotoButton } from "./PhotoButton";
@@ -21,6 +22,119 @@ import { Sheet } from "./Sheet";
 import { MemoryList } from "./MemoryCard";
 
 type Busy = null | "save" | "archive" | "delete" | "photo" | "category" | "pin";
+
+const COPY_FAILED = "Couldn't copy. Select the text and copy it instead.";
+
+/** Text long enough to clamp behind "Show all": more than six lines or more than 300 characters. */
+function isLongPhotoText(text: string): boolean {
+  return text.length > 300 || text.split(/\r\n|\r|\n/).length > 6;
+}
+
+/**
+ * One photo's text, read-only, with Copy and Add to note. Add to note only changes the editor's text, so the note
+ * is saved or discarded like any other edit.
+ */
+function PhotoTextBlock({
+  text,
+  position,
+  body,
+  disabled,
+  onBodyChange,
+}: {
+  text: string;
+  /** The photo's position, when the memory has more than one photo. */
+  position: number | null;
+  /** The editor's current text. */
+  body: string;
+  disabled: boolean;
+  onBodyChange: (body: string) => void;
+}) {
+  const id = useId();
+  const [expanded, setExpanded] = useState(false);
+  const [copy, setCopy] = useState<"idle" | "copied" | "failed">("idle");
+  const [refusal, setRefusal] = useState<{ message: string; body: string } | null>(null);
+  const copiedTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
+
+  const long = isLongPhotoText(text);
+  const photo = position === null ? "photo" : `photo ${position}`;
+
+  const copyText = async () => {
+    window.clearTimeout(copiedTimer.current);
+    setCopy("idle");
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopy("copied");
+      copiedTimer.current = window.setTimeout(() => setCopy("idle"), 2000);
+    } catch {
+      setCopy("failed");
+    }
+  };
+
+  const addToNote = () => {
+    const result = addTextToNote(body, text);
+    if (result.ok) {
+      setRefusal(null);
+      onBodyChange(result.body);
+    } else {
+      setRefusal({ message: result.message, body });
+    }
+  };
+  // A refusal was checked against one version of the note; once the note changes it no longer applies.
+  const refusalMessage = refusal?.body === body ? refusal.message : null;
+
+  return (
+    <section
+      aria-labelledby={`${id}-heading`}
+      className="mt-3 rounded-xl bg-stone-50 px-3 py-2.5 ring-1 ring-stone-200 dark:bg-stone-950 dark:ring-stone-800"
+    >
+      <h3 id={`${id}-heading`} className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+        {position === null ? "Text in photo" : `Text in photo ${position}`}
+      </h3>
+      <p
+        id={`${id}-text`}
+        className={`mt-1 text-sm leading-relaxed break-words whitespace-pre-wrap select-text ${long && !expanded ? "line-clamp-6" : ""}`}
+      >
+        {text}
+      </p>
+      {long && (
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          aria-controls={`${id}-text`}
+          className="min-h-11 rounded-full px-2 text-sm font-semibold text-indigo-700 dark:text-indigo-300"
+        >
+          {expanded ? "Show less" : "Show all"}
+        </button>
+      )}
+      <div className="mt-2 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => void copyText()}
+          disabled={disabled}
+          aria-label={`${copy === "copied" ? "Copied" : "Copy"} text from ${photo}`}
+          className="min-h-11 rounded-full bg-white px-4 text-sm font-semibold text-stone-800 ring-1 ring-stone-200 hover:bg-stone-100 disabled:opacity-50 dark:bg-stone-900 dark:text-stone-100 dark:ring-stone-700 dark:hover:bg-stone-800"
+        >
+          {copy === "copied" ? "Copied" : "Copy"}
+        </button>
+        <button
+          type="button"
+          onClick={addToNote}
+          disabled={disabled}
+          aria-label={`Add text from ${photo} to note`}
+          className="min-h-11 rounded-full bg-white px-4 text-sm font-semibold text-indigo-800 ring-1 ring-indigo-200 hover:bg-indigo-50 disabled:opacity-50 dark:bg-stone-900 dark:text-indigo-200 dark:ring-indigo-800"
+        >
+          Add to note
+        </button>
+      </div>
+      <div aria-live="polite" className="text-sm text-red-700 dark:text-red-400">
+        {copy === "failed" && <p className="mt-2">{COPY_FAILED}</p>}
+        {refusalMessage && <p className="mt-2">{refusalMessage}</p>}
+      </div>
+    </section>
+  );
+}
 
 export function MemorySheet({
   memory: initial,
@@ -284,6 +398,18 @@ export function MemorySheet({
               ),
           )}
         </ul>
+      )}
+      {memory.photos.map((photo, index) =>
+        photo.text ? (
+          <PhotoTextBlock
+            key={photo.id}
+            text={photo.text}
+            position={memory.photos.length > 1 ? index + 1 : null}
+            body={body}
+            disabled={busy !== null}
+            onBodyChange={setBody}
+          />
+        ) : null,
       )}
       <div className="mt-2">
         <PhotoButton
