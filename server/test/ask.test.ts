@@ -4,7 +4,7 @@ import type { AskResponse, MeResponse, UsageSummary } from "../../shared/types.j
 import { aiFailure } from "../src/ai.js";
 import { formatNotes, NOTHING_FOUND } from "../src/ask.js";
 import { FakeLlm } from "./fakeLlm.js";
-import { client, DAY, login, makeContext, START_TIME, type TestContext } from "./helpers.js";
+import { client, DAY, fakeJpeg, login, makeContext, START_TIME, type TestContext } from "./helpers.js";
 
 let ctx: TestContext;
 afterEach(() => ctx?.cleanup());
@@ -111,6 +111,25 @@ describe("Ask", () => {
     expect(llm.requests).toHaveLength(1);
   });
 
+  it("finds and sends a note whose only match is the text in its photo once there are more than 50", async () => {
+    const llm = new FakeLlm(() => ({ json: { answer: "A pinch of saffron.", used_ids: [] } }));
+    const api = await setup(llm);
+    for (let index = 0; index < 55; index++) await save(`gym schedule note ${index}`, index + 1);
+    const { memory: card } = await ctx.store.create({
+      body: "Grandma's recipe card from the kitchen drawer",
+      photos: [{ full: fakeJpeg("full-0"), thumb: fakeJpeg("thumb-0") }],
+    });
+    ctx.store.savePhotoText(card.photos[0]!.id, "Saffron rice\n2 cups water");
+    expect(ctx.store.require(card.id).photos[0]!.caption).toBeNull();
+
+    const res = await api.postJson("/api/ask", { question: "saffron" });
+    expect(res.status).toBe(200);
+    expect(llm.requests).toHaveLength(1);
+    expect(llm.lastContent).toContain(`[#${card.id} | saved 2026-10-31 | 1 photo] Grandma's recipe card from the kitchen drawer`);
+    expect(llm.lastContent).toContain("  text in photo (transcribed, may have errors): Saffron rice / 2 cups water");
+    expect(llm.lastContent).not.toContain("gym schedule");
+  });
+
   it("uses the phone's time zone for today's date", async () => {
     const llm = new FakeLlm(() => ({ json: { answer: "ok", used_ids: [] } }));
     const api = await setup(llm);
@@ -201,7 +220,7 @@ describe("formatNotes", () => {
       ...(await save("Dave from accounting")),
       category: "people" as const,
       tags: ["coworker", "finance"],
-      photos: [{ id: 1, caption: "man with a red beard", createdAt: START_TIME }],
+      photos: [{ id: 1, caption: "man with a red beard", text: null, createdAt: START_TIME }],
     };
     const photoOnly = { ...memory, id: 99, body: "", category: null, tags: [], photos: [] };
     expect(formatNotes([memory, photoOnly], "America/New_York")).toBe(
@@ -210,5 +229,58 @@ describe("formatNotes", () => {
         "  tags: coworker, finance\n" +
         "[#99 | saved 2026-10-31] (photo only)",
     );
+  });
+
+  it("adds the text read from photos after the captions, on one line in photo order", async () => {
+    ctx = makeContext();
+    const memory = {
+      ...(await save("Grandma's recipe card")),
+      category: null,
+      tags: ["baking"],
+      photos: [
+        { id: 1, caption: "a handwritten recipe card", text: "2 cups flour\n1 tsp salt", createdAt: START_TIME },
+        { id: 2, caption: null, text: "Bake 350", createdAt: START_TIME },
+      ],
+    };
+    // No caption: the text line goes where the "photo shows" line would be. Whitespace collapses; blank lines and
+    // photos without text add nothing.
+    const sign = {
+      ...memory,
+      id: 98,
+      body: "",
+      tags: [],
+      photos: [
+        { id: 3, caption: null, text: null, createdAt: START_TIME },
+        { id: 4, caption: null, text: "  OPEN   9 to 5 \n\n\tClosed Sundays  ", createdAt: START_TIME },
+      ],
+    };
+    expect(formatNotes([memory, sign], "America/New_York")).toBe(
+      `[#${memory.id} | saved 2026-10-31 | 2 photos] Grandma's recipe card\n` +
+        "  photo shows: a handwritten recipe card\n" +
+        "  text in photo (transcribed, may have errors): 2 cups flour / 1 tsp salt / Bake 350\n" +
+        "  tags: baking\n" +
+        "[#98 | saved 2026-10-31 | 2 photos] (photo only)\n" +
+        "  text in photo (transcribed, may have errors): OPEN 9 to 5 / Closed Sundays",
+    );
+  });
+
+  it("sends at most 1,500 characters of photo text, cut at a word", async () => {
+    ctx = makeContext();
+    const long = Array.from({ length: 1000 }, (_, index) => `item${index}`).join(" ").slice(0, 5000);
+    expect(long).toHaveLength(5000);
+    const memory = { ...(await save("Packing list")), photos: [{ id: 1, caption: null, text: long, createdAt: START_TIME }] };
+    const prefix = "  text in photo (transcribed, may have errors): ";
+
+    const line = formatNotes([memory], "America/New_York")
+      .split("\n")
+      .find((candidate) => candidate.startsWith(prefix))!;
+    const text = line.slice(prefix.length);
+    expect(text.length).toBeLessThanOrEqual(1501);
+    expect(text.endsWith("…")).toBe(true);
+    const kept = text.slice(0, -1);
+    expect(long.startsWith(kept)).toBe(true);
+    // The cut falls between two words, not inside one, and keeps as much as fits.
+    expect(long[kept.length]).toBe(" ");
+    expect(long.lastIndexOf(" ", 1500)).toBe(kept.length);
   });
 });

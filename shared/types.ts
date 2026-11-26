@@ -17,6 +17,11 @@ export interface Photo {
   id: number;
   /** What Claude saw in the photo, when photo descriptions are turned on. */
   caption: string | null;
+  /**
+   * The full text read from the photo (signs, labels, notes), with its line breaks. Null when the photo hasn't been
+   * read or had no text. Keyword-searchable only: it never feeds meaning search or auto-tags.
+   */
+  text: string | null;
   createdAt: number;
 }
 
@@ -53,6 +58,9 @@ export interface AskResponse {
   results: Memory[];
 }
 
+/** Advertised in `MeResponse.capabilities` by servers that read the text in photos. */
+export const PHOTO_TEXT_CAPABILITY = "photo-text";
+
 export interface MeResponse {
   aiEnabled: boolean;
   model: string | null;
@@ -60,6 +68,18 @@ export interface MeResponse {
   counts: { memories: number; photos: number };
   /** Features this server supports. Older servers omit the field entirely. */
   capabilities?: string[];
+  /**
+   * Reading the text in photos described before photo text existed. Older servers omit the field entirely, so
+   * treat a missing value as "nothing to offer".
+   */
+  photoText?: {
+    /** Described photos, outdated memories included, whose text has never been read. */
+    unread: number;
+    /**
+     * Whether the user asked to read them. Stays true once asked; the reading runs only while Describe photos is on.
+     */
+    requested: boolean;
+  };
 }
 
 /** One custom keyword in the user's vocabulary, for suggestions. */

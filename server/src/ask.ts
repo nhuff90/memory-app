@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { AskResponse, Memory } from "../../shared/types.js";
+import type { AskResponse, Memory, Photo } from "../../shared/types.js";
 import { aiFailure, type LlmClient, type UsageLog } from "./ai.js";
 import { HttpError } from "./errors.js";
 import type { MemoryStore } from "./memories.js";
@@ -12,6 +12,8 @@ const MAX_NOTES = 50;
 /** Looser than search: Claude reads the notes and ignores the ones that don't fit. */
 const ASK_MIN_SIMILARITY = 0.5;
 const MAX_RESULTS = 20;
+/** Ask sends at most this many characters of a memory's photo text (plus "…" when it's cut). */
+const MAX_PHOTO_TEXT = 1500;
 
 const ANSWER_SCHEMA = {
   type: "object",
@@ -47,6 +49,27 @@ export function systemPrompt(now: number, timeZone: string): string {
   ].join("\n");
 }
 
+/**
+ * Every photo's text in photo order, on one line: line breaks (and the breaks between photos) become " / ", runs of
+ * whitespace collapse to one space, and text longer than MAX_PHOTO_TEXT is cut at a word with "…" appended. Empty when
+ * no photo has text.
+ */
+function photoTextLine(photos: Photo[]): string {
+  const text = photos
+    .flatMap((photo) => (photo.text ?? "").split(/\r\n?|\n/))
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter((line) => line !== "")
+    .join(" / ");
+  if (text.length <= MAX_PHOTO_TEXT) return text;
+  // lastIndexOf from MAX_PHOTO_TEXT also finds a space just past the limit, when the cut already falls between words.
+  const space = text.lastIndexOf(" ", MAX_PHOTO_TEXT);
+  let end = space > 0 ? space : MAX_PHOTO_TEXT;
+  // With no space to cut at, don't split an emoji or other surrogate pair.
+  if (space <= 0 && /[\uD800-\uDBFF]/.test(text.charAt(end - 1))) end -= 1;
+  // A cut right after a separator would leave a dangling " /".
+  return `${text.slice(0, end).replace(/(?: \/)+$/, "")}…`;
+}
+
 export function formatNotes(memories: Memory[], timeZone: string): string {
   return memories
     .map((memory) => {
@@ -59,6 +82,8 @@ export function formatNotes(memories: Memory[], timeZone: string): string {
       const lines = [`[${details.join(" | ")}] ${memory.body || "(photo only)"}`];
       const captions = memory.photos.flatMap((photo) => (photo.caption ? [photo.caption] : []));
       if (captions.length) lines.push(`  photo shows: ${captions.join("; ")}`);
+      const photoText = photoTextLine(memory.photos);
+      if (photoText) lines.push(`  text in photo (transcribed, may have errors): ${photoText}`);
       if (memory.tags.length) lines.push(`  tags: ${memory.tags.join(", ")}`);
       if (memory.customKeywords.length) {
         lines.push(`  user-provided search metadata (custom keywords): ${memory.customKeywords.join(", ")}`);

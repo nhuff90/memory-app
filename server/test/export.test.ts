@@ -37,13 +37,47 @@ describe("GET /api/export", () => {
     expect(json.timeZone).toBe("America/Chicago");
     expect(json.memories.map((memory) => memory.body)).toEqual(["flashlight in the garage", "Sarah's kids are Emma and Jake"]);
     expect(json.memories[0]!.outdatedAt).not.toBeNull();
-    expect(json.memories[1]!.photos).toEqual([{ file: photoFile, caption: null }]);
+    expect(json.memories[1]!.photos).toEqual([{ file: photoFile, caption: null, text: null }]);
 
     const markdown = strFromU8(files["memories.md"]!);
     expect(markdown).toContain("## October 31, 2026 at 1:00 PM");
     expect(markdown).toContain("Sarah's kids are Emma and Jake");
     expect(markdown).toContain(`![Photo](${photoFile})`);
     expect(markdown).toContain("*Outdated*");
+  });
+
+  it("keeps the text read from photos in both files, quoted in Markdown", async () => {
+    ctx = makeContext();
+    const api = client(ctx.app, await login(ctx.app));
+    const card = (await (await api.postForm("/api/memories", memoryForm({ body: "Grandma's recipe card", photos: 2 }))).json()) as Memory;
+    const [read, unread] = card.photos.map((photo) => photo.id) as [number, number];
+    ctx.store.savePhotoText(read, "Saffron rice\n\n2 cups water");
+    const readFile = `photos/${card.id}-${read}.jpg`;
+    const unreadFile = `photos/${card.id}-${unread}.jpg`;
+
+    const files = unzipSync(new Uint8Array(await (await api.get("/api/export")).arrayBuffer()));
+    expect(Object.keys(files).sort()).toEqual(["memories.json", "memories.md", readFile, unreadFile]);
+    const json = JSON.parse(strFromU8(files["memories.json"]!)) as {
+      memories: { body: string; photos: { file: string; caption: string | null; text: string | null }[] }[];
+    };
+    expect(json.memories[0]!.photos).toEqual([
+      { file: readFile, caption: null, text: "Saffron rice\n\n2 cups water" },
+      { file: unreadFile, caption: null, text: null },
+    ]);
+
+    const markdown = strFromU8(files["memories.md"]!);
+    expect(markdown).toContain(
+      "Grandma's recipe card\n\n" +
+        `![Photo](${readFile})\n\n` +
+        "Text in photo:\n" +
+        "> Saffron rice\n" +
+        ">\n" +
+        "> 2 cups water\n\n" +
+        // A photo without text gets exactly the lines it always did.
+        `![Photo](${unreadFile})\n\n` +
+        "Pinned: no\n",
+    );
+    expect(markdown.match(/Text in photo:/g)).toHaveLength(1);
   });
 
   it("uses the server's time zone when the requested one is unknown", async () => {

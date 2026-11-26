@@ -1,6 +1,21 @@
 import { photoUrl, type Memory } from "../../../shared/types";
-import { formatWhen } from "../lib/format";
+import { formatWhen, highlightParts, photoTextSnippet } from "../lib/format";
 import { Highlight } from "./Highlight";
+
+/**
+ * Where a search matched in a photo's text, for a card whose shown text (body or captions) has no match: the snippet
+ * from the first photo, in order, that gives one. Null with an empty query, when the shown text already matches, or
+ * when no photo's text matches.
+ */
+function photoTextMatch(memory: Memory, shown: string, query: string): string | null {
+  if (!query.trim()) return null;
+  if (highlightParts(shown, query).some((part) => part.match)) return null;
+  for (const photo of memory.photos) {
+    const snippet = photo.text ? photoTextSnippet(photo.text, query) : null;
+    if (snippet) return snippet;
+  }
+  return null;
+}
 
 export function MemoryCard({
   memory,
@@ -20,6 +35,7 @@ export function MemoryCard({
         .map((photo) => photo.caption)
         .filter(Boolean)
         .join(" ");
+  const inPhoto = photoTextMatch(memory, memory.body || captions, query);
   return (
     <button
       type="button"
@@ -38,8 +54,13 @@ export function MemoryCard({
           <Highlight text={captions} query={query} />
         </p>
       )}
+      {inPhoto && (
+        <p className={`line-clamp-2 text-[15px] leading-snug break-words text-stone-500 dark:text-stone-400 ${memory.body || captions ? "mt-1" : ""}`}>
+          In photo: <Highlight text={inPhoto} query={query} />
+        </p>
+      )}
       {memory.photos.length > 0 && (
-        <div className={`flex gap-2 ${memory.body || captions ? "mt-2.5" : ""}`}>
+        <div className={`flex gap-2 ${memory.body || captions || inPhoto ? "mt-2.5" : ""}`}>
           {memory.photos.slice(0, 4).map((photo) => (
             <img
               key={photo.id}

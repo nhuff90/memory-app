@@ -28,12 +28,21 @@ export function exportJson(memories: Memory[], now: number, timeZone: string): s
         createdAt: iso(memory.createdAt),
         updatedAt: iso(memory.updatedAt),
         outdatedAt: iso(memory.archivedAt),
-        photos: memory.photos.map((photo) => ({ file: photoName(memory.id, photo.id), caption: photo.caption })),
+        photos: memory.photos.map((photo) => ({
+          file: photoName(memory.id, photo.id),
+          caption: photo.caption,
+          text: photo.text ?? null,
+        })),
       })),
     },
     null,
     2,
   );
+}
+
+/** Quotes text line by line, keeping its line breaks: blank lines become a bare ">" so the quote stays in one piece. */
+function blockquote(text: string): string[] {
+  return text.split(/\r\n?|\n/).map((line) => (line.trim() ? `> ${line}` : ">"));
 }
 
 export function exportMarkdown(memories: Memory[], now: number, timeZone: string): string {
@@ -49,7 +58,10 @@ export function exportMarkdown(memories: Memory[], now: number, timeZone: string
   for (const memory of memories) {
     lines.push("---", "", `## ${format.format(memory.createdAt)}`, "");
     if (memory.body) lines.push(memory.body, "");
-    for (const photo of memory.photos) lines.push(`![${photo.caption ?? "Photo"}](${photoName(memory.id, photo.id)})`, "");
+    for (const photo of memory.photos) {
+      lines.push(`![${photo.caption ?? "Photo"}](${photoName(memory.id, photo.id)})`, "");
+      if (photo.text?.trim()) lines.push("Text in photo:", ...blockquote(photo.text), "");
+    }
     lines.push(`Pinned: ${memory.pinned ? "yes" : "no"}`, "");
     if (memory.customKeywords.length) lines.push(`Custom keywords: ${memory.customKeywords.join(", ")}`, "");
     const details = [

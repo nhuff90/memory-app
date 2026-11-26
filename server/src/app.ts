@@ -8,6 +8,7 @@ import { z } from "zod";
 import { KEYWORD_CAPTURE_CAPABILITY, KEYWORD_RENAME_CAPABILITY } from "../../shared/keywords.js";
 import {
   CATEGORIES,
+  PHOTO_TEXT_CAPABILITY,
   type AskResponse,
   type CaptureResponse,
   type KeywordRenameResult,
@@ -245,7 +246,8 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
     model: llm?.model ?? null,
     photoCaptions: llm !== null && settings.photoCaptions(),
     counts: store.counts(),
-    capabilities: [KEYWORD_CAPTURE_CAPABILITY, KEYWORD_RENAME_CAPABILITY],
+    capabilities: [KEYWORD_CAPTURE_CAPABILITY, KEYWORD_RENAME_CAPABILITY, PHOTO_TEXT_CAPABILITY],
+    photoText: { unread: store.countPhotosWithoutText(), requested: settings.readSavedPhotoText() },
   });
 
   app.use("*", requestLog(deps.accessLog ?? ((line) => console.log(line))));
@@ -320,6 +322,19 @@ export function createApp(deps: AppDeps): Hono<AppEnv> {
     if (photoCaptions && !llm) throw badRequest("Photo descriptions need an Anthropic API key on the server.");
     settings.setPhotoCaptions(photoCaptions);
     if (photoCaptions) deps.enricher?.sweep();
+    return c.json(me());
+  });
+
+  /**
+   * Asks the server to read the text in photos described before photo text existed, once each. The request is
+   * remembered: the reading runs only while Describe photos is on, and resumes when it's turned on again. Session
+   * only: not a Siri key route.
+   */
+  app.post("/api/photo-text/read-saved", (c) => {
+    if (!llm) throw badRequest("Reading text in photos needs an Anthropic API key on the server.");
+    if (!settings.photoCaptions()) throw badRequest("Turn on Describe photos first.");
+    settings.setReadSavedPhotoText(true);
+    deps.enricher?.sweep();
     return c.json(me());
   });
 

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { KeywordRenameResult, KeywordUsage, MeResponse, UsageSummary } from "../../../shared/types";
-import { browserTimeZone, errorMessage, getMe, getUsage, logout, updateSettings } from "../api";
+import { browserTimeZone, errorMessage, getMe, getUsage, logout, readSavedPhotoText, updateSettings } from "../api";
+import { photoTextStatus } from "../lib/photoText";
 import { KeywordManager } from "./KeywordManager";
 import { Sheet } from "./Sheet";
 import { ShortcutsSetup } from "./ShortcutsSetup";
@@ -15,6 +16,25 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 const plural = (count: number, one: string, many: string) => `${count.toLocaleString()} ${count === 1 ? one : many}`;
+
+/** How often the sheet asks the server how many saved photos are left while their text is being read. */
+const PHOTO_TEXT_REFRESH_MS = 10_000;
+
+/** Whether the browser believes it is online, following `online`/`offline` events. */
+function useOnline(): boolean {
+  const [online, setOnline] = useState(() => typeof navigator === "undefined" || navigator.onLine !== false);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine !== false);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    update();
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  return online;
+}
 
 function formatCost(usd: number | null): string {
   if (usd === null) return "cost unknown for this model";
@@ -87,6 +107,16 @@ export function SettingsSheet({
   const [error, setError] = useState<string | null>(null);
   const [savingCaptions, setSavingCaptions] = useState(false);
   const [captionsError, setCaptionsError] = useState<string | null>(null);
+  const [sendingReadSaved, setSendingReadSaved] = useState(false);
+  const [readSavedError, setReadSavedError] = useState<string | null>(null);
+  /** Set once saved photos were being read while this sheet was open, so reaching 0 can say it's done. */
+  const [readThisSession, setReadThisSession] = useState(false);
+  /** Guards against a second tap before the disabled button re-renders. */
+  const readSavedInFlight = useRef(false);
+  const online = useOnline();
+
+  const photoText = photoTextStatus(me);
+  const readingSaved = photoText?.reading === true;
 
   useEffect(() => {
     getMe()
@@ -96,6 +126,27 @@ export function SettingsSheet({
       })
       .catch((caught: unknown) => setError(errorMessage(caught)));
   }, []);
+
+  // While saved photos are being read, refresh the count every 10 seconds. The sheet is only mounted while open, so
+  // the interval stops when it closes (unmount), when Describe photos is turned off, or when nothing is left.
+  useEffect(() => {
+    if (!readingSaved) return;
+    setReadThisSession(true);
+    let active = true;
+    const timer = window.setInterval(() => {
+      getMe()
+        .then((info) => {
+          if (active) setMe(info);
+        })
+        .catch(() => {
+          // Keep the last count; the next refresh tries again.
+        });
+    }, PHOTO_TEXT_REFRESH_MS);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [readingSaved]);
 
   async function setPhotoCaptions(photoCaptions: boolean) {
     setSavingCaptions(true);
@@ -108,6 +159,27 @@ export function SettingsSheet({
       setSavingCaptions(false);
     }
   }
+
+  async function readSavedPhotos() {
+    if (readSavedInFlight.current) return;
+    readSavedInFlight.current = true;
+    setSendingReadSaved(true);
+    setReadSavedError(null);
+    try {
+      setMe(await readSavedPhotoText());
+      setReadThisSession(true);
+    } catch (caught) {
+      setReadSavedError(errorMessage(caught));
+    } finally {
+      readSavedInFlight.current = false;
+      setSendingReadSaved(false);
+    }
+  }
+
+  let photoTextLine: string | null = null;
+  if (photoText?.reading) photoTextLine = `Reading text in saved photos: ${photoText.unread.toLocaleString()} left.`;
+  else if (photoText?.paused) photoTextLine = "Reading text in saved photos is paused while Describe photos is off.";
+  else if (photoText?.requested && photoText.unread === 0 && readThisSession) photoTextLine = "Text read in all saved photos.";
 
   async function signOut() {
     try {
@@ -145,9 +217,9 @@ export function SettingsSheet({
                     Describe photos
                   </p>
                   <p id="captions-help" className="mt-0.5 text-sm leading-relaxed text-stone-500 dark:text-stone-400">
-                    Claude writes a line about what’s in each photo, like “red toolbox on a garage shelf”, so search
-                    finds photos even without a note. Each photo is sent once, including the ones you’ve already saved.
-                    People are described, never named.
+                    Claude writes a line about what’s in each photo, like “red toolbox on a garage shelf”, and copies
+                    out any text in it, like a recipe card or a sign, so search finds photos even without a note. Each
+                    photo is sent once, including the ones you’ve already saved. People are described, never named.
                   </p>
                 </div>
                 <Switch
@@ -159,6 +231,41 @@ export function SettingsSheet({
                 />
               </div>
               {captionsError && <p className="mt-2 text-sm text-red-700 dark:text-red-400">{captionsError}</p>}
+              {photoText && (
+                <>
+                  {!photoText.requested && me.photoCaptions && photoText.unread > 0 && (
+                    <div className="mt-4">
+                      <p className="text-[15px]">
+                        {plural(photoText.unread, "photo", "photos")} {photoText.unread === 1 ? "was" : "were"} described
+                        before Recall could read the text in {photoText.unread === 1 ? "it" : "them"}.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => void readSavedPhotos()}
+                        disabled={sendingReadSaved || !online}
+                        aria-describedby={online ? "read-saved-help" : "read-saved-help read-saved-offline"}
+                        className="mt-2 inline-flex min-h-11 items-center rounded-full bg-stone-100 px-4 text-sm font-semibold text-stone-800 hover:bg-stone-200 disabled:opacity-50 dark:bg-stone-800 dark:text-stone-100 dark:hover:bg-stone-700"
+                      >
+                        Read text in {plural(photoText.unread, "photo", "photos")}
+                      </button>
+                      <p id="read-saved-help" className="mt-1 text-sm leading-relaxed text-stone-500 dark:text-stone-400">
+                        Each one is sent to Claude once more.
+                      </p>
+                      {!online && (
+                        <p id="read-saved-offline" className="mt-1 text-sm leading-relaxed text-stone-500 dark:text-stone-400">
+                          You’re offline.
+                        </p>
+                      )}
+                      {readSavedError && <p className="mt-2 text-sm text-red-700 dark:text-red-400">{readSavedError}</p>}
+                    </div>
+                  )}
+                  <div aria-live="polite">
+                    {photoTextLine && (
+                      <p className="mt-4 text-sm leading-relaxed text-stone-500 dark:text-stone-400">{photoTextLine}</p>
+                    )}
+                  </div>
+                </>
+              )}
             </>
           ) : (
             <p className="text-sm leading-relaxed text-stone-500 dark:text-stone-400">

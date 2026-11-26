@@ -276,7 +276,7 @@ export class SearchIndex {
            AND (? = 0 OR m.pinned = 1)
            AND (? IS NULL OR m.id != ?)
            ${key ? `AND ${keywordClause("m")}` : ""}
-         ORDER BY bm25(memories_fts, 1.0, 0.5, 0.5, 0.5), m.created_at DESC
+         ORDER BY bm25(memories_fts, 1.0, 0.5, 0.5, 0.5, 0.5), m.created_at DESC
          LIMIT ?`,
       )
       .all(matchQuery(terms), options.includeArchived ? 1 : 0, options.category ?? null, options.category ?? null,

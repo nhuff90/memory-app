@@ -8,6 +8,7 @@ import type {
   MeResponse,
   Memory,
   MemoryList,
+  Photo,
   ReconcileResponse,
   SearchResponse,
   UsageSummary,
@@ -15,8 +16,18 @@ import type {
 import { keywordKey, keywordsError } from "../../shared/keywords";
 
 /**
- * Older servers return memories without newer fields (pins, custom keywords). Fill safe defaults so the UI never
- * crashes on an older response shape.
+ * Older servers send photos without `text`. A missing, non-string or whitespace-only value becomes null; real text
+ * is kept exactly, line breaks included. Every other photo field passes through unchanged.
+ */
+function normalizePhoto(photo: Photo): Photo {
+  if (!photo || typeof photo !== "object") return photo;
+  const text: unknown = (photo as Partial<Photo>).text;
+  return { ...photo, text: typeof text === "string" && text.trim() ? text : null };
+}
+
+/**
+ * Older servers return memories without newer fields (pins, custom keywords, photo text). Fill safe defaults so the
+ * UI never crashes on an older response shape.
  */
 export function normalizeMemory(raw: Memory): Memory {
   const memory = (raw ?? {}) as Partial<Memory>;
@@ -31,7 +42,7 @@ export function normalizeMemory(raw: Memory): Memory {
     customKeywords: strings(memory.customKeywords),
     archivedAt: typeof memory.archivedAt === "number" ? memory.archivedAt : null,
     enrichedAt: typeof memory.enrichedAt === "number" ? memory.enrichedAt : null,
-    photos: Array.isArray(memory.photos) ? memory.photos : [],
+    photos: Array.isArray(memory.photos) ? memory.photos.map(normalizePhoto) : [],
   };
 }
 
@@ -156,6 +167,12 @@ export const getUsage = () => api<UsageSummary>(`/api/usage?tz=${encodeURICompon
 
 export const updateSettings = (settings: { photoCaptions: boolean }) =>
   api<MeResponse>("/api/settings", { method: "PATCH", json: settings });
+
+/**
+ * Asks the server to read the text in photos described before photo text existed. Session only; the server refuses
+ * while Describe photos is off. Returns the updated `/api/me` response.
+ */
+export const readSavedPhotoText = () => api<MeResponse>("/api/photo-text/read-saved", { method: "POST" });
 
 export const listTokens = () => api<{ tokens: ApiToken[] }>("/api/tokens");
 
